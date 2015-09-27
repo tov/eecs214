@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<!-- vim: sw=2 fileencoding=utf-8:
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>EECS 214: Data Structures</title>
+<link rel="stylesheet" media="screen" href="lib/screen.css" />
+<link rel="stylesheet" media="print" href="lib/print.css" />
+
+<script>
+  function $(id) {
+    return document.getElementById(id);
+  }
+
+  function showCalendar() {
+    $('schedule-container').className = 'open';
+  }
+
+  function hideCalendar() {
+    $('schedule-container').className = 'closed';
+  }
+
+  function onLoad() {
+    var day = (new Date()).getDay() + 1;
+    var src = 'https://www.google.com/calendar/embed?mode=WEEK&showTitle=0&showPrint=0&showCalendars=0&showTz=0&height=600&wkst=' + day + '&bgcolor=%23eee8d5&src=vn0ksor0fitvccvo6leijgd4b8%40group.calendar.google.com&color=%23B1365F&ctz=America%2FNew_York';
+    $('schedule-iframe').src = src;
+  }
+</script>
+
+<style>
+
+  table.schedule {
+    margin-left: auto;
+    margin-right: auto;
+    table-layout: fixed;
+    width: 90%;
+    border: 1px solid #b58900;
+    border-collapse: collapse;
+  }
+
+  .month th, .days th {
+    text-align: center;
+  }
+
+  .month th, .days th {
+    font-family: Roboto,"Helvetica Neue",Helvetica,sans-serif;
+  }
+
+  .month th {
+    font-size: 120%;
+    padding: 0.5ex 0 0 0;
+    font-weight: normal;
+  }
+
+  .days th {
+    font-size: 80%;
+    padding: 0 0 0.5ex 0;
+  }
+
+  .schedule th, .schedule td span {
+    color: #fdf6e3;
+    background-color: #b58900;
+  }
+
+  /*
+    color: #fdf6e3;
+    background-color: #657b83;
+    */
+
+  .schedule td {
+    position: relative;
+    padding: 20px 15px 15px 15px;
+    border: 1px solid #b58900;
+    line-height: 115%;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .schedule td span {
+    position: absolute;
+    display: block;
+    top: 0px;
+    right: 0px;
+    width: 2em;
+    height: height: 16px;
+    text-align: center;
+    font-family: Menlo, monospace;
+    font-size: 12px;
+  }
+
+  td.exam span {
+    background-color: #cb4b16;
+  }
+
+</style>
+
+</head>
+
+<body onload="onLoad();">
+<header>
+<h1 class="head">EECS 214: Data Structures</h1>
+<p class="subhead">
+<span class="printonly">Syllabus &#8211;</span>
+Fall 2015
+</p>
+<p class="subhead">
+Tech L361, MWF, 12–1 PM
+</p>
+</header>
+
+<nav class="screenonly links">
+<ul>
+<li><a href="#info">General info</a></li>
+<li><a href="#materials">Materials</a></li>
+<li><a href="#lectures">Lectures</a></li>
+<li><a href="#homework">Homework</a></li>
+<li><a href="#policies">Policies</a></li>
+</ul>
+</nav>
+
+<main>
+
+<h3>Course staff &amp; office hours</h3>
+<table style="white-space: nowrap;">
+<tbody>
+<tr>
+<th>Instructor:</th>
+<td><a href="/~tov/">Jesse Tov</a></td>
+<td><code>jesse@eecs</code></td>
+<td>Ford 2-215</td>
+<td style="whitespace: normal;">M 2–4, Tu 11-1, and gladly by appointment</td>
+</tr>
+<tr>
+  <th rowspan="3">TAs:</th>
+  <td>Yang Hu</td>
+  <td><code>yanghu2019@u</code></td>
+  <td>TBD</td>
+  <td>TBD</td>
+</tr>
+<tr>
+  <td>Arindam Paul</td>
+  <td><code>ArindamPaul2012@u</code></td>
+  <td>TBD</td>
+  <td>TBD</td>
+</tr>
+<tr>
+  <td>Pei Yu</td>
+  <td><code>PeiYu2018@u</code></td>
+  <td>TBD</td>
+  <td>TBD</td>
+</tr>
+</tbody>
+</table>
+
+<section id="info">
+<header>
+<h1>General information</h1>
+</header>
+
+<p>
+EECS 214 teaches the design, implementation, analysis, and proper
+application of abstract data types, data structures, and their
+algorithms. Topics include: data versus information, correctness,
+asymptotic analysis, and a wide variety of data structures.
+</p>
+
+<h3>Prerequisites</h3>
+
+<p>
+This course assumes familiarity with programming as taught in EECS 111
+and 211.
+</p>
+
+<h3>Exams</h3>
+
+<p>We will have two in-class examinations:</p>
+
+<ul>
+<li>Monday, October 26</li>
+<li>Wednesday, December 2</li>
+</ul>
+
+<p>There will be no final exam.</p>
+
+<!--
+<h3>What to Call the Instructors</h3>
+
+<p>Either “Jesse” or “Dr. Tov” is just fine.</p>
+-->
+</section>
+
+<section id="materials">
+<header>
+<h1>Materials</h1>
+</header>
+
+<h3>Software</h3>
+
+<p>
+Language versions TBD.
+</p>
+
+<h3>Books</h3>
+
+<p>There is no required textbook, but you may find these books
+useful:</p>
+
+<ul>
+
+  <li>Udi Manber, <a
+    href="http://www.amazon.com/gp/product/B000LNN102?psc=1&redirect=true&ref_=oh_aui_detailpage_o00_s00"><em>Introduction
+      to Algorithms: A Creative Approach</em></a> shows how to design
+  data structures and algorithms in a methodical way similar to the
+  design recipe many of you learned in EECS 111. (This book is out of
+  print, but used copies are available on Amazon.)</li>
+
+  <li>
+    Duane Bailey, <a
+      href="http://dept.cs.williams.edu/~bailey/JavaStructures/Book.html"><em>Data
+      Structures in Java, for the Principled Programmer</em></a> may be
+  a good reference for those of you who are working in, or can read,
+  Java. (This book is a free PDF download.)
+  </li>
+
+  <li>Cormen, Leiserson, Rivest, and Stein, <a
+    href="https://mitpress.mit.edu/books/introduction-algorithms"><em>Introduction
+      to Algorithms</em></a> is a comprehensive, dense reference that
+  isn’t always easy to understand, but covers almost anything you might
+  want to know.</li>
+
+</ul>
+
+<h3>Online resources</h3>
+
+<ul>
+<li><a
+href="https://piazza.com/northwestern/fall2015/eecs214">Piazza
+discussion board</a>&#8212;ask questions here!</li>
+</ul>
+
+<section id="lectures">
+<header>
+<h1>Lectures</h1>
+</header>
+
+<p>
+This table specifies the lecture schedule; topics are tentative.
+</p>
+
+<table class="schedule">
+
+  <tr class="month"><th colspan="3">September</th></tr>
+  <tr class="days"><th>M</th><th>W</th><th>F</th></tr>
+
+  <tr>
+    <td><span>21</span>Intro: What’s a data structure?</td>
+    <td><span>23</span>EECS 214</td>
+    <td><span>25</span>The Random Access Machine model<sup>*</sup></td>
+  </tr>
+  <tr>
+    <td><span>28</span>Binary trees<sup>†</sup>
+      (traversals<sup>§</sup>, array representations<sup>†</sup>)</td>
+    <td><span>30</span>Prefix codes<sup>*</sup>
+      (Huffman trees<sup>†</sup>)</td>
+    <td></td>
+  </tr>
+
+  <tr class="month"><th colspan="3">October</th></tr>
+  <tr class="days"><th>M</th><th>W</th><th>F</th></tr>
+
+  <tr>
+    <td></td>
+    <td></td>
+    <td><span>2</span>Linked lists<sup>†</sup></td>
+  </tr>
+
+  <tr>
+    <td><span>5</span>…</td>
+    <td><span>7</span>Asymptotic analysis<sup>*</sup></td>
+    <td><span>9</span>…</td>
+  </tr>
+
+  <tr>
+    <td><span>12</span>Binary search trees<sup>†</sup></td>
+    <td><span>14</span>AVL trees<sup>†</sup></td>
+    <td><span>16</span>2-4<sup>†</sup> and red-black trees<sup>†</sup></td>
+  </tr>
+
+  <tr>
+    <td><span>19</span>Abstract data types<sup>*</sup>
+    (FIFO queues‡, ring buffers†, priority queues‡)</td>
+    <td><span>21</span>Representation invariants<sup>*</sup></td>
+    <td><span>23</span>Binary heaps† and heap sort<sup>§</sup></td>
+  </tr>
+
+  <tr>
+    <td class="exam"><span>26</span>Exam 1</td>
+    <td><span>28</span>Amortization<sup>*</sup> (naïve banker’s
+      queues<sup>†</sup>, growable
+      vectors<sup>†</sup>)</td>
+    <td><span>30</span></td>
+  </tr>
+
+  <tr class="month"><th colspan="3">November</th></tr>
+  <tr class="days"><th>M</th><th>W</th><th>F</th></tr>
+
+  <tr>
+    <td><span>2</span>Probabilistic data structures<sup>*</sup> (Bloom
+      filters<sup>†</sup>, hash tables<sup>†</sup>)</td>
+    <td><span>4</span>…</td>
+    <td><span>6</span>…</td>
+  </tr>
+
+  <tr>
+    <td><span>9</span></td>
+    <td><span>11</span></td>
+    <td><span>13</span></td>
+  </tr>
+
+  <tr>
+    <td><span>16</span></td>
+    <td><span>18</span></td>
+    <td><span>20</span></td>
+  </tr>
+
+  <tr>
+    <td><span>23</span></td>
+    <td><span>25</span></td>
+    <td class="nope"><span>27</span>– No class: Thanksgiving –</td>
+  </tr>
+
+  <tr>
+    <td><span>30</span>Review session</td>
+    <td></td>
+    <td></td>
+  </tr>
+
+  <tr class="month"><th colspan="3">December</th></tr>
+  <tr class="days"><th>M</th><th>W</th><th>F</th></tr>
+
+  <tr>
+    <td></td>
+    <td class="exam"><span>2</span>Exam 2</td>
+    <td><span>4</span>The take-away</td>
+  </tr>
+</table>
+
+<h3>Legend</h3>
+
+<table>
+  <tr><td>*</td><td>concepts and skills</td></tr>
+  <tr><td>†</td><td>concrete data structures</td></tr>
+  <tr><td>‡</td><td>abstract data types</td></tr>
+  <tr><td>§</td><td>algorithms</td></tr>
+</table>
+
+</section>
+
+<section id="homework">
+<header>
+<h1>Homework schedule</h1>
+</header>
+
+<p>
+Homework will usually be due at [TBD]; the day of the week varies, so
+you should check each individual assignment to be sure. General homework
+policies are <a href="#hwpolicies">here</a>.
+</p>
+
+<p>Schedule TBD</p>
+
+<!--
+<p>
+This homework schedule is tentative and subject
+to change at the instructor’s discretion.
+</p>
+
+<table class="schedule">
+<thead>
+<tr>
+<th>Link</th>
+<th>Assigned</th>
+<th>Due</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="hw/01/">Homework 1</a></td>
+<td>Fri., May 15</td>
+<td>Fri., May 22 at 11:59 PM</td>
+</tr>
+<tr>
+<td><a href="hw/02/">Homework 2</a></td>
+<td>Sat., May 23</td>
+<td>Thu., May 28 at 11:59 PM</td>
+<tr>
+<td><a href="hw/03/">Homework 3</a></td>
+<td>Thu., May 28</td>
+<td>Tue., June 2 at 11:59 PM</td>
+</tr>
+<tr>
+<td><a href="hw/04/">Homework 4</a></td>
+<td>Fri., June 5</td>
+<td>Wed., June 10 at 11:59 PM</td>
+</tr>
+<tr>
+<td><a href="hw/05/">Homework 5</a></td>
+<td>Tue., June 9</td>
+<td>Mon., June 15 at 11:59 PM</td>
+</tr>
+<tr>
+<td><a href="hw/06/">Homework 6</a></td>
+<td>Wed., June 17</td>
+<td>Sat., June 20 at 11:59 PM</td>
+</tr>
+<tr>
+<td><a href="hw/07/">Homework 7</a></td>
+<td>Fri., June 19</td>
+<td>Tue., June 23 at 11:59 PM</td>
+</tr>
+<tr>
+<td><a href="hw/08/">Homework 8</a></td>
+<td>Sat., June 27</td>
+<td>Wed., July 1 at 11:59 PM</td>
+</tr>
+</tbody>
+</table>
+-->
+
+</section>
+
+<section id="policies">
+<header>
+<h1>Course policies</h1>
+</header>
+
+<h3>Collaboration and academic integrity</h3>
+
+<p>You may not collaborate with anyone on any of the exams. You
+may not use any electronic tools, including phones, tablets,
+netbooks, laptops, desktop computers, etc. If in doubt, ask a
+member of the course staff.</p>
+
+<p>Some homework assignments will be completed with an assigned
+partner, and some may involve a larger team
+(TBD). You must collaborate with your assigned partner or team, as
+specified, on homework assignments. You may request help from any
+staff member on homework. (When you are
+working with a partner, we strongly recommend that you request
+help with your partner.) You may use the <a
+href="https://piazza.com/northwestern/fall2015/eecs214">Piazza
+bulletin board</a> to ask questions regarding assignments, so
+long as your questions (and answers) do not reveal information
+regarding solutions. You may not get any help from anyone else on
+a homework assignment; all material submitted must be your own. If
+in doubt, ask a member of the course staff.</p>
+
+<p>Providing illicit help to another student is also cheating, and will
+be punished the same as receiving illicit help. It is your
+responsibility to safeguard your own work.</p>
+
+<p>Students who cheat will be withdrawn from the course and reported to
+the appropriate dean.</p>
+
+<p><strong>If you are unclear on any of these policies, please ask a
+member of the course staff.</strong></p>
+
+<h3 id="hwpolicies">Homework</h3>
+
+<p> In general, you should submit your homework according to the
+instructions on the web page for the individual assignments.</p>
+
+<p>More TBD</p>
+
+<h4>Late work</h4>
+
+<p>
+TBD
+</p>
+
+<h3>Grades</h3>
+
+<p>
+Your grade will be based on your performance on four programming
+assignments and two midterm exams, equally weighted.
+There will be no final exam.
+</p>
+
+<p>
+The mapping of raw point totals to letter grades is at the
+discretion of the instructor.
+</p>
+
+</section>
+
+</main>
+
+<footer class="main">
+<p class="screenonly">
+<a href="http://validator.w3.org/check?uri=referer"><img
+src="http://www.w3.org/html/logo/downloads/HTML5_Badge_32.png"
+alt="Valid XHTML5" /></a>
+<a
+href="http://jigsaw.w3.org/css-validator/validator?uri=http%3A%2F%2Fwww.ccs.neu.edu%2Fhome%2Ftov%2Fccs.css&amp;usermedium=all"><img
+src="http://jigsaw.w3.org/css-validator/images/vcss"
+alt="Valid CSS!" /></a>
+</p>
+</footer>
+
+</body>
+</html>
