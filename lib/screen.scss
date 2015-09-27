@@ -1,0 +1,501 @@
+@import 'common';
+@import 'colors';
+
+@import url(http://fonts.googleapis.com/css?family=Roboto:300,300italic|Lora:400,700,400italic&subset=latin);
+
+.printonly {
+    display: none;
+}
+
+.old, .old td {
+    text-decoration: line-through;
+    color: #d33682;
+}
+
+.nope {
+  font-style: italic;
+  color: #6c71c4;
+}
+
+.exam {
+  font-weight: bold;
+}
+
+body {
+    margin: 3em auto;
+    max-width: 50em;
+    @extend .body-font;
+    color: $foreground;
+    background-color: $background;
+    counter-reset: figureCounter;
+}
+
+strong {
+  color: #586e75;
+}
+
+#TOC {
+  margin: 1em 0;
+}
+
+#TOC>ul>li>a {
+  color: #d33682;
+  border: none;
+}
+
+#TOC ul {
+  padding: 0;
+}
+
+#TOC li {
+  list-style: none;
+  font-size: 125%;
+}
+
+#TOC li li {
+  font-size: 80%;
+}
+
+span.toc-section-number {
+  display: none;
+}
+
+#TOC:before {
+  content: "Table of contents";
+}
+
+.links, nav.links {
+  text-align: center;
+  margin: 1em auto;
+}
+
+ul.links, nav.links ul {
+  padding-left: 0;
+}
+
+.links li {
+  list-style: none;
+  display: inline;
+}
+
+.links li a {
+  padding: 2px 4px;
+  margin: .25em;
+}
+
+#schedule-cell {
+  position: relative;
+}
+
+#schedule-container {
+  top: 0; left: 0; right: 0; bottom: 0;
+}
+
+#schedule-container.open {
+  position: fixed;
+}
+
+#schedule-container.closed {
+  position: absolute;
+}
+
+#schedule-background {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  cursor: pointer;
+  background-color: #000;
+  transition: visibility 0s linear 0.25s, opacity 0.25s linear;
+  -webkit-transition: visibility 0s linear 0.25s, opacity 0.25s linear;
+}
+
+.closed #schedule-background {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.open #schedule-background {
+  visibility: visible;
+  opacity: 0.2;
+  transition-delay: 0s;
+  -webkit-transition-delay: 0s;
+}
+
+#schedule-outer {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  transition: transform .5s ease;
+  -webkit-transition: transform .5s ease;
+}
+
+#schedule-inner {
+  position: relative;
+  padding: .5em;
+  border-radius: 5px;
+  box-shadow: 5px 5px 5px $background-shadow;
+  background-color: #eee8d5;
+}
+
+.closed #schedule-outer {
+  transform: translate(-50%, -50%) scale(.2);
+  -webkit-transform: translate(-50%, -50%) scale(.2);
+  transition: transform .5s ease;
+  -webkit-transition: transform .5s ease;
+}
+
+.closed #schedule-inner {
+  transform: rotate3d(.3, 1, 0, 360deg);
+  -webkit-transform: rotate3d(.3, 1, 0, 360deg);
+  transform-origin: 50% 50%;
+  -webkit-transform-origin: 50% 50%;
+  transition: transform .5s ease;
+  -webkit-transition: transform .5s ease;
+}
+
+#schedule-iframe {
+  position: relative;
+  width: 800px;
+  height: 600px;
+  border: 0;
+  overflow: hidden;
+}
+
+#schedule-inner h2 {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+#schedule-inner .close {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 0;
+  margin: 0;
+  color: #586e75;
+  font-family: sans-serif;
+  font-weight: bold;
+  transition-delay: 0;
+}
+
+#schedule-inner .close:hover {
+  color: #cb4b16;
+  cursor: pointer;
+}
+
+#schedule-foreground {
+  position: absolute;
+  width: 164px;  /* .2 * 800px + 4px */
+  height: 124px; /* .2 * 600px + 4px */
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  cursor: pointer;
+  background-color: rgba(253, 246, 227, .4);
+  transition: background-color .1s linear,
+              visibility 0s linear 0s,
+              opacity .5s linear,
+              transform .5s ease-out;
+  -webkit-transition: background-color .1s linear,
+                      visibility 0s linear 0s,
+                      opacity .5s linear,
+                      transform .5s ease-out;
+}
+
+.open #schedule-foreground {
+  visibility: hidden;
+  opacity: 0;
+  transform: rotate(180deg);
+  -webkit-transform: rotate(180deg);
+  transform-origin: 50% 50%;
+  -webkit-transform-origin: 50% 50%;
+}
+
+#schedule-foreground:hover {
+  background-color: transparent;
+}
+
+#schedule-foreground span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  color: #cb4b16;
+  font-weight: bold;
+  text-shadow:  4px  4px 6px $background,
+               -4px  4px 6px $background,
+                4px -4px 6px $background,
+               -4px -4px 6px $background;
+}
+
+section, footer.main {
+    clear: right;
+}
+
+.illustration {
+    display: block;
+    float: right;
+    max-width: 30%;
+    margin: 0.5em 0 0.1em 1em;
+}
+
+.illustration img {
+    max-width: 100%;
+    box-shadow: 3px 3px 3px $background-shadow;
+    transition: transform .1s, box-shadow .1s;
+    -webkit-transition: transform .1s, box-shadow .1s;
+}
+
+.illustration a:active img {
+    box-shadow: 1px 1px 1px $background-shadow;
+    transform: translate(2px, 2px);
+    -webkit-transform: translate(2px, 2px);
+}
+
+br {
+    display: none;
+}
+
+code br, a+br, br.real {
+    display: block;
+}
+
+main>section:after, article:after, section.footnotes:before {
+    content: "";
+    display: block;
+    background-color: #268bd2;
+    height: 10px;
+    width: 10px;
+    box-shadow: 1px 1px 1px $background-shadow;
+    margin: 1em auto;
+}
+
+section.footnotes hr {
+  display: none;
+}
+
+article:last-child:after {
+    display: none;
+}
+
+h1, h2, h3, h4, h5, h6, .subhead, #TOC:before {
+    font-family: Roboto,"Helvetica Neue",Helvetica,sans-serif;
+    margin-top: 0.75em;
+    margin-bottom: 0.25em;
+    padding: 0;
+    font-weight: 200;
+    line-height: normal;
+}
+
+h1.title {
+    margin-bottom: 0;
+    margin-top: 0.25em;
+}
+
+h1, #TOC:before { color: $yellow; }
+h2, p.subhead { color: $yellow; }
+h3 { color: $yellow; }
+h4 { color: $yellow; }
+h5 { color: $yellow; }
+
+h1.head {
+    font-size : 250%;
+    letter-spacing: 1px;
+    text-align: center;
+    margin-bottom: .1em;
+}
+
+p.subhead {
+    margin-top: 0;
+    font-size : 150%;
+    text-align: center;
+}
+
+p.git-clone {
+  text-align: center;
+}
+
+.git-clone input, input.git-clone {
+  text-align: center;
+  background: inherit;
+  border: none;
+  font: inherit;
+  line-height: normal;
+  margin: 0;
+  padding: 4px;
+  box-shadow: 1px 1px 1px 1px $background-shadow inset;
+  width: 26em;
+}
+
+.git-clone input:focus, input.git-clone:focus {
+  color: $foreground-highlight;
+  background-color: $background-highlight;
+}
+
+h1, #TOC:before { font-size: 200%; }
+
+h2 { font-size: 150%; }
+
+h3 { font-size: 125%; }
+
+h4 { font-size: 100%; font-style: italic; }
+
+h5 { font-size: 100%; text-decoration: underline; }
+
+p, ul, pre {
+    margin: 0 0 1em 0;
+    padding: 0;
+}
+
+table {
+    margin: 0 0 1em 1em;
+    padding: 0;
+}
+
+ul {
+  padding-left: 1.5em;
+}
+
+a, a code, a .code {
+    color: #cb4b16;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+h1 a {
+    background-color: transparent;
+}
+
+a img {
+    border: 0;
+}
+
+td {
+    padding: 0 0.5em;
+    margin: 0;
+}
+
+th {
+    padding: 0 0.5em;
+    margin: 0.5em 0;
+}
+
+table thead {
+    font-weight: bold;
+}
+
+li {
+    margin-bottom: .25em;
+    margin-top: .25em;
+}
+
+.center {
+    text-align: center;
+}
+
+code, .code {
+    white-space: pre;
+    color: #073642;
+    /* green
+    color: #859900;
+    */
+}
+
+pre, code, .code, tt {
+    font-family: Menlo,Monaco,"Lucide Console",monospace;
+    font-size: 92%;
+}
+
+td, th {
+    text-align: left;
+    vertical-align: top;
+}
+
+.righttable td {
+    text-align: right;
+}
+
+ol ol {
+  list-style-type: lower-alpha;
+}
+
+ol ol ol {
+  list-style-type: lower-roman;
+}
+
+ol ol ol ol {
+  list-style-type: lower-greek;
+}
+
+ol ol ol ol ol {
+  list-style-type: decimal;
+}
+
+.clear {
+  clear: both;
+}
+
+span.header-section-number {
+  padding-right: 1ex;
+}
+
+figure {
+  text-align: center;
+  counter-increment: figureCounter;
+}
+
+figcaption:before {
+  content: "Figure " counter(figureCounter) ". ";
+}
+
+.hw ol li, .hw ol li pre {
+  background-color: #eee8d5;
+}
+
+.hw ol li {
+  border-radius: .5em;
+  padding: .5em;
+  list-style-position: inside;
+  margin: 1em 0;
+  box-shadow: 2px 2px 5px 3px $background-shadow;
+}
+
+.hw ol li li {
+  border: none;
+  padding: .1em;
+  margin: .25em 0;
+}
+
+.hw ol li p {
+  margin: .2em;
+}
+
+p.notice {
+  text-align: center;
+  font-weight: bold;
+}
+
+img.bigpicture {
+  display: block;
+  max-width: 90%;
+  margin: 0 auto 1em auto;
+}
+
+.akilter {
+  transform: translate(0, 1em) rotate(-15deg);
+  margin: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-right: 0;
+  display: block;
+  z-index: -1;
+}
+
+em {
+  font-style: italic;
+}

@@ -1,0 +1,77 @@
+@import 'common';
+
+.screenonly, .illustration, #schedule-container {
+    display: none;
+}
+
+.old, .old td {
+    text-decoration: line-through;
+}
+
+body {
+    margin: 1in;
+    font-size: 12pt;
+}
+
+section {
+  -webkit-column-count: 2;
+}
+
+table {
+    margin: 1em 0 1em 2em;
+    padding: 0;
+}
+
+h1, h2, h3, p.subhead {
+    font-family: sans-serif;
+    font-weight: normal;
+}
+
+h1.head, p.subhead {
+    text-align: center;
+}
+
+h1.head {
+    margin-bottom: 0;
+    font-size: 2em;
+}
+
+p.subhead {
+    margin-top: 0;
+    font-size: 1.6em;
+}
+
+h1 {
+    font-size: 1.5em;
+}
+
+h2 {
+    font-size: 1.2em;
+}
+
+h3 {
+    font-size: 1.1em;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: none;
+}
+
+th, td {
+    padding: 4pt;
+    vertical-align: top;
+    text-align: left;
+}
+
+span.header-section-number {
+  padding-right: 1ex;
+}

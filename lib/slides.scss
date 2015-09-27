@@ -1,0 +1,405 @@
+@import 'colors';
+
+html {
+  color: $foreground;
+  background-color: $background;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover, .underline {
+  text-decoration: underline;
+}
+
+footer { position: absolute; bottom: 50px; right: 50px; }
+
+strong {
+  color: $orange;
+  font-style: normal;
+  font-weight: normal;
+}
+
+em.color {
+  color: $magenta;
+  font-style: normal;
+}
+
+th, thead, .th {
+  color: $green;
+  font-weight: 200;
+}
+
+body {
+  font-size: 1.6em;
+  font-family: "Helvetica Neue",sans-serif;
+  font-weight: 200;
+}
+
+span.math.inline * {
+  font-family: "Helvetica Neue",sans-serif !important;
+  font-weight: 200;
+  line-height: 120%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: $base03;
+  font-weight: 200;
+}
+
+/* Transition effect */
+section {
+  -moz-transition: opacity 200ms linear 0s;
+  -webkit-transition: opacity 200ms linear 0s;
+  -ms-transition: opacity 200ms linear 0s;
+  transition: opacity 200ms linear 0s;
+}
+section { opacity: 0; }
+section[aria-selected] { opacity: 100; }
+section[aria-selected] ~ section { opacity: 0 }
+
+.title, .author, .date {
+  text-align: center;
+}
+
+h3.date {
+  font-size: 100%;
+  color: $blue;
+}
+
+h1 {
+  font-size: 150%;
+  color: $yellow;
+  margin: 1em 0 .3em 0;
+}
+
+h5 {
+  font-size: 125%;
+  color: $green;
+  margin: -.75em 0 .25em 0;
+}
+
+h2 {
+  margin: 0.5em auto 0 auto;
+  font-size: 40px;
+  text-align: center;
+}
+
+h3 {
+  margin: 0.5em 0 0 0;
+  font-size: 30px;
+  text-align: left;
+}
+
+h4 {
+  margin: 0.3em 0 0 0;
+  font-size: 100%;
+  text-align: left;
+}
+
+td, th {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+.squeeze td {
+  padding-left: 0.125em;
+  padding-right: 0.125em;
+}
+
+table { margin: 40px auto; }
+
+.math {
+  font-size: 90%;
+}
+
+.ccenter {
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.shadow-base {
+    box-shadow: 1.3pt 1.3pt 3pt 2pt $background-shadow;
+    border-radius: 5pt;
+}
+
+.message-base {
+    @extend .shadow-base;
+    display: block;
+    padding: 4px 8px;
+    background-color: $background;
+    border: 1px solid $foreground-highlight;
+    box-shadow: 1.3pt 1.3pt 3pt 2pt $background-shadow;
+
+    pre.sourceCode {
+        margin: 0;
+    }
+}
+
+.message {
+    @extend .message-base;
+}
+
+.bigpicture, .message {
+  position: absolute;
+  @extend .ccenter;
+}
+
+.bottom-message {
+    position: absolute;
+    @extend .message-base;
+    font-size: 85%;
+    bottom: 2em;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.arithbar {
+    border-bottom: 1px solid $base00;
+}
+
+.freeList {
+    color: $magenta;
+}
+
+.fullpicture {
+  display: block;
+  position: fixed;
+  top: 0; left: 0; bottom: 0; right: 0;
+}
+
+.lower-left {
+  position: absolute;
+  bottom: 2em; left: 0;
+}
+
+table table.memory {
+    margin: 0;
+}
+
+table.registers thead th {
+    color: $cyan;
+    font-weight: normal;
+}
+
+
+table.memory {
+    td {
+        position: relative;
+        background-color: white;
+        border: 1px solid $foreground;
+        width: 170px;
+        height: 37px;
+        text-align: right;
+        padding: 2px 4px;
+
+        code.label {
+            position: absolute;
+            left: 4px;
+            top: 2px;
+            text-align: left;
+            font-family: Menlo;
+            font-size: 60%;
+            line-height: 105%;
+            float: left;
+        }
+    }
+
+    td.obj-header {
+      text-align: center;
+      font-style: italic;
+      font-weight: normal;
+    }
+
+    th code {
+        color: $yellow;
+    }
+
+    thead th {
+        text-align: center;
+    }
+
+    tbody th {
+        text-align: right;
+        padding-right: 4px;
+    }
+}
+
+code, pre, tt {
+  font-family: Menlo,Monaco,sans-serif;
+  font-size: 90%;
+}
+
+section.title {
+  margin-top: 15%;
+}
+
+section.title h1 {
+  font-size: 200%;
+}
+
+section.titleslide h1 {
+  position: relative;
+  top: 50%;
+  text-align: center;
+  margin: 0 100px;
+  padding: 0;
+  text-align: center;
+  line-height: 64px;
+  transform: scale(1.1);
+  transition: transform 0s ease-out .5s;
+}
+
+section[aria-selected].titleslide h1 {
+  transform: scale(1) translateY(-50%);
+  transition: transform 0.5s ease;
+}
+
+section.titleslide {
+  background-color: $background-highlight;
+}
+
+.center {
+  text-align: center !important;
+}
+
+.right {
+  text-align: right;
+}
+
+dt {
+  margin: .5em 0 .25em 0;
+}
+
+dd {
+  margin: .25em 0 .25em 2em;
+}
+
+
+ul {
+  margin: .5em 0 0 40px;
+  padding-top: 0;
+}
+
+ol {
+  margin: .5em 0 0 60px;
+  padding-top: 0;
+}
+
+ul ul {
+  margin: 0 0 0 60px;
+}
+
+ul p, ol p { margin: .25em 0; }
+
+pre.sourceCode {
+  margin: 20px 0px;
+}
+
+ul {
+  list-style-type: square;
+}
+
+ul ul {
+  list-style-type: circle;
+}
+
+ul ul ul {
+  list-style-type: disc;
+}
+
+q, p {
+  margin: .5em 0;
+}
+q:after {content: ""}
+q:before {content: ""}
+q {
+  display: block;
+  margin-top: 140px;
+}
+#arrow {
+  position: absolute;
+  top: 165px;
+  left: 460px;
+  font-size: 100px;
+  color: white;
+
+}
+
+blockquote {
+  margin: .5em 1em;
+  padding: 1px 1em;
+  background-color: $background-highlight;
+}
+
+.sourceCode.boxed {
+    @extend .shadow-base;
+    margin: .5em 1em .25em 1em;
+    padding: .25em;
+    color: $foreground-highlight;
+    background-color: $background-highlight;
+}
+
+
+/* Incremental elements */
+
+/* By default, visible */
+.incremental > * {
+  opacity: 1;
+  transition: opacity 0s ease;
+}
+
+/* The current item */
+.incremental > *[aria-selected] {
+  opacity: 1;
+  transition: opacity .5s ease;
+}
+
+/* The items to-be-selected */
+.incremental > *[aria-selected] ~ * {
+  opacity: 0;
+  transition: opacity 0s ease;
+}
+
+.error, .error * {
+  color: $orange !important;
+}
+
+div.sourceCode {
+  overflow-x: auto;
+}
+
+div.sourceCode + div.sourceCode,
+div.sourceCode + div.incremental>div.sourceCode {
+  margin-top: -14px;
+}
+
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0;
+  padding: 0;
+  vertical-align: baseline;
+  border: none;
+}
+
+table.sourceCode {
+  width: 100%;
+  line-height: 100%;
+}
+
+td.lineNumbers {
+  text-align: right;
+  padding-right: 4px;
+  padding-left: 4px;
+  color: #aaaaaa;
+  border-right: 1px solid #aaaaaa;
+}
+
+td.sourceCode {
+  padding-left: 5px;
+}
+
+pre {
+  background-color: $background;
+  white-space: pre;
+}

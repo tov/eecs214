@@ -1,0 +1,61 @@
+$base03:    #002b36;
+$base02:    #073642;
+$base01:    #586e75;
+$base00:    #657b83;
+$base0:     #839496;
+$base1:     #93a1a1;
+$base2:     #eee8d5;
+$base3:     #fdf6e3;
+$yellow:    #b58900;
+$orange:    #cb4b16;
+$red:       #dc322f;
+$magenta:   #d33682;
+$violet:    #6c71c4;
+$blue:      #268bd2;
+$cyan:      #2aa198;
+$green:     #859900;
+
+$foreground: $base00;
+$background: $base3;
+
+$foreground-highlight: $base01;
+$background-highlight: $base2;
+
+$background-shadow: $base0;
+$foreground-shadow: $base1;
+
+code {
+  /* KeyWordTok */
+  .kw { color: $blue; }
+
+  /* DataTypeTok */
+  .dt { color: $blue; }
+
+  /* DecValTok (decimal value), BaseNTok, FloatTok */
+  .dv, .bn, .fl { color: $violet; }
+
+  /* CharTok */
+  .ch { color: $red; }
+
+  /* StringTok */
+  .st { color: $magenta; }
+
+  /* CommentTok */
+  .co { color: $foreground-shadow; }
+
+  /* OtherTok */
+  .ot { color: $yellow; }
+
+  /* AlertTok */
+  .al { color: $orange; font-weight: bold; }
+
+  /* FunctionTok */
+  .fu { color: $cyan; }
+
+  /* RegionMarkerTok */
+  .re { }
+
+  /* ErrorTok */
+  .er { color: $red; font-weight: bold; }
+}
+

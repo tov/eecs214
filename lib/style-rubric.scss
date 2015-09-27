@@ -1,0 +1,128 @@
+@import 'screen';
+
+nav#TOC::before {
+  content: "Criteria";
+}
+
+nav#TOC {
+  ul {
+    counter-reset: nav-counter;
+  }
+
+  ul::before {
+    content: "Deduct 0.1 (out of 1) for each item present:";
+  }
+
+  li {
+    font-size: 100%;
+    list-style-type: none;
+  }
+
+  li::before {
+    display: inline-block;
+    margin-left: 1em;
+    width: 1.5em;
+    content: counter(nav-counter);
+    counter-increment: nav-counter;
+  }
+
+  li::after {
+    margin-left: 1ex;
+    content: "[-0.1]";
+  }
+}
+
+table {
+  min-width: 66%;
+  border-collapse: collapse;
+  border: none;
+  border-radius: 1ex 0 1ex 0;
+  box-shadow: 0 0 0 4px $background-highlight,
+              3px 3px 5px 4px $background-shadow;
+  line-height: 120%;
+}
+
+td, th {
+  padding: .25em 0.5em .25em 0.5em;
+  margin: 0;
+  width: 48%;
+}
+
+table.narrow {
+  td, th {
+    width: 32%;
+  }
+}
+
+td:not(:last-child), th:not(:last-child) {
+  padding-right: 1.5em;
+}
+
+table pre {
+  margin: 0;
+}
+
+tr:last-child:nth-child(even) td {
+  /*padding-bottom: .25em - 4px;*/
+}
+
+tr:nth-child(odd) td {
+  background-color: $background-highlight;
+}
+
+th:not(:last-child) {
+  color: $red;
+}
+
+th:last-child {
+  color: $green;
+}
+
+main {
+  ol {
+    list-style-type: lower-alpha;
+  }
+
+  ul {
+    padding: 0;
+    display: block;
+  }
+
+  ul {
+    li {
+      padding: 0;
+      margin: 0;
+      display: inline;
+    }
+
+    li:first-child::before {
+      content: "Applies to ";
+    }
+
+    li::after {
+      content: ", ";
+    }
+
+    li:first-child:nth-last-child(2)::after {
+      content: "";
+    }
+
+    li:last-child:not(:first-child)::before {
+      content: "and ";
+    }
+
+    li:last-child::after {
+      content: ".";
+    }
+  }
+
+  span.header-section-number {
+    position: absolute;
+    left: 0; top: 0;
+  }
+
+  h1 {
+    position: relative;
+    padding-left: 2em;
+  }
+}
