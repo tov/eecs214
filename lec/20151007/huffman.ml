@@ -143,27 +143,39 @@ module Forest = struct
         let before, after = take_drop (n - 1) xs' in
           x::before, after
 
+  module Map = Map.Make(struct type t = int let compare = compare end)
+
   class ['a] combiner combine print = object (self)
-    val mutable trees: 'a list = []
+    val mutable trees: 'a Map.t = Map.empty
+    val mutable count = 0
 
-    method add_list new_trees = trees <- trees @ new_trees
+    method add tree =
+      trees <- Map.add count tree trees;
+      count <- count + 1
 
-    method add tree = self#add_list [tree]
+    method add_list = List.iter (fun tree -> self#add tree)
 
-    method rem index =
-      let before, result::after = take_drop index trees in
-        trees <- before @ after;
+    method get index = Map.find index trees
+
+    method rem index = trees <- Map.remove index trees
+
+    method take index =
+      let result = self#get index in
+        self#rem index;
         result
 
     method combine ix1 ix2 =
-      self#add (combine (self#rem ix1) (self#rem ix2))
+      let t1 = Map.find ix1 trees in
+      let t2 = Map.find ix2 trees in
+      self#add (combine t1 t2);
+      self#rem ix1;
+      self#rem ix2
 
     method print =
-      let each i item =
-        Printf.printf "\n[%d]\n" i;
-        let () = print item in
-        i + 1 in
-      ignore (List.fold_left each 0 trees)
+      Map.iter (fun i item ->
+                  Printf.printf "\n[%d]\n" i;
+                  print item)
+               trees
   end
 
   class forest = object
