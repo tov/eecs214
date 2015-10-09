@@ -1,4 +1,4 @@
-# Prefix codes and Huffman trees
+# Prefix codes
 
 ## What is a code?
 
@@ -7,7 +7,7 @@ An *alphabet* is a set of symbols.
   - { 0, 1 }
   - { a, b, ..., z }
   - { †, ‡, §, ¶ }
-  - { A, a, B, b, ..., Z, z, 0, 1, ... 9, _, ' ' }
+  - { A, a, B, b, ..., Z, z, 0, 1, ... 9, ' ' }
   - { '\000', '\001', ..., '\255' } ('\065' == 'A')
 
 Given an alphabet S, then S∗ means the set of all sequences of symbols
@@ -99,5 +99,4 @@ coded message: 11111000110011001101
 
 ## Prefix code tree
 
-## Huffman tree
 
