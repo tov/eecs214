@@ -1,2 +1,7 @@
 # Vim swap files
 .*.sw?
+
+# object files
+*.o
+*.class
+*.jar
