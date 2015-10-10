@@ -116,12 +116,14 @@ module Huffman = struct
   let make_leaves =
     List.map (fun (c, n) -> leaf n ("'" ^ Char.escaped c ^ "'"))
 
-  let rec sum_weights { weight; node } =
-    weight + match node with
-             | Leaf _ -> 0
-             | Branch (t1, t2) -> sum_weights t1 + sum_weights t2
+  let sum_weights tree =
+    let rec loop { weight; node } =
+      weight + match node with
+               | Leaf _ -> 0
+               | Branch (t1, t2) -> loop t1 + loop t2
+    in loop tree - tree.weight
 
-  let example =
+  let manual_example =
     branch (branch (branch (leaf 4 "e")
                            (branch (leaf 2 "n")
                                    (branch (leaf 1 "o") (leaf 1 "u"))))
@@ -150,8 +152,8 @@ module Forest = struct
     val mutable count = 0
 
     method add tree =
-      trees <- Map.add count tree trees;
-      count <- count + 1
+      count <- count + 1;
+      trees <- Map.add count tree trees
 
     method add_list = List.iter (fun tree -> self#add tree)
 
