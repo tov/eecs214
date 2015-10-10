@@ -99,4 +99,14 @@ coded message: 11111000110011001101
 
 ## Prefix code tree
 
+Any prefix code can be represented as a binary tree [1]:
 
+  - There is a leaf for each input symbol
+  - Each branch has two subtrees, labeled 0 and 1
+  - The codeword for each symbol is the labels on the path from the root
+    to that symbol's leaf node
+
+Constructing such a tree guarantees a prefix code.
+
+[1] More generally, a prefix code using some output alphabet of size k
+would use a k-ary tree with edges labeled by output symbols.
