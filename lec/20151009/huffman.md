@@ -134,105 +134,311 @@ letter frequencies =
 now we make a forest by turning each letter and its frequency into a
 single-leaf tree. so this is our initial forest:
 
-1.  ````
-    |
-    3
-    ' '
-    ````
+    [1]     |
+            3
+            ' '
 
-2.  ````
-    |
-    2
-    'c'
-    ````
+    [2]     |
+            2
+            'c'
 
-3.  ````
-    |
-    3
-    'd'
-    ````
+    [3]     |
+            3
+            'd'
 
-4.  ````
-    |
-    6
-    'e'
-    ````
+    [4]     |
+            6
+            'e'
 
-5.  ````
-    |
-    1
-    'g'
-    ````
+    [5]     |
+            1
+            'g'
 
-6.  ````
-    |
-    1
-    'h'
-    ````
+    [6]     |
+            1
+            'h'
 
-7.  ````
-    |
-    3
-    'i'
-    ````
+    [7]     |
+            3
+            'i'
 
-8.  ````
-    |
-    1
-    'l'
-    ````
+    [8]     |
+            1
+            'l'
 
-9.  ````
-    |
-    2
-    'm'
-    ````
+    [9]     |
+            2
+            'm'
 
-10. ````
-    |
-    2
-    'n'
-    ````
+    [10]    |
+            2
+            'n'
 
-11. ````
-    |
-    2
-    'o'
-    ````
+    [11]    |
+            2
+            'o'
 
-12. ````
-    |
-    1
-    'p'
-    ````
+    [12]    |
+            1
+            'p'
 
-13. ````
-    |
-    1
-    'r'
-    ````
+    [13]    |
+            1
+            'r'
 
-14. ````
-    |
-    2
-    't'
-    ````
+    [14]    |
+            2
+            't'
 
-15. ````
-    |
-    1
-    'w'
-    ````
+    [15]    |
+            1
+            'w'
 
-16. ````
-    |
-    1
-    'x'
-    ````
+    [16]    |
+            1
+            'x'
 
-17. ````
-    |
-    1
-    'z'
-    ````
+    [17]    |
+            1
+            'z'
 
+I've numbered the trees to make them easier to refer to. There are
+several leaves whose weight is 1: 5, 6, 8, 12, 13, 15, 16, 17.  We
+choose two of these, 5 and 6, to remove from the forest and combine into
+a larger tree having weight 2:
+
+    [18]      |
+            +-2--+
+            |    |
+            1    1
+            'g'  'h'
+
+Then we repeat. Trees 8 and 12 have weight 1, so we combine them;
+similarly 13 with 15 and 16 with 17. (The order doesn't matter, though
+if we want to construct the same tree more than once from the same model
+then it needs to be deterministic.) Here is our forest at this
+point:
+
+    [1]     |
+            3
+            ' '
+
+    [2]     |
+            2
+            'c'
+
+    [3]     |
+            3
+            'd'
+
+    [4]     |
+            6
+            'e'
+
+    [7]     |
+            3
+            'i'
+
+    [9]     |
+            2
+            'm'
+
+    [10]    |
+            2
+            'n'
+
+    [11]    |
+            2
+            'o'
+
+    [14]    |
+            2
+            't'
+
+    [18]      |
+            +-2--+
+            |    |
+            1    1
+            'g'  'h'
+
+    [19]      |
+            +-2--+
+            |    |
+            1    1
+            'l'  'p'
+
+    [20]      |
+            +-2--+
+            |    |
+            1    1
+            'r'  'w'
+
+    [21]      |
+            +-2--+
+            |    |
+            1    1
+            'x'  'z'
+
+Now no trees of weight 1 remain, so we begin combining trees of weight
+2.  Let's combine 21 with 20:
+
+    [22]       |
+          +----4----+
+          |         |
+        +-2--+    +-2--+
+        |    |    |    |
+        1    1    1    1
+        'x'  'z'  'r'  'w'
+
+Similarly, we'll combine weight-2 trees 2 with 9, 10 with 11, and 14
+with 18, yielding:
+
+    [23]      |
+            +-4--+
+            |    |
+            2    2
+            'c'  'm'
+
+    [24]      |
+            +-4--+
+            |    |
+            2    2
+            'n'  'o'
+
+    [25]       |
+            +--4---+
+            |      |
+            2    +-2--+
+            't'  |    |
+                 1    1
+                 'g'  'h'
+
+Now we have only one tree of weight 2 remaining, so we cannot combine it
+with another of weight 2. However, we have three trees of weight three,
+so we will combine tree 19 (weight 2) with tree 1 (weight 3):
+
+    [26]      |
+          +---5---+
+          |       |
+        +-2--+    3
+        |    |    ' '
+        1    1
+        'l'  'p'
+
+Trees 3 and 7 both have weight 3, so we combine them:
+
+    [27]      |
+            +-6--+
+            |    |
+            3    3
+            'd'  'i'
+
+No trees of weight 3 remain, but trees 22, 23, 24, and 25 have weight 4,
+so we combine 22 with 23 and 24 with 25. Next up, tree 26 has weight 5,
+and trees 4 and 27 have weight 6. So we combine tree 26 with tree 27.
+Now our forest comprises four trees:
+
+    [4]     |
+            6
+            'e'
+
+    [28]                  |
+                   +------8-------+
+                   |              |
+              +----4----+       +-4--+
+              |         |       |    |
+            +-2--+    +-2--+    2    2
+            |    |    |    |    'c'  'm'
+            1    1    1    1
+            'x'  'z'  'r'  'w'
+
+    [29]           |
+              +----8-----+
+              |          |
+            +-4--+    +--4---+
+            |    |    |      |
+            2    2    2    +-2--+
+            'n'  'o'  't'  |    |
+                           1    1
+                           'g'  'h'
+
+    [30]               |
+                  +----11----+
+                  |          |
+              +---5---+    +-6--+
+              |       |    |    |
+            +-2--+    3    3    3
+            |    |    ' '  'd'  'i'
+            1    1
+            'l'  'p'
+
+Combining the lightest tree, tree 4 (weight 6) with one of the next
+lightest trees, tree 28 (weight 8) yields a tree of weight 14:
+
+    [31]             |
+            +--------14--------+
+            |                  |
+            6           +------8-------+
+            'e'         |              |
+                   +----4----+       +-4--+
+                   |         |       |    |
+                 +-2--+    +-2--+    2    2
+                 |    |    |    |    'c'  'm'
+                 1    1    1    1
+                 'x'  'z'  'r'  'w'
+
+Now the lighest two trees are tree 29 (weight 8) and tree 30 (weight
+11), so we combine these:
+
+    [32]                         |
+                   +-------------19-------------+
+                   |                            |
+              +----8-----+                 +----11----+
+              |          |                 |          |
+            +-4--+    +--4---+         +---5---+    +-6--+
+            |    |    |      |         |       |    |    |
+            2    2    2    +-2--+    +-2--+    3    3    3
+            'n'  'o'  't'  |    |    |    |    ' '  'd'  'i'
+                           1    1    1    1
+                           'g'  'h'  'l'  'p'
+
+Finally, we combine the two remaining trees, trees 31 and 32, to get our
+Huffman tree:
+
+````
+                             |
+       +---------------------33----------------------+
+       |                                             |
++------14-------+                      +-------------19-------------+
+|               |                      |                            |
+6        +------8-------+         +----8-----+                 +----11----+
+'e'      |              |         |          |                 |          |
+    +----4----+       +-4--+    +-4--+    +--4---+         +---5---+    +-6--+
+    |         |       |    |    |    |    |      |         |       |    |    |
+  +-2--+    +-2--+    2    2    2    2    2    +-2--+    +-2--+    3    3    3
+  |    |    |    |    'c'  'm'  'n'  'o'  't'  |    |    |    |    ' '  'd'  'i'
+  1    1    1    1                             1    1    1    1
+  'x'  'z'  'r'  'w'                           'g'  'h'  'l'  'p'
+````
+
+How much space will encoding with this Huffman tree save us?
+
+  - The message is 33 characters long, so if we stored it in the
+    conventional way, 8 bits/character, it would take 8 × 33 = **264 bits**.
+
+  - The message uses 17 different symbols, which means that 5 bits per
+    symbol is sufficient for a block code. (Five bits lets us encode 32
+    different cases.) So at that rate, it would take 5 × 33 = **165 bits**.
+
+  - To determine the number of bits required by the Huffman code, we can
+    add up the weights of all the nodes except the root. (Can you see
+    why? The weight on each node tells us how many times we will pass
+    through that node while encoding the message...) Using the Huffman
+    code, our message requires **128 bits**.
+
+Of course, this doesn't include the overhead of transmitting the Huffman
+tree itself, which is necessary to decode the message. In a real system,
+we would need to communicate that information somehow, by encoding
+either a representation of the tree itself or the frequency table so
+that the decoder can rebuild the tree. Thus, for a short enough message,
+the header overhead may overwhelm any savings due to the encoding.
