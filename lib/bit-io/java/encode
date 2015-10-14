@@ -1,6 +1,6 @@
 #!/bin/sh
 
-CLASSPATH="out/production/bit_io:$CLASSPATH"
+CLASSPATH="out/production/bit_io:target/classes:$CLASSPATH"
 export CLASSPATH
 
 java eecs214.huffman.Encode "$*"
