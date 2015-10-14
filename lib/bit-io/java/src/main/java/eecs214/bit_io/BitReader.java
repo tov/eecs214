@@ -26,11 +26,12 @@ public final class BitReader implements Closeable {
 
   public boolean isEof() throws IOException {
     refill();
-    return nBits != 0;
+    return nBits == 0;
   }
 
   public boolean readBit() throws IOException {
-    if (isEof()) {
+    refill();
+    if (nBits == 0) {
       throw new EOFException();
     }
 
