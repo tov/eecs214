@@ -4,7 +4,12 @@ default: css upload
 
 upload:
 	chmod -R a+rX .
-	rsync -avz --exclude '.*' --progress . $(REMOTE)
+	rsync -avz --progress --delete \
+		--exclude '.*' \
+		--exclude '*.class' \
+		--exclude '*.o' \
+		--exclude '*.pyc' \
+		. $(REMOTE)
 
 css:
 	make -C lib
