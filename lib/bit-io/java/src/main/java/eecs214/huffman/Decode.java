@@ -26,7 +26,7 @@ public final class Decode {
   }
 
   private static void usage() {
-    System.err.printf("Usage: java Encode.class INFILE OUTFILE");
+    System.err.printf("Usage: java Encode.class INFILE OUTFILE%n");
     System.exit(2);
   }
 }
