@@ -1,6 +1,6 @@
 # CS 214 Homework 1: Huffman Coding
 
-  - Due 11:59 PM on Wednesday, October 28<sup>[‡](#fine-print)</sup>
+  - Due: Friday, October 24 at 5:00 PM<sup>[‡](#fine-print)</sup>
 
   - May optionally be completed with one partner of your choosing
 
