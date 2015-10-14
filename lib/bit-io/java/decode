@@ -1,0 +1,6 @@
+#!/bin/sh
+
+CLASSPATH="out/production/bit_io:$CLASSPATH"
+export CLASSPATH
+
+java eecs214.huffman.Decode "$*"
