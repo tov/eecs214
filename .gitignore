@@ -6,3 +6,6 @@
 *.class
 *.jar
 *.pyc
+
+# Mac desktop settings
+.DS_Store

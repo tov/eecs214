@@ -1,12 +1,28 @@
 CFLAGS = -pedantic --std=c11 -W -Wall
 CC     = cc $(CFLAGS)
 
-CXXFLAGS = -W -Wall -std=c++14
-CXX    = c++ $(CXXFLAGS)
+CLEAN  = encode decode *.o *.7 *.8
 
-bit_io.o: bit_io.c bit_io.h Makefile
-	$(CC) -c $<
+all: encode decode
 
-#bit_io.o: bit_io.cpp bit_io.hpp Makefile
-#	$(CXX) -c $<
+encode: encode.o bit_io.o
+	$(CC) -o $@ $^
+
+decode: decode.o bit_io.o
+	$(CC) -o $@ $^
+
+encode.o: bit_io.h
+decode.o: bit_io.h
+
+clean:
+	$(RM) $(CLEAN)
+
+%.c.7: %.c encode
+	./encode $< $@
+
+%.8: %.7 decode
+	./decode $< $@
+
+test: encode.c.8
+	diff encode.c encode.c.8
 
