@@ -45,7 +45,7 @@ public final class BitWriter implements Closeable {
   private byte nBits = 0;
 
   public void writeBits(long b, int n) throws IOException {
-    while (--n >= 0) {
+    while (n-- > 0) {
       writeBit((b & 1 << n) != 0);
     }
   }

@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.EOFException;
+import java.io.IOException;
 import java.io.InputStream;
 
 import static org.junit.Assert.*;
@@ -12,65 +13,85 @@ import static org.junit.Assert.*;
  *
  */
 public class BitReaderTest {
-  @Test
-  public void testNextBit() throws Exception {
-    BitReader b = new BitReader(bytes(0x0F, 0x73));
-
-    assertFalse(b.readBit());
-    assertFalse(b.readBit());
-    assertFalse(b.readBit());
-    assertFalse(b.readBit());
-
-    assertTrue(b.readBit());
-    assertTrue(b.readBit());
-    assertTrue(b.readBit());
-    assertTrue(b.readBit());
-
-    assertFalse(b.readBit());
-    assertTrue(b.readBit());
-    assertTrue(b.readBit());
-    assertTrue(b.readBit());
-
-    assertFalse(b.readBit());
-    assertFalse(b.readBit());
-    assertTrue(b.readBit());
-    assertTrue(b.readBit());
-  }
+  BitReader b = new BitReader(bytes(0x0F, 0x73));
 
   @Test
-  public void testReadBits() throws Exception {
-    BitReader b = new BitReader(bytes(0x0F, 0x73));
+  public void nextBitReadsBits() throws Exception {
+    assertFalse(b.readBit());
+    assertFalse(b.readBit());
+    assertFalse(b.readBit());
+    assertFalse(b.readBit());
 
-    assertEquals(b.readBits(4), 0);
-    assertEquals(b.readBits(3), 7);
-    assertEquals(b.readBits(4), 11);
-    assertEquals(b.readBits(2), 2);
-    assertEquals(b.readBits(3), 3);
-  }
+    assertTrue(b.readBit());
+    assertTrue(b.readBit());
+    assertTrue(b.readBit());
+    assertTrue(b.readBit());
 
+    assertFalse(b.readBit());
+    assertTrue(b.readBit());
+    assertTrue(b.readBit());
+    assertTrue(b.readBit());
 
-  @Test(expected = EOFException.class)
-  public void testReadBits_exn() throws Exception {
-    BitReader b = new BitReader(bytes(0x0F, 0x73));
-
-    assertEquals(b.readBits(4), 0);
-    assertEquals(b.readBits(3), 7);
-    assertEquals(b.readBits(4), 11);
-    assertEquals(b.readBits(2), 2);
-    assertEquals(b.readBits(3), 3);
-    assertEquals(b.readBits(3), 3);
+    assertFalse(b.readBit());
+    assertFalse(b.readBit());
+    assertTrue(b.readBit());
+    assertTrue(b.readBit());
   }
 
   @Test(expected = EOFException.class)
-  public void testReadBits_exn_unaligned() throws Exception {
-    BitReader b = new BitReader(bytes(0x0F, 0x73));
+  public void nextBitThrowsOnEof() throws Exception {
+    for (int i = 0; i < 17; ++i) {
+      b.readBit();
+    }
+  }
 
+  @Test
+  public void isEofReturnsFalse() throws IOException {
+    assertFalse(b.isEof());
+    b.readBit(); // new
+    assertFalse(b.isEof());
+    b.readBits(6); // pre-aligned
+    assertFalse(b.isEof());
+    b.readBit(); // aligned
+    assertFalse(b.isEof());
+    b.readBit(); // post-aligned
+    assertFalse(b.isEof());
+    b.readBits(6); // pre-eof
+  }
+
+  @Test
+  public void isEofReturnsTrue() throws IOException {
+    b.readBits(16);
+    assertTrue(b.isEof());
+  }
+
+  @Test
+  public void readBitsReadsBits() throws Exception {
     assertEquals(b.readBits(4), 0);
     assertEquals(b.readBits(3), 7);
     assertEquals(b.readBits(4), 11);
     assertEquals(b.readBits(2), 2);
-    assertEquals(b.readBits(2), 1);
-    assertEquals(b.readBits(2), 2);
+    assertEquals(b.readBits(3), 3);
+  }
+
+  @Test(expected = EOFException.class)
+  public void readBitsThrowsAtEof() throws Exception {
+    assertEquals(b.readBits(4), 0); // 4
+    assertEquals(b.readBits(3), 7); // 7
+    assertEquals(b.readBits(4), 11); // 11
+    assertEquals(b.readBits(2), 2); // 13
+    assertEquals(b.readBits(3), 3); // 16
+    assertEquals(b.readBits(3), 3); // oops!
+  }
+
+  @Test(expected = EOFException.class)
+  public void readBitsThrowsAcrossEof() throws Exception {
+    assertEquals(b.readBits(4), 0); // 4
+    assertEquals(b.readBits(3), 7); // 3
+    assertEquals(b.readBits(4), 11); // 11
+    assertEquals(b.readBits(2), 2); // 13
+    assertEquals(b.readBits(2), 1); // 15
+    assertEquals(b.readBits(2), 2); // oops!
   }
 
   static InputStream bytes(int... ints) {
