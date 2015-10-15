@@ -102,7 +102,7 @@ compile`; otherwise use your IDE’s build facility. The example programs
 are the classes `eecs214.huffman.Decode` and `eecs214.huffman.Encode`.
 
 API documentation for the bit IO library is
-[here](../../lib/bit-io/java/doc/).
+[here](http://users.eecs.northwestern.edu/~jesse/course/eecs214/lib/bit-io/java/doc/).
 
 ### Python
 
