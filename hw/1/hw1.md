@@ -68,27 +68,43 @@ The starter code for each language includes a version of `encode`
 that---rather than Huffman coding---compresses an ASCII text file to 7/8
 of its original size using a simple block code. The next section
 discusses details of how that works, but first we will consider how to
-build, if necessary, and run the code in each language:
+build, if necessary, and run the code in each language. Try it out and
+make sure you can get it to work.
 
 ### C
 
-TODO.
+If you have Make, you should be able to build `encode` and `decode` by
+running `make`, and you should be able to run a simple test by running
+`make test`. Otherwise, you can build `encode` by compiling `bit_io.c`
+and `encode.c`, and you can build `decode` by compiling `bit_io.c` and
+`decode.c`.
 
 ### C++
 
-TODO.
+If you have Make, you should be able to build `encode` and `decode` by
+running `make`, and you should be able to run a simple test by running
+`make test`. Otherwise, you can build `encode` by compiling `bit_io.cpp`
+and `encode.cpp`, and you can build `decode` by compiling `bit_io.cpp`
+and `decode.cpp`.
 
 ### Java
 
-TODO.
+The Java code includes configuration information to build it with Maven
+or IntelliJ IDEA, though any Java IDE should be able to figure out how
+to build it. If you have Maven, you can build the Java code with `mvn
+compile`; otherwise use your IDE’s build facility. The example programs
+are the classes `eecs214.huffman.Decode` and `eecs214.huffman.Encode`.
 
 ### Python
 
-TODO.
+You should be able to run `encode.py` and `decode.py` directly if you
+have Python installed.
 
 ### Ruby
 
-TODO.
+You should be able to run `encode.rb` and `decode.rb` directly if you
+have Ruby installed.
+
 
 ## Warmup: ASCII block code
 
