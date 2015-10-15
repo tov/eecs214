@@ -79,6 +79,9 @@ running `make`, and you should be able to run a simple test by running
 and `encode.c`, and you can build `decode` by compiling `bit_io.c` and
 `decode.c`.
 
+API documentation for the bit IO library is [in the C header
+file](https://github.com/tov/eecs214/blob/master/lib/bit-io/c/bit_io.h).
+
 ### C++
 
 If you have Make, you should be able to build `encode` and `decode` by
@@ -87,6 +90,9 @@ running `make`, and you should be able to run a simple test by running
 and `encode.cpp`, and you can build `decode` by compiling `bit_io.cpp`
 and `decode.cpp`.
 
+API documentation for the bit IO library is [in the C++ header
+file](https://github.com/tov/eecs214/blob/master/lib/bit-io/cpp/bit_io.hpp).
+
 ### Java
 
 The Java code includes configuration information to build it with Maven
@@ -94,6 +100,9 @@ or IntelliJ IDEA, though any Java IDE should be able to figure out how
 to build it. If you have Maven, you can build the Java code with `mvn
 compile`; otherwise use your IDE’s build facility. The example programs
 are the classes `eecs214.huffman.Decode` and `eecs214.huffman.Encode`.
+
+API documentation for the bit IO library is
+[here](../../lib/bit-io/java/doc/).
 
 ### Python
 
