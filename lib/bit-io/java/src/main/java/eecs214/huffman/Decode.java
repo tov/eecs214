@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- *
+ * Sample program: the inverse of {@link Encode}. Reads a text file in
+ * packed, 7-bit ASCII and outputs it in the usual one-character-per-byte
+ * ASCII form.
  */
 public final class Decode {
   public static void main(String[] args) throws IOException {

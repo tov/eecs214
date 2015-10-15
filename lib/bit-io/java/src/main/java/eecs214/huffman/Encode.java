@@ -7,7 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- *
+ * Sample program: encodes ASCII as a 7-bit block code, shrinking text files
+ * by one-eight. Loses non-ASCII characters.
  */
 public final class Encode {
   public static void main(String[] args) throws IOException {
