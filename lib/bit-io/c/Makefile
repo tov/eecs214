@@ -1,9 +1,31 @@
+# The list of executables to build when typing just `make`:
+BUILD = encode decode
+
+# C source and header files that `huff` depends on:
+HUFF_SRC = huff.c bit_io.c
+HUFF_INC = bit_io.h
+
+# C source and header files that `puff` depends on:
+PUFF_SRC = puff.c bit_io.c
+PUFF_INC = bit_io.h
+
+###
+### You shouldn't need to modify anything below this line unless you
+### are tinkering or trying to learn Make.
+###
+
 CFLAGS = -pedantic --std=c11 -W -Wall
 CC     = cc $(CFLAGS)
 
-CLEAN  = encode decode *.o *.7 *.8
+CLEAN  = $(BUILD) *.o *.7 *.8
 
-all: encode decode
+all: $(BUILD)
+
+huff: $(HUFF_SRC:.c=.o)
+	$(CC) -o $@ $^
+
+puff: $(PUFF_SRC:.c=.o)
+	$(CC) -o $@ $^
 
 encode: encode.o bit_io.o
 	$(CC) -o $@ $^
