@@ -109,6 +109,9 @@ API documentation for the bit IO library is
 You should be able to run `encode.py` and `decode.py` directly if you
 have Python installed.
 
+API documentation for the bit IO library is
+[here](http://users.eecs.northwestern.edu/~jesse/course/eecs214/lib/bit-io/python/bit_io.m.html).
+
 ### Ruby
 
 You should be able to run `encode.rb` and `decode.rb` directly if you
