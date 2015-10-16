@@ -117,6 +117,7 @@ API documentation for the bit IO library is
 You should be able to run `encode.rb` and `decode.rb` directly if you
 have Ruby installed.
 
+API documentation for the bit IO library is
 [here](http://users.eecs.northwestern.edu/~jesse/course/eecs214/lib/bit-io/ruby/doc/BitIO.html).
 
 ## Warmup: ASCII block code
