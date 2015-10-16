@@ -64,8 +64,8 @@ namespace eecs214 {
         //
         // Example:
         //
-        //      bool b;
-        //      bif.read(b);
+        //      int result;
+        //      bif.read(result, 5); // reads 5 bits into result
         //
         template <class T>
         bifstream& read_bits(T& result, size_t n);
