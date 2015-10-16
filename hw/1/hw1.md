@@ -171,10 +171,10 @@ Consider the following questions, and feel free to discuss on Piazza:
     byte added, and why?
 
   - Can you think of a way to fix the problem? Assume that you are
-    allowed to change the file format used by `encode` and `decode` in a
-    way that adds a *constant* number of bits to the encoded file; (That
-    is, the number of bits added should not depend on the original file
-    size.)
+    allowed to change the file format used by `encode` and `decode` so
+    that the number of bits added to the encoded file is *bounded by a
+    constant*. (That is, the number of bits added should not depend on
+    the original file size.)
 
     Can you think of a fix that works even if the file is
     streaming? That is, suppose that you cannot see the whole file at
