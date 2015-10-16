@@ -236,23 +236,79 @@ necessarily match that of other students.
 
 ### C
 
-TODO.
+Your programs should be named `huff` and `puff`, and should be written
+in [standard C](https://en.wikipedia.org/wiki/C11_(C_standard_revision))
+that compiles with no warnings. You may use any features of the C
+language and standard library that you please, but no other libraries.
+
+The process for building is configured
+by the first few lines of the `Makefile`:
+
+  - `BUILD`: The list of executables to build when running `make`;
+    initially `encode` and `decode`.
+
+  - `HUFF_SRC`/`PUFF_SRC`: C source files to be compiled into
+    `huff`/`puff`
+
+  - `HUFF_INC`/`PUFF_INC`: C header that are included by
+    `huff.c`/`puff.c` or one of its dependencies
+
+You will need to change the first of these to build `huff` and `puff`
+once you have code for them to build. You will need to change the others
+only if you split your program into additional source files.
 
 ### C++
 
-TODO.
+Your programs should be named `huff` and `puff`, and should be written
+in [standard C++](https://en.wikipedia.org/wiki/C%2B%2B14)
+that compiles with no warnings. You may use:
+
+  - all built-in features of the language that do not require an `#include`,
+  - the C++ versions of standard C headers such as `cstring` and `cstdlib`,
+  - the STL `string` header,
+  - STL I/O streams, and
+  - STL smart pointers `unique_ptr` and `shared_ptr`.
+
+You *may not use* any STL containers or algorithms, such as `vector` or
+`find`.
+
+The process for building is configured
+by the first few lines of the `Makefile`:
+
+  - `BUILD`: The list of executables to build when running `make`;
+    initially `encode` and `decode`.
+
+  - `HUFF_SRC`/`PUFF_SRC`: C source files to be compiled into
+    `huff`/`puff`
+
+  - `HUFF_INC`/`PUFF_INC`: C header that are included by
+    `huff.c`/`puff.c` or one of its dependencies
+
+You will need to change the first of these to build `huff` and `puff`
+once you have code for them to build. You will need to change the others
+only if you split your program into additional source files.
 
 ### Java
 
-TODO.
+Your classes should be named `eecs214.huffman.Huff` and
+`eecs214.huffman.Puff`, and may be written with Java 8 (the current
+version). I suggest using the newest version of Oracle's [Java Platform
+(JDK)
+SE](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+
+You may use the `java.lang` hierarchy, except for `StringBuffer` and
+`StringBuilder`. You may not use anything from the `java.util`
+hierarchy, which is where the Java library's containers live.
 
 ### Python
 
-TODO.
+Your programs should be named `huff.py` and `puff.py`, and should run
+on Python 2.7.x.
 
 ### Ruby
 
-TODO.
+Your programs should be named `huff.rb` and `puff.rb`, and should run on
+Ruby 2.x.
 
 ## Deliverables
 
