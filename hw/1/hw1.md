@@ -294,30 +294,35 @@ Your classes should be named `eecs214.huffman.Huff` and
 `eecs214.huffman.Puff`, and may be written with Java 8 (the current
 version). I suggest using the newest version of Oracle's [Java Platform
 (JDK)
-SE](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+SE](http://www.oracle.com/technetwork/java/javase/downloads/index.html).
 
-You may use the `java.lang` hierarchy, except for `StringBuffer` and
-`StringBuilder`. You may not use anything from the `java.util`
-hierarchy, which is where the Java library's containers live.
+You may use arrays, classes you write yourself, and the `java.lang`
+hierarchy, except for `StringBuffer` and `StringBuilder`. You may not
+use anything from the `java.util` hierarchy, which is where the Java
+standard library's containers live.
 
 ### Python
 
 Your programs should be named `huff.py` and `puff.py`, and should run on
-Python 2.7.x. You may use `list`, `str`, the numeric and boolean types,
-I/O (for reading and writing files), and any classes you write yourself;
-neither other classes from the standard library nor any external
-libraries are permitted. (If there’s something else you need, ask on
-Piazza and I’ll consider adding it to the list.)
+Python 2.7.x.
+
+You may use `list`, `str`, the numeric and boolean types, I/O (for
+reading and writing files), and any classes you write yourself; neither
+other classes from the standard library nor any external libraries are
+permitted. (If there’s something else you need, ask on Piazza and I’ll
+consider adding it to the list.)
 
 
 ### Ruby
 
 Your programs should be named `huff.rb` and `puff.rb`, and should run on
-Ruby 2.x. You may use `Array`, `String`, the numeric and boolean
-classes, I/O classes (such as `File`), and any classes you write
-yourself; neither other classes from the standard library nor any
-external libraries are permitted. (If there’s something else you need,
-ask on Piazza and I’ll consider adding it to the list.)
+Ruby 2.x.
+
+You may use `Array`, `String`, the numeric and boolean classes, I/O
+classes (such as `File`), and any classes you write yourself; neither
+other classes from the standard library nor any external libraries are
+permitted. (If there’s something else you need, ask on Piazza and I’ll
+consider adding it to the list.)
 
 ## Deliverables
 
