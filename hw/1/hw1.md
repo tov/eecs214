@@ -302,13 +302,22 @@ hierarchy, which is where the Java library's containers live.
 
 ### Python
 
-Your programs should be named `huff.py` and `puff.py`, and should run
-on Python 2.7.x.
+Your programs should be named `huff.py` and `puff.py`, and should run on
+Python 2.7.x. You may use `list`, `str`, the numeric and boolean types,
+I/O (for reading and writing files), and any classes you write yourself;
+neither other classes from the standard library nor any external
+libraries are permitted. (If there’s something else you need, ask on
+Piazza and I’ll consider adding it to the list.)
+
 
 ### Ruby
 
 Your programs should be named `huff.rb` and `puff.rb`, and should run on
-Ruby 2.x.
+Ruby 2.x. You may use `Array`, `String`, the numeric and boolean
+classes, I/O classes (such as `File`), and any classes you write
+yourself; neither other classes from the standard library nor any
+external libraries are permitted. (If there’s something else you need,
+ask on Piazza and I’ll consider adding it to the list.)
 
 ## Deliverables
 
