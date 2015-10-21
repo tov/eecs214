@@ -14,7 +14,7 @@ PUFF_INC = bit_io.hpp
 ### are tinkering or trying to learn Make.
 ###
 
-CXXFLAGS = -W -Wall -std=c++14
+CXXFLAGS = -W -Wall -std=c++11
 CXX      = c++ $(CXXFLAGS)
 
 CLEAN  = $(BUILD) *.o *.7 *.8
