@@ -1,5 +1,11 @@
-test: bit_io.py bit_io.py.8
-	diff $^
+TESTFILES = bit_io.py encode.py
+
+DIFFS = $(TESTFILES:=.diff)
+
+test: $(DIFFS)
+
+%.diff: % %.8
+	diff $^ | tee $@
 
 doc: bit_io.m.html
 
@@ -12,3 +18,8 @@ doc: bit_io.m.html
 %.m.html: %.py
 	$(RM) $@
 	pdoc --html $<
+
+CLEAN = *.diff *.7 *.8 *.pyc
+
+clean:
+	$(RM) $(CLEAN)
