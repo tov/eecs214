@@ -18,7 +18,7 @@ PUFF_INC = bit_io.hpp
 ###
 
 CXXFLAGS = -W -Wall -std=c++11
-CXX      = c++ $(CXXFLAGS)
+LINK.o = $(CXX)
 
 ENCODE_SRC = encode.cpp bit_io.cpp
 ENCODE_INC = bit_io.hpp common.hpp
@@ -31,19 +31,9 @@ CLEAN  = $(BUILD) *.o *.7 *.8 *.huff *.puff .*.passed .*.ex_passed
 all: $(BUILD)
 
 huff: $(HUFF_SRC:.cpp=.o)
-	$(CXX) -o $@ $^
-
 puff: $(PUFF_SRC:.cpp=.o)
-	$(CXX) -o $@ $^
-
 encode: $(ENCODE_SRC:.cpp=.o)
-	$(CXX) -o $@ $^
-
 decode: $(DECODE_SRC:.cpp=.o)
-	$(CXX) -o $@ $^
-
-%.o: %.cpp
-	$(CXX) -c $<
 
 encode.o: encode.cpp $(ENCODE_INC)
 decode.o: decode.cpp $(DECODE_INC)
