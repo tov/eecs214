@@ -1,4 +1,11 @@
+huff
+puff
 encode
 decode
+*.o
+*.huff
+*.puff
 *.7
 *.8
+.*.passed
+.*.ex_passed
