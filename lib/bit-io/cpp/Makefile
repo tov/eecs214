@@ -1,3 +1,6 @@
+# The files to test the program on:
+TESTFILES = bit_io.cpp
+
 # The list of executables to build when typing just `make`:
 BUILD = encode decode
 
@@ -17,36 +20,58 @@ PUFF_INC = bit_io.hpp
 CXXFLAGS = -W -Wall -std=c++11
 CXX      = c++ $(CXXFLAGS)
 
-CLEAN  = $(BUILD) *.o *.7 *.8
+ENCODE_SRC = encode.cpp bit_io.cpp
+ENCODE_INC = bit_io.hpp common.hpp
+
+DECODE_SRC = decode.cpp bit_io.cpp
+DECODE_INC = bit_io.hpp common.hpp
+
+CLEAN  = $(BUILD) *.o *.7 *.8 *.huff *.puff .*.passed .*.ex_passed
 
 all: $(BUILD)
 
 huff: $(HUFF_SRC:.cpp=.o)
 	$(CXX) -o $@ $^
 
-puff: $(HUFF_SRC:.cpp=.o)
+puff: $(PUFF_SRC:.cpp=.o)
 	$(CXX) -o $@ $^
 
-encode: encode.o bit_io.o
+encode: $(ENCODE_SRC:.cpp=.o)
 	$(CXX) -o $@ $^
 
-decode: decode.o bit_io.o
+decode: $(DECODE_SRC:.cpp=.o)
 	$(CXX) -o $@ $^
 
-encode.o: bit_io.hpp common.hpp
-decode.o: bit_io.hpp common.hpp
-huff.o: bit_io.hpp
-puff.o: bit_io.hpp
+%.o: %.cpp
+	$(CXX) -c $<
+
+encode.o: encode.cpp $(ENCODE_INC)
+decode.o: decode.cpp $(DECODE_INC)
+huff.o: huff.cpp $(HUFF_INC)
+puff.o: puff.cpp $(PUFF_INC)
 
 clean:
 	$(RM) $(CLEAN)
 
-%.cpp.7: %.cpp encode
+test: $(TESTFILES:%=.%.passed)
+
+ex_test: $(TESTFILES:%=.%.ex_passed)
+
+.%.ex_passed: % %.8
+	( diff $^ || cmp $^ ) && touch $@
+
+.%.passed: % %.puff
+	( diff $^ || cmp $^ ) && touch $@
+
+%.7: % encode
 	./encode $< $@
 
 %.8: %.7 decode
 	./decode $< $@
 
-test: encode.cpp.8
-	diff encode.cpp encode.cpp.8
+%.huff: % huff
+	./huff $< $@
+
+%.puff: %.huff puff
+	./puff $< $@
 
