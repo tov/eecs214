@@ -7,10 +7,11 @@ if ARGV.length != 2 then
   exit 2
 end
 
-File.open(ARGV[0], 'r') do |input|
+File.open(ARGV[0], 'rb') do |input|
   BitIO::BitWriter.open(ARGV[1]) do |output|
     until input.eof? do
       output.writebits(input.readbyte, 7)
     end
   end
 end
+

@@ -8,7 +8,7 @@ if ARGV.length != 2 then
 end
 
 BitIO::BitReader.open(ARGV[0]) do |input|
-  File.open(ARGV[1], 'w') do |output|
+  File.open(ARGV[1], 'wb') do |output|
     begin
       loop do
         output.write(input.readbits(7).chr)
