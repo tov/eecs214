@@ -1,9 +1,6 @@
 # The files to test the program on:
 TESTFILES = bit_io.cpp
 
-# The list of executables to build when typing just `make`:
-BUILD = encode decode
-
 # C++ source and header files that `huff` depends on:
 HUFF_SRC = huff.cpp bit_io.cpp
 HUFF_INC = bit_io.hpp
@@ -17,6 +14,9 @@ PUFF_INC = bit_io.hpp
 ### are tinkering or trying to learn Make.
 ###
 
+BUILD = huff puff
+EX_BUILD = encode decode
+
 CXXFLAGS = -W -Wall -std=c++11
 LINK.o = $(CXX)
 
@@ -26,9 +26,11 @@ ENCODE_INC = bit_io.hpp common.hpp
 DECODE_SRC = decode.cpp bit_io.cpp
 DECODE_INC = bit_io.hpp common.hpp
 
-CLEAN  = $(BUILD) *.o *.7 *.8 *.huff *.puff .*.passed .*.ex_passed
+CLEAN       = $(BUILD) $(EX_BUILD) \
+              *.o *.7 *.8 *.huff *.puff .*.passed .*.ex_passed
 
 all: $(BUILD)
+example examples: $(EX_BUILD)
 
 huff: $(HUFF_SRC:.cpp=.o)
 puff: $(PUFF_SRC:.cpp=.o)
