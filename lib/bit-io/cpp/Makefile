@@ -42,11 +42,7 @@ decode.o: decode.cpp $(DECODE_INC)
 huff.o: huff.cpp $(HUFF_INC)
 puff.o: puff.cpp $(PUFF_INC)
 
-clean:
-	$(RM) $(CLEAN)
-
 test: $(TESTFILES:%=.%.passed)
-
 ex_test: $(TESTFILES:%=.%.ex_passed)
 
 .%.ex_passed: % %.8
@@ -67,3 +63,7 @@ ex_test: $(TESTFILES:%=.%.ex_passed)
 %.puff: %.huff puff
 	./puff $< $@
 
+clean:
+	$(RM) $(CLEAN)
+
+.PRECIOUS: %.7 %.8 %.huff %.puff

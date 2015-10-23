@@ -64,3 +64,5 @@ ex_test: $(TESTFILES:%=.%.ex_passed)
 
 clean:
 	$(RM) $(CLEAN)
+
+.PRECIOUS: %.7 %.8 %.huff %.puff
