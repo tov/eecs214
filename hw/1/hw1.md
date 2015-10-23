@@ -261,11 +261,11 @@ in [standard C](https://en.wikipedia.org/wiki/C11_(C_standard_revision))
 that compiles with no warnings. You may use any features of the C
 language and standard library that you please, but no other libraries.
 
-The process for building is configured
-by the first few lines of the `Makefile`:
+The process for building is configured by the first few lines of the
+`Makefile`:
 
-  - `BUILD`: The list of executables to build when running `make`;
-    initially `encode` and `decode`.
+  - `TESTFILES`: A list of files to try compressing and decompressing
+    to test your code.
 
   - `HUFF_SRC`/`PUFF_SRC`: C source files to be compiled into
     `huff`/`puff`
@@ -273,9 +273,9 @@ by the first few lines of the `Makefile`:
   - `HUFF_INC`/`PUFF_INC`: C header that are included by
     `huff.c`/`puff.c` or one of its dependencies
 
-You will need to change the first of these to build `huff` and `puff`
-once you have code for them to build. You will need to change the others
-only if you split your program into additional source files.
+You should change the first of these in order to test your programs on
+more cases. You will need to change the others only if you split your
+program into additional source files.
 
 ### C++
 
@@ -292,21 +292,21 @@ that compiles with no warnings. You may use:
 You *may not use* any STL containers or algorithms, such as `vector` or
 `find`.
 
-The process for building is configured
-by the first few lines of the `Makefile`:
+The process for building is configured by the first few lines of the
+`Makefile`:
 
-  - `BUILD`: The list of executables to build when running `make`;
-    initially `encode` and `decode`.
+  - `TESTFILES`: A list of files to try compressing and decompressing
+    to test your code.
 
-  - `HUFF_SRC`/`PUFF_SRC`: C source files to be compiled into
+  - `HUFF_SRC`/`PUFF_SRC`: C++ source files to be compiled into
     `huff`/`puff`
 
-  - `HUFF_INC`/`PUFF_INC`: C header that are included by
-    `huff.c`/`puff.c` or one of its dependencies
+  - `HUFF_INC`/`PUFF_INC`: C++ header that are included by
+    `huff.cpp`/`puff.cpp` or one of its dependencies
 
-You will need to change the first of these to build `huff` and `puff`
-once you have code for them to build. You will need to change the others
-only if you split your program into additional source files.
+You should change the first of these in order to test your programs on
+more cases. You will need to change the others only if you split your
+program into additional source files.
 
 ### Java
 
