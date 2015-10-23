@@ -135,24 +135,44 @@ block code.
 Given ASCII text (rather than, say, Latin-1), we can avoid storing each
 byte's high bit using a 7-bit code word, and pack them into bytes. For
 example, the string “ABCDEFGH” is represented in ASCII using 8 bytes,
-which we can write out in binary like so:
+one for each character, with the values 65, 66, 67, 68, 69, 70, 71, and
+72. We can write these bytes out in binary like so:
 
 ```
 01000001 01000010 01000011 01000100 01000101 01000110 01000111 01001000
 ```
 
-Because ASCII does not use the high bit, the first bit in each octet is
-0. Since it will never be 1, we don't need to represent it:
+Because ASCII does not use the high (*i.e.,* leftmost) bit of each byte,
+the first bit in each byte is 0. Since it will never be 1, we don't need
+to represent it and can leave it out:
 
 ```
 1000001 1000010 1000011 1000100 1000101 1000110 1000111 1001000
 ```
 
-We can then “pack” the eight 7-bit code words above by regrouping the
-bits back into octets:
+Bits in files are grouped into bytes, which means that to store this
+sequence of 56 bits without wasting bits, we’ll have to store it not as
+eight groups of seven but as seven groups of eight. That is, we pack the
+bits into bytes:
 
 ```
 10000011 00001010 00011100 01001000 10110001 10100011 11001000
+```
+
+The decimal values of these seven bytes are 131, 10, 28, 72, 177, 162,
+and 200. Only 10, 28, and 72 (the three bytes whose high bit is 0)
+represent characters in ASCII: the newline, a legacy [control
+code](https://en.wikipedia.org/wiki/Control_character) called “FS,” and
+the letter `H`. Were we to open a file with these seven bytes in a text
+editor, it might interpret them in one of myriad [extensions of
+ASCII](https://en.wikipedia.org/wiki/Extended_ASCII) that uses the high
+bit to include additional characters. In the most common such extension,
+[Latin 1](https://en.wikipedia.org/wiki/ISO/IEC_8859-1), those seven
+bytes might appear in a text editor like so:
+
+```
+�
+H¢±È
 ```
 
 The program `encode` converts from the ordinary 8-bit format to the
