@@ -378,7 +378,15 @@ You will be graded on:
 
 ## How to submit
 
-TBD
+Please submit your README and whatever source files are needed to build
+or run your project to the “hw1” assignment on Canvas. If you worked
+with a partner, you should first create a group in the “hw1 partners”
+group set, and then submit from that group.
+
+You do not need to submit starter code that you haven’t modified. If you
+use C or C++ and you create files other than huff.c(pp) and puff.c(pp),
+please mention in the README which files get built into which
+executable.
 
 ## Fine print
 
