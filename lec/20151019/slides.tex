@@ -1,0 +1,403 @@
+\documentclass{beamer}
+
+\RequirePackage{ucs}
+\usepackage[quiet]{fontspec}
+\usepackage{xunicode}
+\usepackage{xltxtra}
+\usepackage{graphicx}
+%\usepackage{forloop}
+\usepackage{stmaryrd}
+\usepackage{tikz}
+%\usepackage{mathtools}
+\usepackage{fancyvrb}
+\usepackage{amsmath,amssymb,amsthm}
+
+\usetikzlibrary{chains,decorations.pathmorphing,positioning,fit}
+\usetikzlibrary{decorations.shapes,calc,backgrounds}
+\usetikzlibrary{decorations.text,matrix}
+\usetikzlibrary{arrows,shapes.geometric,shapes.symbols,scopes}
+
+\newcommand\bigO[1]{\ensuremath{\mathcal{O}(#1)}}
+\newcommand\fun[1]{\ensuremath{\lambda #1.\,}}
+\renewcommand\T[1]{\ensuremath{T_{\mathit{#1}}}}
+
+%% %%% SETTINGS
+
+\frenchspacing
+\unitlength=0.01\textwidth
+\thicklines
+\urlstyle{sf}
+\graphicspath{{images/}}
+
+%%% VERBATIM SETUP
+
+\let\super^\relax
+\DefineVerbatimEnvironment
+  {code}{Verbatim}
+  {commandchars=\\\‹\›,
+   commentchar=\%,
+   codes={\catcode`$=3\relax},
+   baselinestretch=.8,
+   formatcom=\relax}
+\renewcommand\FancyVerbFormatLine[1]{#1\strut}
+\fvset{commandchars=\\\‹\›,
+       codes={\catcode`$=3\relax},
+       formatcom=\relax}
+\DefineShortVerb{\^}
+
+\newcommand\ALT[3]{\alt<#1>{#2}{#3}}
+
+%%% COLOR AND BEAMER SETUP
+
+\setbeamercolor{frametitle}{fg=black}
+\setbeamercolor{normal text}{fg=black}
+
+\defaultfontfeatures{
+    Mapping=tex-text,
+    Scale=MatchLowercase,
+}
+\setmainfont{TeX Gyre Schola}
+\setmonofont{Monaco}
+
+\usefonttheme{serif}
+
+\setbeamertemplate{frametitle}
+  {\begin{centering}\medskip
+   \insertframetitle\par
+   \end{centering}}
+
+\setbeamertemplate{itemize item}{$\bullet$}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[text line]{%
+    \hfill\strut{%
+        \small\color{black!75}%
+        \texttt{\insertframenumber:\insertframeslidenumber}%
+    }%
+    \hfill%
+}
+
+\makeatletter
+\newcount\frameslidetemp
+\newcommand\insertframeslidenumber{%
+  \frameslidetemp\c@page\relax
+  \advance\frameslidetemp-\beamer@startpageofframe\relax
+  \advance\frameslidetemp1\relax
+  \the\frameslidetemp
+}
+\makeatother
+
+%%% GENERALLY USEFUL MACROS
+
+\newcommand<>\always[1]{#1}
+
+%%%
+%%% TIKZ
+%%%
+
+\newcommand\K[1]{\textcolor{orange!70!black}{#1}}
+\newcommand\REF{\textcolor{green!50!black}{ref}}
+
+\newcommand\place[3][]{%
+  \tikz[orp] \node[#1] at (#2) {#3};%
+}
+
+\newcommand\anchor[1]{%
+  \tikz[orp] \coordinate (#1);%
+}
+
+\newcommand\nil[1]{
+  \draw[nil] (#1.north east) -- (#1.south west)
+}
+
+\newcommand\struct[3][]{
+    \node[cons,rem,#1] (#2) {{%
+      \def\and{%
+        \kern3pt%
+        \begin{tikzpicture}[orp]
+          \draw[thick] |- (#2.north);
+        \end{tikzpicture}%
+        \kern3pt}%
+      #3%
+    }};
+}
+
+\newcommand\cons[4][]{
+  \node[cons,#1] (#2) {#3\kern3pt\anchor{#2 center}\kern3pt#4};
+  \draw[thick] (#2 center |- #2.north) -- (#2 center |- #2.south)
+}
+
+\newcommand\genpointer[3][draw=blue!50!black,opacity=.5]{%
+  \begin{tikzpicture}[rem,solid,#1]
+    \node(pointer start) [circle, draw, inner sep=1.37pt] {};
+    \draw[->, overlay] (pointer start) edge[bend right=#2] (#3);
+  \end{tikzpicture}%
+}
+
+\newcommand\hpointer[2][30]{%
+  \genpointer[draw=red!70!black]{#1}{#2}%
+}
+
+\newcommand\ppointer[2][30]{%
+  \genpointer{#1}{#2}%
+}
+
+\newcommand\pointer[2][30]{%
+  \ifhighlit\let\pointertemp\hpointer\else\let\pointertemp\ppointer\fi
+  \pointertemp[#1]{#2}%
+}
+
+
+\newcount\reducetemp
+\newcommand\reduce[3]{%
+  \reducetemp#1\relax
+  \advance\reducetemp -1\relax
+  \alt<#1->{#3}{\alt<\the\reducetemp>{\highlight{#2}}{#2}}%
+}
+
+\tikzset{
+  orp/.style={
+    overlay,
+    remember picture,
+  },
+  rem/.style={
+    remember picture,
+  },
+  every node/.style={
+    very thick,
+    inner sep=3pt,
+  },
+  every path/.style={very thick},
+  ref/.style={
+    draw=red,
+    densely dotted,
+    font=\ttfamily,
+  },
+  cons/.style={
+    draw=black,
+    font=\ttfamily,
+  },
+  nil/.style={
+    black!80!white,
+    shorten >=2pt,
+    shorten <=2pt,
+  },
+  highlight/.style={
+    color=yellow!50!white!90!black,
+    thick,
+    draw,
+    draw opacity=0.5,
+    outer color=yellow!50,
+    inner color=yellow!30,
+    rounded corners=2pt,
+  },
+}
+
+\newif\ifhighlit
+\highlitfalse
+
+\newcommand<>\highlight[2][\relax]{%
+  \ifx#1\relax
+    \begin{tikzpicture}
+  \else
+    \begin{tikzpicture}[remember picture]
+  \fi
+    \node[
+      inner sep=0pt,
+      outer sep=0pt,
+      text depth=0pt,
+      align=left,
+    ] (highlight temp) {%
+        \only#3{\highlittrue}%
+        #2%
+        \only#3{\highlitfalse}%
+    };
+    \begin{scope}[on background layer]
+      \coordinate (highlight temp 1) at
+        ($(highlight temp.north east) + (2pt,2pt)$);
+      \coordinate (highlight temp 2) at
+        ($(highlight temp.base west) + (-2pt,-3pt)$);
+      \node#3 [
+        overlay,
+        highlight,
+        inner sep=0pt,
+        fit=(highlight temp 1) (highlight temp 2),
+      ] {};
+    \end{scope}
+    \ifx#1\relax
+      \relax
+    \else
+      \node (#1) [
+        overlay,
+        inner sep=0pt,
+        fit=(highlight temp 1) (highlight temp 2),
+      ] {};
+    \fi
+  \end{tikzpicture}%
+}
+
+\newcommand\HI[2]{\highlight<#1>{#2}}
+
+\newcommand\huncover[3][\relax]{%
+  \uncover<#2->{\highlight<#2>[#1]{#3}}%
+}
+\newcommand\honly[3][\relax]{%
+  \only<#2->{\highlight<#2>[#1]{#3}}%
+}
+
+\def\S#1#2{#2<#1>}
+
+\begin{document}
+
+%%%
+%%% TITLE PAGE
+%%%
+
+\begin{frame}\relax
+  \thispagestyle{empty}
+  \begin{center}
+  {\Huge Sequences}
+
+  \bigskip
+  \Large
+  EECS 214
+
+  \medskip
+  October 19, 2015
+  \end{center}
+
+  %% Need to initialize Tikz opacity inside a frame, not outside:
+  \begin{tikzpicture}[opacity=0,overlay]\end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]{Doubly-linked lists}
+  \begin{code}
+\K‹struct› Node<T>:
+    prev:  \REF Node<T>
+    value: T
+    next:  \REF Node<T>
+  \end{code}
+
+  \medskip
+  \begin{itemize}
+    \item<2-> Doubly-linked list:
+      \begin{itemize}
+        \item<2-> \only<3->{If \texttt{n.next}${} \ne {}$\texttt{nil} then }^n.next.prev^${} = {}$^n^
+        \item<2-> \only<3->{If \texttt{n.prev}${} \ne {}$\texttt{nil} then }^n.prev.next^${} = {}$^n^
+        \item<4-> There's some $j$ such that ^n.prev^${\,}\super j = {}$^nil^
+        \item<4-> There's some $k$ such that ^n.next^${}\super k = {}$^nil^
+      \end{itemize}
+    \item<5-> Circular doubly-linked list:
+      \begin{itemize}
+        \item ^n.next.prev^${} = {}$^n^
+        \item ^n.prev.next^${} = {}$^n^
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{DLL insertion}
+To insert ^o^ after ^n^ (DLL):
+  \begin{code}
+    o.prev = n
+    o.next = n.next
+    o.prev.next = o
+    \K‹if› o.next ≠ nil:
+        o.next.prev = o
+  \end{code}
+
+\pause
+
+To insert ^o^ after ^n^ (CDLL):
+  \begin{code}
+    o.prev = n
+    o.next = n.next
+    o.prev.next = o
+    o.next.prev = o
+  \end{code}
+\end{frame}
+
+\begin{frame}{Lists as sequences}
+  How do we:
+  \begin{itemize}
+    \item lookup an element by position?
+    \item insert an element?
+    \item insert an element at position?
+    \item delete an element at position?
+  \end{itemize}
+  \pause
+  How long does it take?
+\end{frame}
+
+\begin{frame}[fragile]{Arrays as sequences}
+  Assume we leave extra space at the end:
+  \begin{code}
+    \K‹struct› Vector<T>:
+        size: \mbox‹$\mathbb‹N›$›
+        data: Array<T>
+  \end{code}
+  How do we:
+  \begin{itemize}
+    \item lookup an element by position?
+    \item insert an element?
+    \item insert an element at position?
+    \item delete an element at position?
+  \end{itemize}
+  \pause
+  How long does it take?
+\end{frame}
+
+% \begin{frame}{Lists as FIFOs}
+%   How do we:
+%   \begin{itemize}
+%     \item dequeue an element?
+%     \item enqueue an element?
+%   \end{itemize}
+%   \pause
+%   How long does it take?
+% \end{frame}
+
+% \begin{frame}[fragile]{Arrays as FIFOs}
+%   Assume we leave extra space at the end:
+%   \begin{code}
+%     \K‹struct› Vector<T>:
+%         size: \mbox‹$\mathbb‹N›$›
+%         data: Array<T>
+%   \end{code}
+%   How do we:
+%   \begin{itemize}
+%     \item dequeue an element?
+%     \item enqueue an element?
+%   \end{itemize}
+%   \pause
+%   How long does it take?
+% \end{frame}
+
+% \begin{frame}{Lists as sets}
+%   How do we:
+%   \begin{itemize}
+%     \item lookup an element?
+%     \item insert an element?
+%     \item delete an element?
+%   \end{itemize}
+%   \pause
+%   How long does it take?
+% \end{frame}
+
+% \begin{frame}[fragile]{Arrays as sets}
+%   Assume we leave extra space at the end:
+%   \begin{code}
+%     \K‹struct› Vector<T>:
+%         size: \mbox‹$\mathbb‹N›$›
+%         data: Array<T>
+%   \end{code}
+%   How do we:
+%   \begin{itemize}
+%     \item lookup an element?
+%     \item insert an element?
+%     \item delete an element?
+%   \end{itemize}
+%   \pause
+%   How long does it take?
+% \end{frame}
+
+\end{document}
