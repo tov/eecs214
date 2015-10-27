@@ -1,6 +1,9 @@
 # The files to test the program on:
 TESTFILES = bit_io.cpp
 
+# Uncomment this next line to build on Cygwin/Windows:
+# EXE_EXT = .exe
+
 # C++ source and header files that `huff` depends on:
 HUFF_SRC = huff.cpp bit_io.cpp
 HUFF_INC = bit_io.hpp
@@ -14,8 +17,12 @@ PUFF_INC = bit_io.hpp
 ### are tinkering or trying to learn Make.
 ###
 
-BUILD = huff puff
-EX_BUILD = encode decode
+BUILD = $(HUFF) $(PUFF)
+EX_BUILD = $(ENCODE) $(DECODE)
+HUFF = huff$(EXE_EXT)
+PUFF = puff$(EXE_EXT)
+ENCODE = encode$(EXE_EXT)
+DECODE = decode$(EXE_EXT)
 
 CXXFLAGS = -W -Wall -std=c++11
 LINK.o = $(CXX)
@@ -32,10 +39,13 @@ CLEAN       = $(BUILD) $(EX_BUILD) \
 all: $(BUILD)
 example examples: $(EX_BUILD)
 
-huff: $(HUFF_SRC:.cpp=.o)
-puff: $(PUFF_SRC:.cpp=.o)
-encode: $(ENCODE_SRC:.cpp=.o)
-decode: $(DECODE_SRC:.cpp=.o)
+%$(EXE_EXT): %.o
+	$(LINK.o) $^ $(LDFLAGS) $(LDLIBS) -o $@
+
+$(HUFF): $(HUFF_SRC:.cpp=.o)
+$(PUFF): $(PUFF_SRC:.cpp=.o)
+$(ENCODE): $(ENCODE_SRC:.cpp=.o)
+$(DECODE): $(DECODE_SRC:.cpp=.o)
 
 encode.o: encode.cpp $(ENCODE_INC)
 decode.o: decode.cpp $(DECODE_INC)
@@ -51,17 +61,17 @@ ex_test: $(TESTFILES:%=.%.ex_passed)
 .%.passed: % %.puff
 	( diff $^ || cmp $^ ) && touch $@
 
-%.7: % encode
-	./encode $< $@
+%.7: % $(ENCODE)
+	./$(ENCODE) $< $@
 
-%.8: %.7 decode
-	./decode $< $@
+%.8: %.7 $(DECODE)
+	./$(DECODE) $< $@
 
-%.huff: % huff
-	./huff $< $@
+%.huff: % $(HUFF)
+	./$(HUFF) $< $@
 
-%.puff: %.huff puff
-	./puff $< $@
+%.puff: %.huff $(PUFF)
+	./$(PUFF) $< $@
 
 clean:
 	$(RM) $(CLEAN)

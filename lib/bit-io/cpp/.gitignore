@@ -2,6 +2,7 @@ huff
 puff
 encode
 decode
+*.exe
 *.o
 *.huff
 *.puff
