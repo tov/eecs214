@@ -1,3 +1,6 @@
+# Unmanaged resources
+rsrc/
+
 # Vim swap files
 .*.sw?
 

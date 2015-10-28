@@ -9,6 +9,7 @@ upload:
 		--exclude '*.class' \
 		--exclude '*.o' \
 		--exclude '*.pyc' \
+		--exclude 'exams' \
 		. $(REMOTE)
 
 css:
