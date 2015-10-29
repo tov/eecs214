@@ -33,8 +33,8 @@ ENCODE_INC = bit_io.hpp common.hpp
 DECODE_SRC = decode.cpp bit_io.cpp
 DECODE_INC = bit_io.hpp common.hpp
 
-CLEAN       = $(BUILD) $(EX_BUILD) \
-              *.o *.7 *.8 *.huff *.puff .*.passed .*.ex_passed
+CLEAN       = *.o $(BUILD) $(EX_BUILD) $(TESTCLEAN)
+TESTCLEAN   = *.7 *.8 *.huff *.puff .*.passed .*.ex_passed
 
 all: $(BUILD)
 example examples: $(EX_BUILD)
@@ -73,7 +73,12 @@ ex_test: $(TESTFILES:%=.%.ex_passed)
 %.puff: %.huff $(PUFF)
 	./$(PUFF) $< $@
 
+testclean:
+	$(RM) $(TESTCLEAN)
+
 clean:
 	$(RM) $(CLEAN)
 
 .PRECIOUS: %.7 %.8 %.huff %.puff
+
+.PHONY: all example examples test ex_test clean testclean
