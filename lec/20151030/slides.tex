@@ -1,0 +1,600 @@
+\RequirePackage{fixltx2e}
+\RequirePackage[l2tabu, orthodox]{nag}
+
+\documentclass{beamer}
+
+\usepackage{amsmath,amssymb}
+\usepackage{mathspec}
+\usepackage[final]{listings}
+%\usepackage{xunicode}
+%\usepackage{xltxtra}
+%\usepackage{graphicx}
+%\usepackage{forloop}
+%\usepackage{stmaryrd}
+%\usepackage{mathtools}
+%\usepackage{fancyvrb}
+
+\usepackage{tikz}
+% \usetikzlibrary{arrows.meta}
+% \usetikzlibrary{backgrounds}
+% \usetikzlibrary{calc}
+% \usetikzlibrary{datavisualization}
+% \usetikzlibrary{datavisualization.formats.functions}
+% \usetikzlibrary{fit}
+% \usetikzlibrary{positioning}
+% \usetikzlibrary{scopes}
+
+\setallmainfonts{TeX Gyre Schola}
+\setallmonofonts{Menlo}
+
+\def\bigO#1{\ensuremath{\mathcal O(#1)}}
+\newcommand\fun[1]{\ensuremath{\lambda #1.\,}}
+\renewcommand\T[1]{\ensuremath{T_{\mathit{#1}}}}
+
+%%%
+%%% BASIC SETTINGS
+%%%
+
+\frenchspacing
+\unitlength=0.01\textwidth
+\thicklines
+\urlstyle{sf}
+\graphicspath{{images/}}
+
+\defaultfontfeatures{
+    Mapping=tex-text,
+    Scale=MatchLowercase,
+}
+
+%%%
+%%% LISTINGS SETUP
+%%%
+
+\lstdefinelanguage{ASL}%
+  {sensitive,%
+   alsoletter=-+*/\#?,%
+   morekeywords={%
+      and,%
+      begin,%
+      check-error,%
+      check-expect,%
+      check-within,%
+      cond,%
+      define,%
+      define-struct,%
+      else,%
+      if,%
+      lambda,%
+      local,%
+      or,%
+   },%
+   morekeywords=[2]{%
+     cons,%
+     \#true,%
+     \#false,%
+   },%
+   morekeywords=[3]{%
+     this-is-here-because-suck,%
+     cons?,%
+     empty?,%
+     -,+,*,/,%
+     first,%
+     rest,%
+   }%,
+   alsodigit=-,%
+   morecomment=[l];,%
+   morecomment=[s]{\#|}{|\#},% 1997 Aslak Raanes
+   morestring=[b]"%
+  }[keywords,comments,strings]%
+
+\lstnewenvironment{asl}[1][]
+{%
+  \begingroup
+  \lstset{language=ASL,#1}%
+}
+{%
+  \endgroup
+}
+
+\lstnewenvironment{cpp}[1][]
+{%
+  \begingroup
+  \lstset{language=C++,#1}%
+}
+{%
+  \endgroup
+}
+
+
+\newcommand{\textcode}{%
+  \lstset{language=ASL,basicstyle=\ttfamily\small}%
+  \lstinline
+}
+
+\lstset{%
+  numberstyle=\scriptsize,
+  showspaces=false,
+  basicstyle=\ttfamily,
+  keywordstyle=\ttfamily\color{red!70!black},
+  keywordstyle=[2]\ttfamily\color{blue!70!black},
+  keywordstyle=[3]\ttfamily\color{green!40!black},
+  numberstyle=\ttfamily\color{blue!70!black},
+  commentstyle=\itshape\color{violet!80!black},
+  escapeinside={($}{$)},
+}
+
+\newcommand{\textasl}{%
+  \lstset{language=ASL,basicstyle=\ttfamily\small}%
+  \lstinline
+}
+
+\let\sup^
+
+\catcode`\^\active\relax
+\def^#1^{\textasl|#1|}
+
+%%%
+%%% BEAMER SETUP
+%%%
+
+\setbeamercolor{frametitle}{fg=black}
+\setbeamercolor{normal text}{fg=black}
+
+\usefonttheme{serif}
+
+\setbeamertemplate{frametitle}
+  {\begin{centering}\medskip
+   \insertframetitle\par
+   \end{centering}}
+
+\setbeamertemplate{itemize item}{$\bullet$}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[text line]{%
+    \hfill\strut{%
+        \small\color{black!75}%
+        \texttt{\insertframenumber:\insertframeslidenumber}%
+    }%
+    \hfill%
+}
+
+\makeatletter
+\newcount\frameslidetemp
+\newcommand\insertframeslidenumber{%
+  \frameslidetemp\c@page\relax
+  \advance\frameslidetemp-\beamer@startpageofframe\relax
+  \advance\frameslidetemp1\relax
+  \the\frameslidetemp
+}
+\makeatother
+
+%%%
+%%% GENERALLY USEFUL LITTLE MACROS
+%%%
+
+% For using \alt within verbatim:
+\newcommand\ALT[3]{\alt<#1>{#2}{#3}}
+
+% Or: \ALT = \S\alt
+\def\S#1#2{#2<#1>}
+
+\newcommand<>\always[1]{#1}
+
+%%%
+%%% COLORS
+%%%
+
+\newcommand\K[1]{\textcolor{orange!70!black}{#1}}
+\newcommand\REF{\textcolor{green!50!black}{ref}}
+
+%%%
+%%% TIKZ
+%%%
+
+% \place[STYLE]{LOCATION}{CONTENT} places CONTENT at LOCATION, applying
+% STYLE
+\newcommand\place[3][]{%
+  \tikz[orp] \node[#1] at (#2) {#3};%
+}
+
+% \anchor{NAME} creates an addressable TikZ coordinate at the current
+% location.
+\newcommand\anchor[1]{%
+  \tikz[orp] \coordinate (#1);%
+}
+
+% \nil{NODE} draws a slash across the node; if NODE is a square then we
+% get the standard graphic notation for null/nil.
+\newcommand\nil[1][1em]{%
+  \begin{tikzpicture}[nil]
+    \node[pointer tail, line width=0, opacity=0] {};
+    \draw[overlay]
+      node[pointer tail] (dummy) {}
+      (dummy.west |- dummy.south) -- (dummy.east |- dummy.north);
+  \end{tikzpicture}%
+}
+
+\makeatletter
+  \newcommand\cons[1][]{\cons@kont{#1}}
+  \def\cons@kont#1#2(#3)#4#5{\struct@kont{#1}{}(#3){#4&#5}}
+
+  \newcommand\struct[1][]{\struct@kont{#1}}
+  \def\struct@kont#1#2(#3)#4{
+      \node[draw, inner sep=0, #1] (#3) {%
+        \begin{tabular}{|*{100}{c|}}
+          \hline
+          #4\\
+          \hline
+        \end{tabular}
+      }
+  }
+\makeatother
+
+% \genpointer[STYLE]{BEND}{TARGET}
+\newcommand\genpointer[2][genpointer]{%
+  \tikz[remember picture, #1]
+    \draw
+      node[pointer tail] {}
+      edge[->, overlay] (#2) ;%
+}
+
+% \hpointer[BEND]{TARGET} for a highlighted pointer
+\newcommand\hpointer[2][]{%
+  \genpointer[highlit pointer,#1]{#2}%
+}
+
+% \ppointer[BEND]{TARGET} for a non-highlighted pointer
+\newcommand\ppointer[2][]{%
+  \genpointer[pointer,#1]{#2}%
+}
+
+% \pointer[BEND]{TARGET} is highlighted if used in a highlighted context
+\newcommand\pointer[2][]{%
+  \ifhighlit\let\pointertemp\hpointer\else\let\pointertemp\ppointer\fi
+  \pointertemp[#1]{#2}%
+}
+
+\newcommand\genpointerbase[2][genpointer]{%
+  \tikz[remember picture, #1]
+    \draw node[pointer tail] (#2) {};%
+}
+
+\newcommand\ppointerbase[2][genpointer]{%
+  \genpointerbase[pointer,#1]{#2}%
+}
+
+\newcommand\hpointerbase[2][genpointer]{%
+  \genpointerbase[highlit pointer,#1]{#2}%
+}
+
+\newcommand\pointerbase[2][]{%
+  \ifhighlit\let\pointertemp\hpointerbase\else\let\pointertemp\ppointerbase\fi
+  \pointertemp[#1]{#2}%
+}
+
+\newcommand\genpointerpoint[3][genpointer]{
+  \draw (#2) edge[->, remember picture, overlay, #1] (#3) ;
+}
+
+\newcommand\ppointerpoint[2][genpointer]{%
+  \genpointerpoint[pointer,#1]{#2}%
+}
+
+\newcommand\hpointerpoint[2][genpointer]{%
+  \genpointerpoint[highlit pointer,#1]{#2}%
+}
+
+\newcommand\pointerpoint[2][]{%
+  \ifhighlit\let\pointertemp\hpointerpoint\else\let\pointertemp\ppointerpoint\fi
+  \pointertemp[#1]{#2}%
+}
+
+\tikzset{
+  orp/.style={
+    overlay,
+    remember picture,
+  },
+  rem/.style={
+    remember picture,
+  },
+  every node/.style={
+    very thick,
+    inner sep=3pt,
+  },
+  every path/.style={very thick},
+  ref/.style={
+    draw=red,
+    densely dotted,
+    font=\ttfamily,
+  },
+  cons/.style={
+    draw=black,
+    font=\ttfamily,
+  },
+  genpointer/.style={
+    solid,
+    bend left=30,
+    >=Latex,
+  },
+  pointer/.style={
+    genpointer,
+    color=blue!50!black,
+    opacity=.5,
+  },
+  highlit pointer/.style={
+    genpointer,
+    color=red!70!black,
+  },
+  nil/.style={
+    color=black!50,
+  },
+  pointer tail/.style={
+    draw,
+    circle,
+    text width=0,
+    text height=1ex,
+    inner sep=0,
+  },
+  highlight/.style={
+    color=yellow!50!white!90!black,
+    thick,
+    draw,
+    draw opacity=0.5,
+    outer color=yellow!50,
+    inner color=yellow!30,
+    rounded corners=2pt,
+  },
+}
+
+\newif\ifhighlit
+\highlitfalse
+
+% \highlight<WHEN>[NAME]{CONTENT}
+\newcommand<>\highlight[2][\relax]{%
+  \ifx#1\relax
+    \begin{tikzpicture}
+  \else
+    \begin{tikzpicture}[remember picture]
+  \fi
+    \node[
+      inner sep=0pt,
+      outer sep=0pt,
+      text depth=0pt,
+      align=left,
+    ] (highlight temp) {%
+        \only#3{\highlittrue}%
+        #2%
+        \only#3{\highlitfalse}%
+    };
+    \begin{scope}[on background layer]
+      \coordinate (highlight temp 1) at
+        ($(highlight temp.north east) + (2pt,2pt)$);
+      \coordinate (highlight temp 2) at
+        ($(highlight temp.base west) + (-2pt,-3pt)$);
+      \node#3 [
+        overlay,
+        highlight,
+        inner sep=0pt,
+        fit=(highlight temp 1) (highlight temp 2),
+      ] {};
+    \end{scope}
+    \ifx#1\relax
+      \relax
+    \else
+      \node (#1) [
+        overlay,
+        inner sep=0pt,
+        fit=(highlight temp 1) (highlight temp 2),
+      ] {};
+    \fi
+  \end{tikzpicture}%
+}
+
+\newcommand\HI[2]{\highlight<#1>{#2}}
+
+% \huncover[NAME]{STEP}{CONTENT} uncovers from STEP onward, highlighting
+% at STEP but not thereafter.
+\newcommand\huncover[3][\relax]{%
+  \uncover<#2->{\highlight<#2>[#1]{#3}}%
+}
+
+% \huncover[NAME]{STEP}{CONTENT} onlys from STEP onward, highlighting
+% at STEP but not thereafter.
+\newcommand\honly[3][\relax]{%
+  \only<#2->{\highlight<#2>[#1]{#3}}%
+}
+
+\begin{document}
+
+%%%
+%%% TITLE PAGE
+%%%
+
+\begin{frame}[fragile]\relax
+  \thispagestyle{empty}
+
+  %% Need to initialize Tikz opacity inside a frame, not outside:
+  \begin{tikzpicture}[opacity=0,overlay]\end{tikzpicture}
+
+  \begin{center}
+  {\Huge Complexity in Practice}
+
+  \bigskip
+  \Large
+  EECS 214
+
+  \medskip
+  October 30, 2015
+  \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{ASL expressions}
+Addition:
+\begin{asl}
+(+ 4 5)                 ; 9
+\end{asl}
+\pause
+Nesting:
+\begin{asl}
+(+ (* 3 5) (/ 2 3))     ; 10
+\end{asl}
+\pause
+Parens matter! Error because ^3^ and ^4^ aren’t
+functions:
+{\color{red}
+\begin{asl}
+(+ (3) (4))               ; ERROR!
+\end{asl}
+}
+\pause
+Variables!
+\begin{asl}
+(define n (+ 2 3))
+(* n n)                   ; 25
+\end{asl}
+\end{frame}
+
+\begin{frame}[fragile]{\alt<2>{Functions (and tests)!}{Functions!}}
+\begin{asl}
+; f->c : Number -> Number
+; converts a temperature from °F to °C
+(define (f->c degrees-f)
+  (* 5/9 (- degrees-f 32)))
+\end{asl}
+\pause
+\begin{asl}
+(check-expect (f->c 212)    100)
+(check-expect (f->c 68)      20)
+(check-expect (f->c -40)    -40)
+\end{asl}
+\end{frame}
+
+\begin{frame}[fragile]{ASL lists in C++}
+\begin{cpp}
+struct cons {
+    cons(Value f, cons* r) : first(f), rest(r)
+    { }
+
+    const Value first;
+    const cons* const rest;
+};
+
+bool cons?(const cons* lst)
+{ return lst != nullptr; }
+
+bool empty?(const cons* lst)
+{ return lst == nullptr; }
+\end{cpp}
+\end{frame}
+
+\begin{frame}[fragile]{ASL lists in ASL}
+The empty list:
+\begin{asl}
+'()
+\end{asl}
+\pause
+A one element list:
+\begin{asl}
+(cons 3 '())
+\end{asl}
+\pause
+A three element list:
+\begin{asl}
+(cons 1 (cons 2 (cons 3 '())))
+\end{asl}
+\pause
+Sugar for the same:
+\begin{asl}
+'(1 2 3)
+\end{asl}
+\pause
+\end{frame}
+
+\begin{frame}[fragile]{ASL lists operations}
+\begin{asl}
+(check-expect (first '(1 2 3))    1)
+
+(check-expect (rest '(1 2 3))     '(2 3))
+
+(check-expect (cons? '(1 2 3))    #true)
+(check-expect (cons? '())         #false)
+
+(check-expect (empty? '(1 2 3))   #false)
+(check-expect (empty? '())        #true)
+\end{asl}
+\end{frame}
+
+\begin{frame}[fragile]{List length in C++}
+\begin{cpp}
+size_t length(cons* lst)
+{
+    size_t result = 0;
+
+    while (lst != nullptr) {
+      ++result;
+      lst = lst->rest;
+    }
+
+    return result;
+}
+\end{cpp}
+\end{frame}
+
+\begin{frame}[fragile]{\emph{Recursive} list length in C++}
+\begin{cpp}
+size_t length(cons* lst)
+{
+    if (lst == nullptr)
+        return 0;
+    else
+        return 1 + length(lst->rest);
+}
+\end{cpp}
+\end{frame}
+
+\begin{frame}[fragile]{List length in ASL}
+\begin{asl}
+; len : [List-of X] -> Nat
+(define (len lst)
+  (cond
+    [(empty? lst) 0]
+    [(cons? lst)  (+ 1 (len (rest lst)))]))
+
+(check-expect (len '())          0)
+(check-expect (len '(5))         1)
+(check-expect (len '(5 5))       2)
+(check-expect (len '(5 5 5 5))   4)
+\end{asl}
+\end{frame}
+
+\begin{frame}[c]
+\begin{center}
+\emph{-- To DrRacket! --}
+\end{center}
+\end{frame}
+
+\begin{frame}{Big-O equalities}
+\begin{itemize}
+  \item $\bigO{f(n) + c} = \bigO{f(n)}$
+        \par\medskip\pause
+        IOW: $f(n) + c \in \bigO{f(n)}$
+  \item<3-> $\bigO{cf(n)} = \bigO{f(n)}$
+  \item<4-> $\bigO{\log_k f(n)} = \bigO{\log_j f(n)}$
+  \item<5-> $\bigO{f(n) + g(n)} = \bigO{f(n)}$ when $g \lll f$
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Big-O inequalities}
+If $j < k$ then:
+\begin{align*}
+  1 &\lll \log n && \text{constants are less than logs\ldots} \\
+    &\lll n\sup j && \text{are less than polynomials\ldots} \\
+    &\lll n\sup k && \text{are less than polynomials of higher degree\ldots} \\
+    &\lll n\sup k \log n && \text{are less than polynomial-log\ldots} \\
+    &\lll j\sup n && \text{are less than exponentials\ldots} \\
+    &\lll j\sup k && \text{are less than exponentials with greater
+    exponents.} \\
+\end{align*}
+\end{frame}
+
+\end{document}
