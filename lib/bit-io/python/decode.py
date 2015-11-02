@@ -10,6 +10,6 @@ if len(argv) != 3:
 with bit_io.BitReader(argv[1]) as input, open(argv[2], 'wb') as output:
     while True:
         c = input.readbits(7)
-        if not c: break
+        if c is None: break
         output.write(chr(c))
 
