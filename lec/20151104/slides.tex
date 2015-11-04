@@ -1,0 +1,868 @@
+\RequirePackage[l2tabu, orthodox]{nag}
+
+\documentclass{beamer}
+
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+%??? :( \usepackage[MnSymbol]{mathspec}
+\usepackage{mathspec}
+\usepackage[final]{listings}
+\usepackage{graphicx}
+
+\setallmainfonts{TeX Gyre Schola}
+\setallmonofonts{Menlo}
+
+%\usepackage{xunicode}
+%\usepackage{xltxtra}
+%\usepackage{graphicx}
+%\usepackage{forloop}
+%\usepackage{stmaryrd}
+%\usepackage{mathtools}
+%\usepackage{fancyvrb}
+
+\usepackage{tikz}
+% \usetikzlibrary{arrows.meta}
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{calc}
+% \usetikzlibrary{datavisualization}
+% \usetikzlibrary{datavisualization.formats.functions}
+\usetikzlibrary{fit}
+% \usetikzlibrary{positioning}
+% \usetikzlibrary{scopes}
+
+\def\bigO#1{\ensuremath{\mathcal O(#1)}}
+\newcommand\fun[1]{\ensuremath{\lambda #1.\,}}
+\renewcommand\T[1]{\ensuremath{T_{\mathit{#1}}}}
+
+%%%
+%%% BASIC SETTINGS
+%%%
+
+\frenchspacing
+\unitlength=0.01\textwidth
+\thicklines
+\urlstyle{sf}
+\graphicspath{{images/}}
+
+\defaultfontfeatures{
+    Mapping=tex-text,
+    Scale=MatchLowercase,
+}
+
+%%%
+%%% LISTINGS SETUP
+%%%
+
+\lstdefinelanguage{ASL}%
+  {sensitive,%
+   alsoletter=-+*/\#?,%
+   alsodigit=-,%
+   morekeywords={%
+      and,%
+      begin,%
+      check-error,%
+      check-expect,%
+      check-within,%
+      cond,%
+      define,%
+      define-struct,%
+      else,%
+      if,%
+      lambda,%
+      local,%
+      or,%
+   },%
+   morekeywords=[2]{%
+     cons,%
+     \#true,%
+     \#false,%
+   },%
+   morekeywords=[3]{%
+     this-is-here-because-suck,%
+     cons?,%
+     empty?,%
+     -,+,*,/,%
+     first,%
+     rest,%
+   }%,
+   morecomment=[l];,%
+   morecomment=[s]{\#|}{|\#},%
+   morestring=[b]"%
+  }[keywords,comments,strings]%
+
+\lstnewenvironment{asl}[1][]
+{%
+  \begingroup
+  \lstset{language=ASL,#1}%
+}
+{%
+  \endgroup
+}
+
+\lstnewenvironment{cpp}[1][]
+{%
+  \begingroup
+  \lstset{language=C++,#1}%
+}
+{%
+  \endgroup
+}
+
+
+\newcommand{\textcode}{%
+  \lstset{language=ASL,basicstyle=\ttfamily\small}%
+  \lstinline
+}
+
+\lstset{%
+  numberstyle=\scriptsize,
+  showspaces=false,
+  basicstyle=\ttfamily,
+  keywordstyle=\ttfamily\color{red!70!black},
+  keywordstyle=[2]\ttfamily\color{blue!70!black},
+  keywordstyle=[3]\ttfamily\color{green!40!black},
+  numberstyle=\ttfamily\color{blue!70!black},
+  commentstyle=\itshape\color{violet!80!black},
+  escapeinside={($}{$)},
+}
+
+\newcommand{\textasl}{%
+  \lstset{language=ASL,basicstyle=\ttfamily\small}%
+  \lstinline
+}
+
+\let\sup^
+
+\catcode`\^\active\relax
+\def^#1^{\textasl|#1|}
+
+%%%
+%%% BEAMER SETUP
+%%%
+
+\setbeamercolor{frametitle}{fg=black}
+\setbeamercolor{normal text}{fg=black}
+
+\usefonttheme{serif}
+
+\setbeamertemplate{frametitle}
+  {\begin{center}\medskip
+   \insertframetitle\par
+   \end{center}}
+
+\setbeamertemplate{itemize item}{$\bullet$}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[text line]{%
+    \hfill\strut{%
+        \small\color{black!75}%
+        \texttt{\insertframenumber:\insertframeslidenumber}%
+    }%
+    \hfill%
+}
+
+\makeatletter
+\newcount\frameslidetemp
+\newcommand\insertframeslidenumber{%
+  \frameslidetemp\c@page\relax
+  \advance\frameslidetemp-\beamer@startpageofframe\relax
+  \advance\frameslidetemp1\relax
+  \the\frameslidetemp
+}
+\makeatother
+
+%%%
+%%% GENERALLY USEFUL LITTLE MACROS
+%%%
+
+% For using \alt within verbatim:
+\newcommand\ALT[3]{\alt<#1>{#2}{#3}}
+
+% Or: \ALT = \S\alt
+\def\S#1#2{#2<#1>}
+
+\newcommand<>\always[1]{#1}
+
+\newcommand\widen[1][1.2]{%
+    \setlength\baselineskip{#1\baselineskip}%
+}
+
+%%%
+%%% COLORS
+%%%
+
+\newcommand\K[1]{\textcolor{orange!70!black}{#1}}
+\newcommand\REF{\textcolor{green!50!black}{ref}}
+
+%%%
+%%% TIKZ
+%%%
+
+% \place[STYLE]{LOCATION}{CONTENT} places CONTENT at LOCATION, applying
+% STYLE
+\newcommand\place[3][]{%
+  \tikz[orp] \node[#1] at (#2) {#3};%
+}
+
+% \anchor{NAME} creates an addressable TikZ coordinate at the current
+% location.
+\newcommand\anchor[1]{%
+  \tikz[orp] \coordinate (#1);%
+}
+
+% \nil{NODE} draws a slash across the node; if NODE is a square then we
+% get the standard graphic notation for null/nil.
+\newcommand\nil[1][1em]{%
+  \begin{tikzpicture}[nil]
+    \node[pointer tail, line width=0, opacity=0] {};
+    \draw[overlay]
+      node[pointer tail] (dummy) {}
+      (dummy.west |- dummy.south) -- (dummy.east |- dummy.north);
+  \end{tikzpicture}%
+}
+
+\makeatletter
+  \newcommand\cons[1][]{\cons@kont{#1}}
+  \def\cons@kont#1#2(#3)#4#5{\struct@kont{#1}{}(#3){#4&#5}}
+
+  \newcommand\struct[1][]{\struct@kont{#1}}
+  \def\struct@kont#1#2(#3)#4{
+      \node[draw, inner sep=0, #1] (#3) {%
+        \begin{tabular}{|*{100}{c|}}
+          \hline
+          #4\\
+          \hline
+        \end{tabular}
+      }
+  }
+\makeatother
+
+% \genpointer[STYLE]{BEND}{TARGET}
+\newcommand\genpointer[2][genpointer]{%
+  \tikz[remember picture, #1]
+    \draw
+      node[pointer tail] {}
+      edge[->, overlay] (#2) ;%
+}
+
+% \hpointer[BEND]{TARGET} for a highlighted pointer
+\newcommand\hpointer[2][]{%
+  \genpointer[highlit pointer,#1]{#2}%
+}
+
+% \ppointer[BEND]{TARGET} for a non-highlighted pointer
+\newcommand\ppointer[2][]{%
+  \genpointer[pointer,#1]{#2}%
+}
+
+% \pointer[BEND]{TARGET} is highlighted if used in a highlighted context
+\newcommand\pointer[2][]{%
+  \ifhighlit\let\pointertemp\hpointer\else\let\pointertemp\ppointer\fi
+  \pointertemp[#1]{#2}%
+}
+
+\newcommand\genpointerbase[2][genpointer]{%
+  \tikz[remember picture, #1]
+    \draw node[pointer tail] (#2) {};%
+}
+
+\newcommand\ppointerbase[2][genpointer]{%
+  \genpointerbase[pointer,#1]{#2}%
+}
+
+\newcommand\hpointerbase[2][genpointer]{%
+  \genpointerbase[highlit pointer,#1]{#2}%
+}
+
+\newcommand\pointerbase[2][]{%
+  \ifhighlit\let\pointertemp\hpointerbase\else\let\pointertemp\ppointerbase\fi
+  \pointertemp[#1]{#2}%
+}
+
+\newcommand\genpointerpoint[3][genpointer]{
+  \draw (#2) edge[->, remember picture, overlay, #1] (#3) ;
+}
+
+\newcommand\ppointerpoint[2][genpointer]{%
+  \genpointerpoint[pointer,#1]{#2}%
+}
+
+\newcommand\hpointerpoint[2][genpointer]{%
+  \genpointerpoint[highlit pointer,#1]{#2}%
+}
+
+\newcommand\pointerpoint[2][]{%
+  \ifhighlit\let\pointertemp\hpointerpoint\else\let\pointertemp\ppointerpoint\fi
+  \pointertemp[#1]{#2}%
+}
+
+\tikzset{
+  onslide/.code args={<#1>#2}{%
+    \only<#1>{\pgfkeysalso{#2}}
+  },
+  orp/.style={
+    overlay,
+    remember picture,
+  },
+  rem/.style={
+    remember picture,
+  },
+  every node/.style={
+    very thick,
+    inner sep=3pt,
+  },
+  every path/.style={very thick},
+  ref/.style={
+    draw=red,
+    densely dotted,
+    font=\ttfamily,
+  },
+  cons/.style={
+    draw=black,
+    font=\ttfamily,
+  },
+  genpointer/.style={
+    solid,
+    bend left=30,
+    >=Latex,
+  },
+  pointer/.style={
+    genpointer,
+    color=blue!50!black,
+    opacity=.5,
+  },
+  highlit pointer/.style={
+    genpointer,
+    color=red!70!black,
+  },
+  nil/.style={
+    color=black!50,
+  },
+  pointer tail/.style={
+    draw,
+    circle,
+    text width=0,
+    text height=1ex,
+    inner sep=0,
+  },
+  highlight base/.style={
+    outer color=#1!50,
+    inner color=#1!30,
+  },
+  highlight base/.default=yellow,
+  highlight/.style={
+    highlight base,
+    color=yellow!50!white!90!black,
+    draw opacity=0.5,
+    thick,
+    draw,
+    rounded corners=2pt,
+  },
+  bintree/.style={
+    level 1/.style={sibling distance=#1},
+    level 2/.style={sibling distance=#1/2},
+    level 3/.style={sibling distance=#1/4},
+    level 4/.style={sibling distance=#1/8},
+    level 5/.style={sibling distance=#1/16},
+  },
+  bintree/.default={8em},
+}
+
+\newif\ifhighlit
+\highlitfalse
+
+% \highlight<WHEN>[NAME]{CONTENT}
+\newcommand<>\highlight[2][\relax]{%
+  \ifx#1\relax
+    \begin{tikzpicture}
+  \else
+    \begin{tikzpicture}[remember picture]
+  \fi
+    \node[
+      inner sep=0pt,
+      outer sep=0pt,
+      text depth=0pt,
+      align=left,
+    ] (highlight temp) {%
+        \only#3{\highlittrue}%
+        #2%
+        \only#3{\highlitfalse}%
+    };
+    \begin{scope}[on background layer]
+      \coordinate (highlight temp 1) at
+        ($(highlight temp.north east) + (2pt,2pt)$);
+      \coordinate (highlight temp 2) at
+        ($(highlight temp.base west) + (-2pt,-3pt)$);
+      \node#3 [
+        overlay,
+        highlight,
+        inner sep=0pt,
+        fit=(highlight temp 1) (highlight temp 2),
+      ] {};
+    \end{scope}
+    \ifx#1\relax
+      \relax
+    \else
+      \node (#1) [
+        overlay,
+        inner sep=0pt,
+        fit=(highlight temp 1) (highlight temp 2),
+      ] {};
+    \fi
+  \end{tikzpicture}%
+}
+
+\newcommand\HI[2]{\highlight<#1>{#2}}
+
+% \huncover[NAME]{STEP}{CONTENT} uncovers from STEP onward, highlighting
+% at STEP but not thereafter.
+\newcommand\huncover[3][\relax]{%
+  \uncover<#2->{\highlight<#2>[#1]{#3}}%
+}
+
+% \huncover[NAME]{STEP}{CONTENT} onlys from STEP onward, highlighting
+% at STEP but not thereafter.
+\newcommand\honly[3][\relax]{%
+  \only<#2->{\highlight<#2>[#1]{#3}}%
+}
+
+\begin{document}
+
+%%%
+%%% TITLE PAGE
+%%%
+
+\newcommand{\takeaways}{
+  \begin{frame}{Take-aways}
+    \begin{itemize}
+      \item What is a priority queue is all about?
+      \item How is the \emph{heap property} defined?
+      \item What does a binary heap look like?
+      \item How do its operations work?
+      \item What are their time complexities?
+    \end{itemize}
+  \end{frame}
+}
+
+\newcommand{\FN}[1]{\ensuremath{\mathop{\mathit{#1}}}}
+\newcommand{\PrioQ}{\ensuremath{\mathsf{PrioQ}}}
+\newcommand{\Element}{\ensuremath{\mathsf{Element}}}
+\newcommand{\Bool}{\ensuremath{\mathsf{Bool}}}
+
+\begin{frame}
+  \thispagestyle{empty}
+  \begin{tikzpicture}[overlay, remember picture]
+    \path
+    (current page.south west) +(-.8em, -1em)
+    node[anchor=south west]
+    {\includegraphics{heap.jpg}}
+    ;
+  \end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]\relax
+  \thispagestyle{empty}
+
+  %% Need to initialize Tikz opacity inside a frame, not outside:
+  \begin{tikzpicture}[overlay, remember picture, opacity=.25]
+    \path
+    (current page.south west) +(-.8em, -1em)
+    node[anchor=south west]
+    {\includegraphics{heap.jpg}}
+    ;
+  \end{tikzpicture}
+
+  \begin{center}
+  {\Huge Heaps}
+
+  \bigskip
+  \Large
+  EECS 214
+
+  \medskip
+  November 4, 2015
+  \end{center}
+\end{frame}
+
+\takeaways
+
+\begin{frame}{The \emph{priority queue} ADT}
+    \def\2{\uncover<2->}
+    \def\3{\uncover<3->}
+    \begin{center}
+  \begin{tabular}{l|cc}
+      \2{
+      \hfill representation & linked \3{& sorted\only<5->{ ring}} \\
+          operation & list \3{& \alt<5->{buffer}{array}} \\
+          \hline
+      }%
+      $\FN{Empty}() : \PrioQ$ \2{& \bigO{1}} \3{& \bigO{1}} \\[4pt]
+      $\FN{Empty?}(\PrioQ) : \Bool$ \2{& \bigO{1}} \3{& \bigO{1}}
+      \\[4pt]
+      $\FN{Insert}(\PrioQ, \Element)$ \2{& \bigO{1}} \3{& \bigO{n}}
+      \\[4pt]
+      $\FN{FindMin}(\PrioQ) : \Element$ \2{& \bigO{n}} \3{& \bigO{1}}
+      \\[4pt]
+      $\FN{RemoveMin}(\PrioQ)$ \2{& \bigO{n}} \3{&
+          \highlight<4-5>{\alt<5->{\bigO{1}}{\bigO{n}}}} 
+  \end{tabular}
+    \end{center}
+  \bigskip
+  Note\only<2->{s}:
+  \begin{enumerate}
+      \item[\uncover<2->{1.}]
+          An $\Element$ has a \emph{key}; keys are totally ordered
+      \item<2->[2.]
+          $n$ is the number of elements
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{We can do better}
+    \begin{center}
+    \Large\widen
+    A \emph{\only<3>{min-}\only<4>{max-}heap} is a tree that \\
+    satisfies the \emph{\only<3>{min-}\only<4>{max-}heap property}\uncover<2->{: \\
+    every element’s key is \highlight<3->{\alt<4>{greater}{less} than} \\
+    all of its descendants’ keys}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Heaps versus search trees}
+  \begin{tabbing}
+      \textbf{min-heap property:} \\[.5em]
+    \qquad\=\+
+    for all nodes $n$, \\
+     \qquad\=\+•\quad$n.\FN{key} < n.\FN{left.key}$, and \\
+     •\quad$n.\FN{key} < n.\FN{right.key}$ \-\- \\[1em]
+     \textbf{BST property:} \\[.5em]
+    \qquad\=\+
+    for all nodes $n$, \\
+     \qquad\=\+•\quad \=\+for all of $n$’s left-descendants $\ell$, \\
+     $\ell.\FN{key} < n.\FN{key}$, and \-\\
+     •\quad \=\+for all of $n$’s right-descendants $r$, \\
+     $r.\FN{key} > n.\FN{key}$
+\end{tabbing}
+\end{frame}
+
+\begin{frame}[fragile]{Definition: \emph{complete tree}}
+  A tree is \emph{complete} if the levels are all filled in
+  left-to-right
+
+  \pause
+  \medskip
+  Like this:
+
+  \medskip
+  \strut\hfill
+  \begin{tikzpicture}
+      [
+        every node/.style={circle,draw=black},
+      ]
+      \node (n0) at (0,0) {};
+      \pause
+      \node (n1) at (-2,-1) {} edge (n0);
+      \pause
+      \node (n2) at (2,-1) {} edge (n0);
+      \pause
+      \node (n3) at (-3,-2) {} edge (n1);
+      \pause
+      \node (n4) at (-1,-2) {} edge (n1);
+      \pause
+      \node (n5) at (1,-2) {} edge (n2);
+      \pause
+      \node (n6) at (3,-2) {} edge (n2);
+      \pause
+      \node (n7) at (-3.5,-3) {} edge (n3);
+      \pause
+      \node (n8) at (-2.5,-3) {} edge (n3);
+      \pause
+      \node (n9) at (-1.5,-3) {} edge (n4);
+      \pause
+      \node (n10) at (-0.5,-3) {} edge (n4);
+      \pause
+      \node (n11) at (0.5,-3) {} edge (n5);
+      \pause
+      \node (n12) at (1.5,-3) {} edge (n5);
+      \pause
+      \node (n13) at (2.5,-3) {} edge (n6);
+      \pause
+      \node (n14) at (3.5,-3) {} edge (n6);
+  \end{tikzpicture}
+  \hfill\strut
+\end{frame}
+
+\begin{frame}[fragile]{Definition: \emph{binary heap}}
+  \centering
+  A \emph{binary heap} is a complete binary tree \\ satisfying the heap property
+
+  \pause
+  \medskip
+  Like this:
+
+  \medskip
+  \strut\hfill
+  \begin{tikzpicture}
+      [
+        every node/.style={
+          circle,
+          draw=black,
+          inner sep=2pt,
+        },
+      ]
+      \node (n0) at (0,0) {3};
+      \pause
+      \node (n1) at (-2,-1) {5} edge (n0);
+      \pause
+      \node (n2) at (2,-1) {8} edge (n0);
+      \pause
+      \node (n3) at (-3,-2) {17} edge (n1);
+      \pause
+      \node (n4) at (-1,-2) {6} edge (n1);
+      \pause
+      \node (n5) at (1,-2) {9} edge (n2);
+      \pause
+      \node (n6) at (3,-2) {60} edge (n2);
+      \pause
+      \node (n7) at (-3.5,-3) {20} edge (n3);
+      \pause
+      \node (n8) at (-2.5,-3) {37} edge (n3);
+      \pause
+      \node (n9) at (-1.5,-3) {44} edge (n4);
+      \pause
+      \node (n10) at (-0.5,-3) {7} edge (n4);
+      \pause
+      \node (n11) at (0.5,-3) {12} edge (n5);
+      \pause
+      \node (n12) at (1.5,-3) {45} edge (n5);
+      \pause
+      \node (n13) at (2.5,-3) {87} edge (n6);
+      \pause
+      \node (n14) at (3.5,-3) {62} edge (n6);
+  \end{tikzpicture}
+  \hfill\strut
+\end{frame}
+
+\begin{frame}[fragile]{Operation \FN{FindMin}}
+  This one is easy:
+
+  \begin{center}
+  \bigskip
+  \strut\hfill
+  \begin{tikzpicture}
+      [
+        every node/.style={
+          circle,
+          draw=black,
+          inner sep=2pt,
+        },
+      ]
+      \node[onslide=<2->{highlight base}] (n0) at (0,0) {3};
+      \node (n1) at (-2,-1) {5} edge (n0);
+      \node (n2) at (2,-1) {8} edge (n0);
+      \node (n3) at (-3,-2) {17} edge (n1);
+      \node (n4) at (-1,-2) {6} edge (n1);
+      \node (n5) at (1,-2) {10} edge (n2);
+      \node (n6) at (3,-2) {60} edge (n2);
+      \node (n7) at (-3.5,-3) {20} edge (n3);
+      \node (n8) at (-2.5,-3) {37} edge (n3);
+      \node (n9) at (-1.5,-3) {44} edge (n4);
+      \node (n10) at (-0.5,-3) {14} edge (n4);
+      \node (n11) at (0.5,-3) {12} edge (n5);
+  \end{tikzpicture}
+  \hfill\strut
+  \end{center}
+
+  \bigskip
+  \uncover<3->{
+    How long does this take?
+    \LARGE\quad
+    \huncover{4}{\bigO{1}}%
+  }
+\end{frame}
+
+\begin{frame}[fragile]{Operation \FN{Insert}}
+  \begin{overprint}
+    \onslide<1-4>
+      This one’s a bit harder. Let’s insert 11 into the heap.
+
+  \smallskip
+  \uncover<2->{Step 1: Add it at the end of the heap}
+
+  \uncover<3->{Step 2: Check if the heap condition is (locally!)
+  preserved}
+
+  \smallskip
+  \uncover<4->{It is, so we’re done! Why is the local check
+  sufficient?}
+
+  \onslide<5-9>
+  Okay, let’s try inserting 9 instead.
+  \par\smallskip
+  \uncover<6->{
+    The local invariant is broken! How can we fix it?
+  }
+  \par
+  \uncover<7->{
+    Swap the troublesome node with its parent.
+  }
+  \par
+  \uncover<8->{
+    Now we check 9's new parent. \uncover<9->{Looks good.}
+  }
+  \onslide<10-15>
+    Okay, now let’s insert 2.
+    \par\smallskip
+    \uncover<11->{Check the local invariant. \uncover<12->{It’s broken!}}
+    \par
+    \uncover<13->{So swap with the parent. Still broken!}
+    \par
+    \uncover<14->{So “bubble up” until the invariant is restored.}
+  \onslide<16->
+    When bubbling up, why didn’t we compare the node against its other
+    child? (\emph{E.g.}\/: comparing 2 to 5)
+    \par\smallskip
+    \uncover<17->{
+      Before swap, node $<$ parent, but also parent
+      $<$ other child (by heap condition).
+      Transitivity of $<$ tells us that node $<$ other child!
+    }
+  \end{overprint}
+
+  \begin{center}
+  \strut\hfill
+  \begin{tikzpicture}
+      [
+        every node/.style={
+          circle,
+          draw=black,
+          inner sep=2pt,
+        },
+      ]
+      \node[onslide=<15>{highlight base}]
+            (n0) at (0,0) {\alt<15->{2}{3}};
+      \node (n1) at (-2,-1) {5} edge (n0);
+      \node[onslide=<14>{highlight base}]
+           (n2) at (2,-1) {\alt<15->{3}{\alt<14>{2}{8}}} edge (n0);
+      \node (n3) at (-3,-2) {17} edge (n1);
+      \node (n4) at (-1,-2) {6} edge (n1);
+      \node[onslide=<7-9>{highlight base}]
+          (n5) at (1,-2) {\alt<7->{9}{10}} edge (n2);
+      \node[onslide=<13>{highlight base}]
+            (n6) at (3,-2) {\alt<14->{8}{\alt<13>{2}{60}}} edge (n2);
+      \node (n7) at (-3.5,-3) {20} edge (n3);
+      \node (n8) at (-2.5,-3) {37} edge (n3);
+      \node (n9) at (-1.5,-3) {44} edge (n4);
+      \node (n10) at (-0.5,-3) {14} edge (n4);
+      \node (n11) at (0.5,-3) {12} edge (n5);
+      \node<2->[onslide=<2-6>{highlight base}]
+          (n12) at (1.5,-3)
+          {\alt<7->{10}{\alt<5->{9}{11}}}
+        edge (n5);
+      \node<11->[onslide=<11-12>{highlight base}]
+          (n13) at (2.5,-3)
+          {\alt<13->{60}{2}}
+        edge (n6);
+
+      \draw<3-4,7-9> (n12) edge[bend right=45,dotted]
+                  node[draw=none,above,sloped]{$<$} (n5);
+      \draw<6>   (n12) edge[bend right=45,dotted]
+                  node[draw=none,above,color=red,sloped]{$>$} (n5);
+      \draw<9>   (n5) edge[bend left=45,dotted]
+                  node[draw=none,above,sloped]{$>$} (n2);
+      \draw<12>  (n13) edge[bend left=45,dotted]
+                  node[draw=none,above,color=red,sloped]{$<$} (n6);
+      \draw<13-15> (n13) edge[bend left=45,dotted]
+                  node[draw=none,above,sloped]{$>$} (n6);
+      \draw<13>  (n6) edge[bend right=45,dotted]
+                  node[draw=none,above,color=red,sloped]{$>$} (n2);
+      \draw<14-15>  (n6) edge[bend right=45,dotted]
+                  node[draw=none,above,sloped]{$<$} (n2);
+      \draw<14>   (n2) edge[bend right=45,dotted]
+                  node[draw=none,above,color=red,sloped]{$>$} (n0);
+      \draw<15>  (n2) edge[bend right=45,dotted]
+                  node[draw=none,above,sloped]{$<$} (n0);
+      \draw<16>  (n1) edge[bend left=45,dotted]
+                  node[draw=none,above,sloped]{?} (n0);
+  \end{tikzpicture}
+  \hfill\strut
+\end{center}
+
+  \bigskip
+  \uncover<17->{
+    How long does this take?
+    \uncover<18->{How tall is the tree?}
+    \LARGE
+    \huncover{19}{\bigO{\log n}}%
+  }
+\end{frame}
+
+\begin{frame}[fragile]{Operation \FN{RemoveMin}}
+  \begin{overprint}
+    \onslide<-7>
+    \uncover<2->{Step 1: Replace the root with the \emph{last} node, and
+      remove the last node. \uncover<3->{(This preserves tree
+    completeness.)}}
+    \par\smallskip
+    \uncover<4->{Step 2: Restore the invariant by ``percolating down'':
+      swap new node with its \emph{smaller} {child} until invariant
+    is restored.}
+    \onslide<8->
+    Why do we swap with the smaller child? \uncover<9->{Transitivity again!}
+    \par\medskip
+    \uncover<10->{
+      How long does this take?
+      \uncover<11->{How tall is the tree?}
+      \LARGE
+      \huncover{12}{\bigO{\log n}}%
+    }
+  \end{overprint}
+  \begin{center}
+  \strut\hfill
+  \begin{tikzpicture}
+      [
+        every node/.style={
+          circle,
+          draw=black,
+          inner sep=2pt,
+        },
+      ]
+      \node[onslide=<2-5>{highlight base}]
+      (n0) at (0,0) {\alt<7->{8}{\alt<6->{3}{\alt<3->{60}{2}}}};
+      \node (n1) at (-2,-1) {5} edge (n0);
+      \node[onslide=<6>{highlight base}]
+      (n2) at (2,-1) {\alt<7->{8}{\alt<6->{60}{3}}}
+        edge (n0);
+      \node (n3) at (-3,-2) {17} edge (n1);
+      \node (n4) at (-1,-2) {6} edge (n1);
+      \node (n5) at (1,-2) {9} edge (n2);
+      \node[onslide=<7>{highlight base}]
+      (n6) at (3,-2) {\alt<7->{60}{8}} edge (n2);
+      \node (n7) at (-3.5,-3) {20} edge (n3);
+      \node (n8) at (-2.5,-3) {37} edge (n3);
+      \node (n9) at (-1.5,-3) {44} edge (n4);
+      \node (n10) at (-0.5,-3) {14} edge (n4);
+      \node (n11) at (0.5,-3) {12} edge (n5);
+      \node (n12) at (1.5,-3)
+            {10}
+            edge (n5);
+      \node<-2>[onslide=<2>{highlight base}] (n13) at (2.5,-3)
+            {60}
+            edge (n6);
+
+      \draw<5>   (n0) edge[bend left=45,dotted]
+                  node[draw=none,above,color=red,sloped]{$>$} (n2);
+      \draw<6-8> (n0) edge[bend left=45,dotted]
+                  node[draw=none,above,sloped]{$<$} (n2);
+      \draw<6>   (n2) edge[bend left=45,dotted]
+                  node[draw=none,above,color=red,sloped]{$>$} (n6);
+      \draw<7-8> (n2) edge[bend left=45,dotted]
+                  node[draw=none,above,sloped]{$<$} (n6);
+  \end{tikzpicture}
+  \hfill\strut
+\end{center}
+
+\end{frame}
+
+\takeaways
+
+\end{document}
