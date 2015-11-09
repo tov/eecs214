@@ -1,0 +1,177 @@
+\documentclass[12pt]{article}
+
+\usepackage{fancyhdr}
+\usepackage{fullpage}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage[MnSymbol]{mathspec}
+\usepackage{mathspec}
+\usepackage[final]{listings}
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{0.5em}
+
+\pagestyle{fancy}
+\lhead{EECS 214}
+\rhead{Fall 2015}
+\cfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\setlength{\headheight}{.25in}
+\setlength{\headsep}{.25in}
+\addtolength{\topmargin}{-.5in}
+
+\newcommand{\sourcefilelong}{%
+  \url{http://users.eecs.northwestern.edu/~jesse/course/eecs214-fa15/hw/2/binheap.rkt}%
+}
+
+\newcommand{\sourcefile}{%
+  \href{http://users.eecs.northwestern.edu/~jesse/course/eecs214-fa15/hw/2/binheap.rkt}{\texttt{binheap.rkt}}%
+}
+
+%%%
+%%% LISTINGS SETUP
+%%%
+
+\lstdefinelanguage{ASL}%
+  {sensitive,%
+   alsoletter=-+*/\#?,%
+   alsodigit=-,%
+   morekeywords={%
+      and,%
+      begin,%
+      check-error,%
+      check-expect,%
+      check-within,%
+      cond,%
+      define,%
+      define-struct,%
+      else,%
+      if,%
+      lambda,%
+      local,%
+      or,%
+   },%
+   morekeywords=[2]{%
+     cons,%
+     \#true,%
+     \#false,%
+   },%
+   morekeywords=[3]{%
+     this-is-here-because-suck,%
+     cons?,%
+     empty?,%
+     -,+,*,/,%
+     first,%
+     rest,%
+   }%,
+   morecomment=[l];,%
+   morecomment=[s]{\#|}{|\#},%
+   morestring=[b]"%
+  }[keywords,comments,strings]%
+
+\lstnewenvironment{asl}[1][]
+{%
+  \begingroup
+  \lstset{language=ASL,#1}%
+}
+{%
+  \endgroup
+}
+
+\lstnewenvironment{cpp}[1][]
+{%
+  \begingroup
+  \lstset{language=C++,#1}%
+}
+{%
+  \endgroup
+}
+
+
+\newcommand{\textcode}{%
+  \lstset{language=ASL,basicstyle=\ttfamily\small}%
+  \lstinline
+}
+
+\lstset{%
+  numberstyle=\scriptsize,
+  showspaces=false,
+  basicstyle=\ttfamily,
+  keywordstyle=\ttfamily\bfseries,
+  %keywordstyle=[2]\ttfamily\color{blue!70!black},
+  %keywordstyle=[3]\ttfamily\color{green!40!black},
+  numberstyle=\ttfamily,%\color{blue!70!black},
+  commentstyle=\itshape,%\color{violet!80!black},
+  escapeinside={($}{$)},
+}
+
+\newcommand{\textasl}{%
+  \lstset{language=ASL,basicstyle=\ttfamily\small}%
+  \lstinline
+}
+
+\let\sup^
+
+\catcode`\^\active\relax
+\def^#1^{\textasl|#1|}
+
+\begin{document}
+\begin{center}
+  {\LARGE\textbf{HW2: Binary Heaps}}
+  \par
+  {\large \textbf{Due:} Monday, November 16, at 11:59 PM}
+\end{center}
+
+\textbf{You may work on your own or with one (1) partner.}
+\par\bigskip
+
+In this assignment, you will implement a fixed-size binary heap. The
+structure of the heap is already defined for you in
+\sourcefile\footnote{\sourcefilelong}. The heap is represented using an
+ASL vector\footnote{ASL vectors are like other languages' arrays in that
+the size is fixed at create time.} to contain the elements.  Each heap
+will also contain a comparison function for ordering the elements of the
+heap, so that your implementation can support heaps of integers, heaps
+of strings, heaps of whatits, heaps of sporkles, etc.
+
+\subsection*{Your task}
+
+In \sourcefile, I've supplied a definition of a function ^create^ that
+returns a new, empty heap given a capacity and ordering function.
+Implementing the remaining operations is up to you:
+
+\begin{tabular}{l@{\texttt{ : }}l}
+ ^insert!^     & ^[Heap X] X -> Void^ \\
+ ^find-min^    & ^[Heap X] -> X^ \\
+ ^remove-min!^ & ^[Heap X] -> Void^ \\
+\end{tabular}
+
+For details, see the function headers provided in \sourcefile, which
+include purpose statements as well. Each operation must have worst-case
+time complexity $\mathcal O(\log n)$, where $n$ is the number of
+elements in the heap. In order to help you factor your program
+effectively, I've included at the bottom of \sourcefile{} a list of
+helper functions with names, signatures (types), and purpose statements
+(brief functional descriptions). You are free to use as much or as
+little of my design as you like.
+
+\subsection*{Extra credit}
+
+Make your heap expand as necessary to accomodate any number of assertions.
+To achieve this, instead of failing when the heap is full, ^insert!^ should
+allocate a new vector that doubles the capacity and copy the existing element
+over from the old vector.
+
+\subsection*{Deliverables}
+
+\begin{itemize}
+  \item The provided file \sourcefile, containing:
+    \begin{itemize}
+      \item the ^insert!^, ^find-min^, and ^remove-min!^ functions fully defined, and
+      \item sufficient tests to convince yourself your code’s correctness.
+    \end{itemize}
+\end{itemize}
+
+\end{document}

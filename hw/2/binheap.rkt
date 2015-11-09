@@ -18,6 +18,8 @@ heap will also contain a comparison function for ordering the elements of the
 heap, so that your implementation can support heaps of integers, heaps of
 strings, heaps of whatits, heaps of sporkles, etc.
 
+YOUR TASK
+
 I've supplied a definition of a function `create` that returns a new, empty
 heap given a capacity and ordering function. Implementing the remaining
 operations is up to you:
@@ -28,20 +30,22 @@ operations is up to you:
 
  - remove-min! : [Heap X] -> Void
 
-See the function headers provided below, which include purpose statements as
-well. In order to help you factor your program effectively, I've included at
-the bottom of this file a list of helper functions with names, signatures
-(types), and purpose statements (brief functional descriptions). You are free
-to use as much or as little of this design as you like.
+Each operation must have worst-case time complexity O(log n), where n is
+the number of elements in the heap. See the function headers provided
+below, which include purpose statements as well. In order to help you
+factor your program effectively, I've included at the bottom of this
+file a list of helper functions with names, signatures (types), and
+purpose statements (brief functional descriptions). You are free to use
+as much or as little of this design as you like.
 
-Extra credit:
+EXTRA CREDIT
 
  - Make your heap expand as necessary to accomodate any number of assertions.
    To achieve this, instead of failing when the heap is full, `insert!` should
    allocate a new vector that doubles the capacity and copy the existing element
    over from the old vector.
 
-Deliverables:
+DELIVERABLES
 
  - This file, containing:
     + the `insert!`, `find-min`, and `remove-min!` functions fully defined, and
