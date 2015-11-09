@@ -29,6 +29,7 @@
 \usetikzlibrary{fit}
 % \usetikzlibrary{positioning}
 % \usetikzlibrary{scopes}
+\usetikzlibrary{shapes.geometric}
 
 \def\bigO#1{\ensuremath{\mathcal O(#1)}}
 \newcommand\fun[1]{\ensuremath{\lambda #1.\,}}
@@ -43,6 +44,7 @@
 \thicklines
 \urlstyle{sf}
 \graphicspath{{images/}}
+\setlength{\parskip}{.25em}
 
 \defaultfontfeatures{
     Mapping=tex-text,
@@ -311,6 +313,33 @@
     very thick,
     inner sep=3pt,
   },
+  treenode/.style={
+    circle,
+    draw=black,
+    inner sep=2pt,
+  },
+  subtree/.style={
+    treenode,
+    isosceles triangle,
+    isosceles triangle apex angle=30,
+    text width=1em,
+    align=center,
+    shape border rotate=90,
+    anchor=apex,
+    inner xsep=0pt,
+    inner ysep=4pt,
+    fill=orange!30!white,
+    draw=orange!50!black,
+  },
+  balance/.style={
+    draw=none,
+    color=green!70!black,
+    anchor=north,
+  },
+  bad balance/.style={
+    balance,
+    color=red,
+    },
   every path/.style={very thick},
   ref/.style={
     draw=red,
@@ -435,9 +464,8 @@
 \newcommand{\takeaways}{
   \begin{frame}{Take-aways}
     \begin{itemize}
-      \item What is the \emph{BST property}?
-      \item How do BST lookup, insertion, and deletion work?
-      \item Why does balance matter?
+      \item What is the AVL property?
+      \item How does AVL tree insertion maintain the property?
     \end{itemize}
   \end{frame}
 }
@@ -454,14 +482,15 @@
   \begin{tikzpicture}[opacity=0,overlay]\end{tikzpicture}
 
   \begin{center}
-  {\Huge Self-Balancing BSTs}
+    {\Huge AVL\footnote{Georgy \textbf Adelson-\textbf Velsky and
+    Evgenii \textbf Landis} Trees}
 
   \bigskip
   \Large
   EECS 214
 
   \medskip
-  November 6, 2015
+  November 9, 2015
   \end{center}
 \end{frame}
 
@@ -475,85 +504,14 @@
 ; -- (branch [BinTree X] X [BinTree X])
 (define-struct leaf [])
 (define-struct branch [left element right])
+
+; A [BST X] is a [BinTree X]
+; that satisfies the BST property
   \end{asl}
 \end{frame}
 
-\begin{frame}[fragile]{The \emph{BST property}}
-  To be a BST, a binary search tree needs to be ordered:
-  \begin{asl}
-; [BST Integer] -> Boolean
-(define (int-bst? tree)
-  (int-bst-within? -INF.0 tree +INF.0))
-
-; Number IntBST Number -> Boolean
-(define (within? min tree max)
-  (or
-   (leaf? tree)
-   (and
-    (< min (element tree) max)
-    (within? min (left tree) (element tree))
-    (within? (element tree) (right tree) max))]))
-  \end{asl}
-\end{frame}
-
-\begin{frame}[fragile]{Two helpful definitions}
-  \begin{asl}
-; An [Ord X] is a function [X X -> Boolean]
-; Invariant: must be a total order on Xs
-\end{asl}
-\pause
-  \begin{asl}
-; A [Maybe X] is one of:
-; -- X
-; -- #false
-  \end{asl}
-\end{frame}
-
-\begin{frame}[fragile]{Binary search}
-The BST property enables binary search:
-\begin{asl}
-; [Ord X] X [BST X] -> [Maybe X]
-(define (lookup lt? needle haystack)
-  (cond
-    [(leaf? haystack) #false]
-    [(lt? needle (element haystack))
-     (lookup lt? needle (left haystack))]
-    [(lt? (element haystack) needle)
-     (lookup lt? needle (right haystack))]
-    [else
-     (element haystack)]))
-\end{asl}
-\end{frame}
-
-\begin{frame}[fragile]{Insertion is similar}
-\begin{asl}
-; [Ord X] X [BST X] -> [BST X]
-(define (insert lt? new tree)
-  (cond
-    [(leaf? tree) (make-branch LEAF new LEAF)]
-    [(lt? new (element tree))
-     (make-branch (insert lt? new (left tree))
-                  (element tree)
-                  (right tree))]  
-    [(lt? (element tree) new)
-     (make-branch (left tree)
-                  (element tree)
-                  (insert lt? new (right tree)))]
-    [else
-     (make-branch (left tree) new (right tree))]))
-\end{asl}
-\end{frame}
-
-\begin{frame}[fragile]{Binary search is \bigO{\log n}, right?}
-  Start with the empty tree.
-  \uncover<2->{Insert 1.}
-  \uncover<3->{Insert 2.}
-  \uncover<4->{Insert 3.}
-  \uncover<5->{Insert 4.}
-  \uncover<6->{Insert 5.}
-  \uncover<7->{Insert 6.}
-  \uncover<8->{Insert 7.}
-  \uncover<9->{Insert 8.}
+\begin{frame}[fragile]{Problem!}
+  Binary search is \bigO{\log n}, right?
   \begin{center}
   \begin{tikzpicture}[
         every node/.style={
@@ -562,56 +520,294 @@ The BST property enables binary search:
           inner sep=2pt,
         }
       ]
-    \node<2-> (n1) at (0,0) {1};
-    \node<3-> (n2) at (.5,-.5) {2} edge (n1);
-    \node<4-> (n3) at (1,-1) {3} edge (n2);
-    \node<5-> (n4) at (1.5,-1.5) {4} edge (n3);
-    \node<6-> (n5) at (2.0,-2.0) {5} edge (n4);
-    \node<7-> (n6) at (2.5,-2.5) {6} edge (n5);
-    \node<8-> (n7) at (3.0,-3.0) {7} edge (n6);
-    \node<9-> (n8) at (3.5,-3.5) {8} edge (n7);
-      ;
+    \node (n1) at (0,0) {1};
+    \uncover<2->{\node (n2) at (.5,-.5) {2} edge (n1);}
+    \uncover<3->{\node (n3) at (1,-1) {3} edge (n2);}
+    \uncover<4->{\node (n4) at (1.5,-1.5) {4} edge (n3);}
+    \uncover<5->{\node (n5) at (2.0,-2.0) {5} edge (n4);}
+    \uncover<6->{\node (n6) at (2.5,-2.5) {6} edge (n5);}
+    \uncover<7->{\node (n7) at (3.0,-3.0) {7} edge (n6);}
+    \uncover<8->{\node (n8) at (3.5,-3.5) {8} edge (n7);}
   \end{tikzpicture}
+  \end{center}
+  \uncover<9->{Only if the tree is (sufficiently) balanced.}
+\end{frame}
+
+\begin{frame}{Solution}
+  We need some balance.
+
+  \pause
+  \bigskip
+  There is a variety of self-balancing trees\ldots
+\end{frame}
+
+\newcommand{\invars}[3]{
+    %\begin{minipage}{2in}
+      \raggedright
+      \textbf{Main idea:}~#1
+      \par\bigskip
+      \textbf{Local invariant:}~#2
+      \par\bigskip
+      \textbf{Global invariant:}~#3
+  %\end{minipage}
+}
+
+
+\begin{frame}[fragile]{Red-black trees}
+  \invars
+    {Every node has an extra bit marking it “red” or “black”}
+    {No red node has red children}
+    {Equal number of black nodes from root to every leaf}
+\end{frame}
+
+\begin{frame}[fragile]{2-3 trees}
+  \invars
+    {2-nodes have one element and two children; 3-nodes have two
+    elements and three children}
+    {All subtrees of a node have the same height}
+    {Every leaf is at the same depth}
+\end{frame}
+
+\begin{frame}[fragile]{2-4 trees}
+  \invars
+    {Like 2-3 trees, but also has 4-nodes with three elements and four
+    children.}
+    {All subtrees of a node have the same height}
+    {Every leaf is at the same depth}
+\end{frame}
+
+\begin{frame}[fragile]{B-trees}
+  \invars
+    {Generalization of 2-4 trees to 2-$k$ trees}
+    {Like 2-4 trees, but allow some number of missing subtrees}
+    {Every leaf is at the same depth}
+\end{frame}
+
+\begin{frame}[fragile]{Splay trees}
+  \invars
+    {Cache recently access elements near the root of the tree}
+    {\emph{Need amortized analysis to talk about this}}
+    {Paths are \emph{very likely} to be \bigO{\log n}}
+\end{frame}
+
+\begin{frame}[fragile]{AVL trees}
+  \invars
+    {Maintain a \emph{balance factor} giving the difference between
+     each node’s subtrees’ heights}
+    {Balance factor is at most 1}
+    {Tree is approximately height-balanced}
+\end{frame}
+
+\begin{frame}{Big theme!}
+  \begin{center}
+    \LARGE
+    We can ensure a global property by maintaining a local property
   \end{center}
 \end{frame}
 
-\begin{frame}{We need some balance!}
-  There are a variety of self-balancing trees:
-  \begin{itemize}
-    \item Red-black trees
-    \item Splay trees
-    \item 2-3 trees
-    \item 2-4 trees
-    \item B trees
-    \item and so on...
-  \end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]{The \emph{AVL property}}
-  An AVL tree is \emph{height balanced}:
-  For every node, the heights of its left and right subtrees can differ
-  by at most 1
-  \par\pause
-  \medskip
-  We keep the balance in each node:
-  \begin{asl}
-; An [AVLTree X] is one of:
-; -- (leaf)
-; -- (branch Balance [AVLTree X] X [AVLTree X])
-; where Balance is the integer interval [-1, 1]
-;
-; Invariant: for all nodes n,
-;   (= (balance n)
-;      (- (height (right n)) (height (left n))))
+\begin{frame}[fragile]{AVL tree data definition}
+Each branch includes a balance factor of type ^B^:
+\begin{asl}
 (define-struct leaf [])
 (define-struct branch [balance left element right])
-  \end{asl}
+
+; A [PreAVLTree B X] is one of:
+; -- (make-leaf)
+; -- (make-branch B [PreAVLTree B X]
+;                 X [PreAVLTree B X])
+; satisfying the BST property
+
+; An [AVLTree X] is [PreAVLTree [-1, 1] X]
+; satisfying the AVL property as well
+\end{asl}
 \end{frame}
 
-\begin{frame}[c]{Big theme!}
+\begin{frame}[fragile]{Defining the AVL property}
+  The AVL property relies on balance factors, so it requires that
+  balance factors be accurate.
+  \\\hfill\emph{See function ^accurate-balances?^ in ^avl.rkt^.}
+
+  \par\bigskip
+  Then we require that every balance factor be ^-1^, ^0^, or ^1^.
+  \\\hfill\emph{See function ^avl-balances?^ in ^avl.rkt^.}
+
+  \par\bigskip
+\begin{asl}
+; avl? : [PreAVLTree Integer X] -> Boolean
+; Is the tree actually an AVL tree?
+(define (avl? tree)
+  (and (bst? tree)
+       (accurate-balances? tree)
+       (avl-balances? tree)))
+\end{asl}
+\end{frame}
+
+\begin{frame}[fragile]{Maintaining the AVL property}
+  Suppose we have an AVL tree:
+
   \begin{center}
-  Local properties induce global properties.
+  \begin{tikzpicture}[every node/.style={treenode}]
+    \draw
+    node (B) at (0, 0) {B}
+      node[balance] at (B.south) {0}
+    node[subtree] (A) at (-.5,-.5) {A}
+    node[subtree] (C) at (.5, -.5) {C}
+    (A.apex) -- (B)
+    (C.apex) -- (B)
+    ;
+  \end{tikzpicture}\\
+\small(Convention: triangles represent equal-height subtrees.)
 \end{center}
+\pause
+Right now the balance factor is ^0^. So if we insert into A or C and
+that subtree grows in height, it becomes ^-1^ or ^1^.
+\end{frame}
+
+\begin{frame}[fragile]{Maintaining the AVL property}
+  \begin{center}
+  \begin{tikzpicture}[every node/.style={treenode}]
+    \draw
+    node (B) at (0, 0) {B}
+      node[balance] at (B.south) {1}
+    node[subtree] (A) at (-.5,-.5) {A}
+      (A.apex) -- (B)
+    node (D) at (1,-1) {D} edge (B)
+      node[balance] at (D.south) {0}
+    node[subtree] (C) at (.5, -1.5) {C}
+      (C.apex) -- (D)
+    node[subtree] (E) at (1.5, -1.5) {E}
+      (E.apex) -- (D)
+    ;
+  \end{tikzpicture}\\
+\end{center}
+Right now the balance factor at B is ^1^.
+\par
+\begin{overprint}
+  \onslide<1-2>
+Suppose we insert into A. What happens to B's balance factor?
+  \begin{itemize}
+    \item<2-> If no change in A's height, then B's balance doesn't change
+    \item<2-> If A's height increases, then B's balance is now ^0^
+  \end{itemize}
+  \onslide<3-5>
+   Suppose we insert into C. What happens to B's balance factor?
+  \begin{itemize}
+    \item<4-> If no change, then B's balance doesn't change
+    \item<4-> If increase, then B's balance becomes
+      \alert{^2^}\uncover<5->{---not okay!}
+  \end{itemize}
+  \onslide<6>
+   Likewise, suppose we insert into E. What happens to B's balance factor?
+  \begin{itemize}
+    \item If no change, then B's balance doesn't change
+    \item If increase, then B's balance becomes
+      \alert{^2^}---not okay!
+  \end{itemize}
+\end{overprint}
+\end{frame}
+
+\begin{frame}[fragile]{Right-right case}
+    If the height the right-right subtree (formerly E) increases, we
+    get a situation like this:
+  \begin{center}
+  \begin{tikzpicture}[
+      every node/.style={treenode},
+      baseline=-2,
+  ]
+    \draw
+    node (B) at (0, 0) {B}
+      node[bad balance] at (B.south) {2}
+    node[subtree] (A) at (-.5,-.5) {A}
+      (A.apex) -- (B)
+    node (D) at (1,-1.5) {D} edge (B)
+      node[balance] at (D.south) {1}
+    node[subtree] (C) at (.5, -2) {C}
+      (C.apex) -- (D)
+    node (F) at (2,-3) {F} edge (D)
+      node[balance] at (F.south) {0}
+    node[subtree] (E) at (1.5, -3.5) {E}
+      (E.apex) -- (F)
+    node[subtree] (G) at (2.5, -3.5) {G}
+      (G.apex) -- (F)
+    ;
+  \end{tikzpicture}%
+  \uncover<2->{$\quad\Longrightarrow\quad$%
+  \begin{tikzpicture}[
+      every node/.style={treenode},
+      baseline=-2,
+  ]
+    \draw
+    node (D) at (0, 0) {D}
+      node[balance] at (D.south) {0}
+    node (B) at (-1,-1) {B} edge (D)
+      node[balance] at (B.south) {0}
+    node (F) at (1,-1) {F} edge (D)
+      node[balance] at (F.south) {0}
+    node[subtree] (A) at (-1.5,-1.5) {A}
+      (A.apex) -- (B)
+    node[subtree] (C) at (-.5, -1.5) {C}
+      (C.apex) -- (B)
+    node[subtree] (E) at (.5, -1.5) {E}
+      (E.apex) -- (F)
+    node[subtree] (G) at (1.5, -1.5) {G}
+      (G.apex) -- (F)
+    ;
+  \end{tikzpicture}%
+  }
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Right-left case}
+    If the height the right-right subtree (formerly C) increases, we
+    get a situation like this:
+  \begin{center}
+  \begin{tikzpicture}[
+      every node/.style={treenode},
+      baseline=-2,
+  ]
+    \draw
+    node (B) at (0, 0) {B}
+      node[bad balance] at (B.south) {2}
+    node[subtree] (A) at (-.5,-.5) {A}
+      (A.apex) -- (B)
+    node (F) at (2,-1.5) {F} edge (B)
+      node[balance] at (F.south) {-1}
+    node[subtree] (G) at (2.5, -2) {G}
+      (G.apex) -- (F)
+    node (D) at (1,-3) {D} edge (F)
+      node[balance] at (D.south) {0}
+    node[subtree] (C) at (0.5, -3.5) {C}
+      (C.apex) -- (D)
+    node[subtree] (E) at (1.5, -3.5) {E}
+      (E.apex) -- (D)
+    ;
+  \end{tikzpicture}%
+  \only<2->{$\quad\Longrightarrow\quad$%
+  \begin{tikzpicture}[
+      every node/.style={treenode},
+      baseline=-2,
+  ]
+    \draw
+    node (B) at (0, 0) {B}
+      node[bad balance] at (B.south) {2}
+    node[subtree] (A) at (-.5,-.5) {A}
+      (A.apex) -- (B)
+    node (D) at (1,-1.5) {D} edge (B)
+      node[balance] at (D.south) {1}
+    node[subtree] (C) at (.5, -2) {C}
+      (C.apex) -- (D)
+    node (F) at (2,-3) {F} edge (D)
+      node[balance] at (F.south) {0}
+    node[subtree] (E) at (1.5, -3.5) {E}
+      (E.apex) -- (F)
+    node[subtree] (G) at (2.5, -3.5) {G}
+      (G.apex) -- (F)
+    ;
+  \end{tikzpicture}%
+  }
+  \end{center}
+  \uncover<3->{This is just the right-right case, which we know how to
+  handle.}
 \end{frame}
 
 \takeaways

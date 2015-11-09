@@ -149,12 +149,12 @@
          [(leaf? tree) 0]
          [(branch? tree)
           (local
-            [(define height-left (height (left tree)))
-             (define height-right (height (right tree)))]
-            (if (or (false? height-left) (false? height-right)
-                    (not (= (balance tree) (- height-right height-left))))
-                #false
-                (+ 1 (max height-left height-right))))]))]
+            [(define l-height (height (left tree)))
+             (define r-height (height (right tree)))]
+            (if (or (false? l-height) (false? r-height)
+                    (not (= (balance tree) (- r-height l-height))))
+              #false
+              (+ 1 (max l-height r-height))))]))]
     (number? (height tree))))
 
 ; avl-balances? : [PreAVLTree Integer X] -> Boolean
@@ -201,9 +201,13 @@
 ; Invariant: avl?
 
 ; An [AVLInsertResult X] is (make-avl-insert-result [AVLTree X] Boolean)
-(define-struct avl-insert-result (node grew?))
+(define-struct avl-insert-result [node grew?])
 ; Interpretation: grew? tells us that the tree grew in height
 
+;; X [AVLTree X] [X X -> Boolean] -> [AVLTree X]
+;; insert an element into the tree
+(define (insert le? new tree)
+  (avl-insert-result-node (insert/helper le? new tree)))
 
 ;; X [AVLTree X] [X X -> Boolean] -> [AVLInsertResult X]
 ;; insert and report if the tree grew at all
