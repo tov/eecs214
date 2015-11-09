@@ -6,17 +6,18 @@
 HW2: Binary Heaps
 EECS 214, Fall 2015
 
-Due:        Monday, November 16, at 11:59 PM
-Submission: Canvas
-Partners:   You may work on your own or with one (1) partner.
+Due: Monday, November 16, at 11:59 PM, on Canvas
 
-In this assignment, you will implement a fixed-size binary heap. The structure
-of the heap is already defined for you—see the `heap` struct below. The heap
-is represented using an ASL vector to contain the elements. (ASL vectors are
-like other languages' arrays in that the size is fixed at create time.) Each
-heap will also contain a comparison function for ordering the elements of the
-heap, so that your implementation can support heaps of integers, heaps of
-strings, heaps of whatits, heaps of sporkles, etc.
+*** You may work on your own or with one (1) partner. ***
+
+In this assignment, you will implement a fixed-size binary heap. The
+structure of the heap is already defined for you in this file—see the
+`heap` struct below. The heap is represented using an ASL vector to
+contain the elements. (ASL vectors are like other languages' arrays in
+that the size is fixed at create time.) Each heap will also contain a
+comparison function for ordering the elements of the heap, so that your
+implementation can support heaps of integers, heaps of strings, heaps of
+whatits, heaps of sporkles, etc.
 
 YOUR TASK
 
@@ -30,13 +31,13 @@ operations is up to you:
 
  - remove-min! : [Heap X] -> Void
 
-Each operation must have worst-case time complexity O(log n), where n is
-the number of elements in the heap. See the function headers provided
-below, which include purpose statements as well. In order to help you
-factor your program effectively, I've included at the bottom of this
-file a list of helper functions with names, signatures (types), and
-purpose statements (brief functional descriptions). You are free to use
-as much or as little of this design as you like.
+For details, see the function headers provided below, which include
+purpose statements as well. Each operation must have worst-case time
+complexity O(log n), where n is the number of elements in the heap. In
+order to help you factor your program effectively, I've included at the
+bottom of this file a list of helper functions with names, signatures
+(types), and purpose statements (brief functional descriptions). You are
+free to use as much or as little of my design as you like.
 
 EXTRA CREDIT
 
