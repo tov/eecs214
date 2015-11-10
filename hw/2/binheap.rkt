@@ -52,6 +52,11 @@ DELIVERABLES
     + the `insert!`, `find-min`, and `remove-min!` functions fully defined, and
     + sufficient tests to convince yourself your code’s correctness.
 
+CHANGELOG
+
+[Tue, 10 Nov 2015 17:13:59]
+  Changed “in-order” to “level-order” in the description of the heap property.
+
 |#
 
 ; A [Maybe X] is one of:
@@ -70,7 +75,7 @@ DELIVERABLES
 ; - (heap-lt? h) is the ordering used by the heap
 ; - (heap-data h) is a vector containing the heap's elements, where the
 ;   first (heap-size h) elements are an implicit complete binary tree (i.e.,
-;   they contain the in-order traversal of the represented tree as we saw
+;   they contain the level-order traversal of the represented tree as we saw
 ;   in class.
 ;
 ; Invariant: The implicit tree satisfies the min-heap property; that is,
