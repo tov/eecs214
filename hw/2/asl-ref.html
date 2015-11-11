@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<!--vim: sw=2 fileencoding=utf-8:
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>A brief introduction to ASL</title>
+  <link rel="stylesheet" media="screen" href="../../css/screen.css" />
+  <link rel="stylesheet" media="print" href="../../css/print.css" />
+
+  <style>
+.lit {
+  color: #2aa198;
+}
+
+    .nt {
+      font-style: italic;
+      color: #6c71c4;
+    }
+
+    .kw {
+      font-weight: bold;
+    }
+  </style>
+
+</head>
+
+<body>
+  <header>
+    <h1 class="head">A brief introduction to ASL</h1>
+  </header>
+
+  <p>
+  This document includes a <a href="#reference">list</a> of everything
+  in the language you need to know/use for the
+  <a href="binheap.pdf">HW2</a>, followed by two small
+  <a href="#examples">examples</a>. (You can find more examples in
+  the lecture notes.)
+
+  <h2 id="reference">
+    Language reference
+  </h2>
+
+  <p>
+  The language is presented in several groups by syntactic category
+  (<code class="nt">definition</code>, <code class="nt">expr</code>,
+  <code class="nt">test-case</code>) and function (arithmetic,
+  vectors,control). Each item is linked to its documentation.
+
+  <p>
+  An ASL program is a sequence of <code class="nt">definition</code>s and
+  <code class="nt">test-case</code>s. Unlike in other languages, parentheses
+  have meaning rather than being for grouping. Thus, the parentheses in
+  each form are required, and extra parentheses are an error. The
+  ellipsis (<code class="nt">...</code>) indicates a sequence of
+  whatever precedes it; for example, <code class="nt">exprs...</code> means
+  a sequence of one or more expressions.
+
+  <h3>
+    Definition forms (<code class="nt">definition</code>)
+  </h3>
+
+  <ul>
+    <li><code>(<span class="kw"><a
+                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._define%29%29">define</a></span> (<span class="nt">fun-name arg-names...</span>) <span class="nt">body-expr</span>)</code> for defining functions</li>
+    <li><code>(<span class="kw"><a
+                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._define%29%29">define</a></span> <span class="nt">var-name value-expr</span>)</code> for defining variables</li>
+    <li><code>(<span class="kw"><a
+                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._define-struct%29%29">define-struct</a></span> <span class="nt">struct-name</span> [<span class="nt">field-names</span>...])</code> for
+      defining structures—see the <code><span class="kw"><a
+                                              href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._define-struct%29%29">define-struct</a></span></code>
+      <a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._define-struct%29%29">documentation</a> for the list of functions introduced when a struct is defined</li>
+  </ul>
+
+  <h3>
+    Testing forms (<code class="nt">test-case</code>)
+  </h3>
+
+  <ul>
+    <li><code>(<span class="kw"><a
+                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._check-expect%29%29">check-expect</a></span> <span class="nt">test-expr</span> <span class="nt">result-expr</span>)</code> for checking the result of an expression</li>
+    <li><code>(<span class="kw"><a
+                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._check-error%29%29">check-error</a></span> <span class="nt">text-expr</span>)</code> for testing that an expression produces an error</li>
+  </ul>
+
+  <h3>
+    Expression forms (<code class="nt">expr</code>)
+  </h3>
+
+  <h4>
+    Control expression forms
+  </h4>
+
+  <ul>
+    <li><code>(<span class="kw"><a
+                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._if%29%29">if</a></span> <span class="nt">bool-expr then-expr else-expr</span>)</code> for conditional expressions</li>
+    <li><code>(<span class="kw"><a
+                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._and%29%29">and</a></span> <span class="nt">bool-exprs...</span>)</code> for short-circuiting
+      boolean and (like <code class="kw">&amp;&amp;</code>
+      in C/C++/Java/Ruby or <code class="kw">&amp;</code> in Python)</li>
+    <li><code>(<span class="kw"><a
+                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._or%29%29">or</a></span> <span class="nt">bool-exprs...</span>)</code> for short-circuiting
+      boolean or (like <code class="kw">||</code> in C/C++/Java/Ruby or
+      <code class="kw">|</code> in Python)</li>
+    <li><code>(<span class="kw"><a
+                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._begin%29%29">begin</a></span> <span class="nt">exprs...</span>)</code> for combining several expressions into one expression that evaluates them in order</li>
+    <li><code>(<span class="kw"><a
+                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._local%29%29">local</a></span> [<span class="nt">definitions...</span>] <span class="nt">body-expr</span>)</code> for defining local variables</li>
+    <li><code>(<a
+                     href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._void%29%29"
+                     >void</a>)</code>  for when you don’t want to do/return anything
+                 (like <code class="kw">pass</code> in Python)—useful, for example,
+                 when you only want to do something in one branch of an <code
+                           class="kw"><a
+                           href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._if%29%29"
+                           >if</a></code> expression</li>
+    <li><code>(<a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._error%29%29" >error</a> <span class="nt">string-exprs...</span>)</code>  for signaling errors</li>
+  </ul>
+
+  <h4>
+    Value literals
+  </h4>
+
+  <ul>
+    <li>Booleans <code class="lit">#false</code>  and <code class="lit">#true</code></li>
+    <li>Numbers such as <code class="lit">1</code>, <code class="lit">2</code>,
+      <code class="lit">-3</code>, <code class="lit">4.5</code>, and <code
+                                   class="lit">3/5</code></li>
+    <li>Strings such as <code class="lit">"Cannot remove-min from empty heap"</code></li>
+  </ul>
+
+  <h4>
+    Arithmetic operations
+  </h4>
+
+  <ul>
+    <li><code>(<a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._%2B%29%29">+</a> <span class="nt">num-exprs...</span>)</code></li>
+    <li><code>(<a
+                                                                                                                                                                              href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._-%29%29">-</a> <span class="nt">num-expr num-expr</span>)</code> </li>
+    <li><code>(<a
+                                                                                                                                                                              href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._%2A%29%29">*</a> <span class="nt">num-exprs...</span>)</code> </li>
+    <li><code>(<a
+                                                                                                                                                                              href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._%2F%29%29">/</a> <span class="nt">num-expr num-expr</span>)</code> </li>
+    <li><code>(<a
+                                                                                                                                                                              href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._~3d%29%29">=</a> <span class="nt">num-expr num-expr</span>)</code> for testing numeric equality</li>
+    <li><code>(<a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._~3c%29%29">&lt;</a> <span class="nt">num-exprs...</span>)</code> for testing numeric less-than</li>
+    <li><code>(<a
+                                                                                                                                                                              href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._floor%29%29">floor</a> <span class="nt">num-expr</span>)</code> for rounding down to the nearest integer</li>
+    <li><code>(<a
+                                                                                                                                                                              href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._number~3f%29%29">number?</a> <span class="nt">expr</span>)</code> for testing whether a value is a number</li>
+  </ul>
+
+  <h4>
+    Vector operations
+  </h4>
+
+  <ul>
+    <li><code>(<a
+                                                                                                                                                                              href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._make-vector%29%29">make-vector</a> <span class="nt">size-expr
+                                                                                                                                                                              init-expr</span>)</code> for creating a new vector</li>
+    <li><code>(<a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._vector-length%29%29">vector-length</a> <span class="nt">vec-expr</span>)</code> for finding out the size of a vector</li>
+    <li><code>(<a
+                                                                                                                                                                              href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._vector-ref%29%29">vector-ref</a> <span class="nt">vec-expr index-expr</span>)</code> for getting an element of a vector</li>
+    <li><code>(<a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._vector-set%21%29%29">vector-set!</a> <span class="nt">vec-expr index-expr value-expr</span>)</code> for setting an element of a vector</li>
+  </ul>
+
+  <h2 id="examples">
+    Examples
+  </h2>
+
+  <h3>
+    Example for <code class="kw"><a
+                    href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._begin%29%29">begin</a></code>
+    and a local variable definition
+  </h3>
+
+  <p>
+  As an example, here is a function that rotates three elements of a
+  vector so that element <code>k</code>  goes to <code>j</code>, <code>j</code>  goes
+  to <code>i</code>, and <code>i</code> goes to <code>k</code>:
+  </p>
+
+  <code>  (<span class="kw"><a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._define%29%29">define</a></span> (rot3-vector vec i j k)
+    (<span class="kw"><a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._local%29%29">local</a></span> [(<span class="kw"><a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._define%29%29">define</a></span> old-i (<a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._vector-ref%29%29">vector-ref</a> vec i))]
+      (<span class="kw"><a
+                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._begin%29%29">begin</a></span>
+        (<a
+                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._vector-set%21%29%29">vector-set!</a> vec i (<a
+                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._vector-ref%29%29">vector-ref</a> vec j))
+        (<a
+                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._vector-set%21%29%29">vector-set!</a> vec j (<a
+                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._vector-ref%29%29">vector-ref</a> vec k))
+        (<a
+                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._vector-set%21%29%29">vector-set!</a> vec k (<a
+                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._vector-ref%29%29">vector-ref</a> vec old-i)))))</code>
+
+  <p>
+  The function uses <code class="kw"><a
+                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._local%29%29">local</a></code> in order to define a temporary variable
+  <code>old-i</code> to
+  hold the old value of <code>i</code>. The form <code class="kw"><a
+                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._begin%29%29">begin</a></code> is used in order to group the
+  three vector update expressions into one expression that performs them
+  in sequence.  
+
+  <h3>
+    Example for vectors and a local function definition
+  </h3>
+
+  <p>
+  Here is an example of a function that adds up the elements of a vector
+  of numbers:
+  </p>
+   
+  <code>  (<span class="kw"><a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._define%29%29">define</a></span> (sum-vector vec) 
+    (<span class="kw"><a
+                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._local%29%29">local</a></span>
+      [(<span class="kw"><a
+href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._define%29%29">define</a></span> (sum-from-index i)
+         (if (<a
+                 href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._~3c%29%29">&lt;</a> i (<a
+                 href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._vector-length%29%29">vector-length</a> vec))
+           (<a
+                 href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._%2B%29%29">+</a> (<a
+                 href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._vector-ref%29%29">vector-ref</a> vec i) 
+              (sum-from-index (<a
+                 href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._%2B%29%29">+</a> i <span class="lit">1</span>))) 
+           <span class="lit">0</span>))]
+      (sum-from-index <span class="lit">0</span>)))</code>
+   
+  <p>
+  In order to loop over the vector, the function uses a local helper
+  function <code>sum-from-index</code>, which sums up vector <code>vec</code>
+  from index <code>i</code>to the end. Note that the sum of a vector
+  from <code>i</code> to the end equals the value at<code>i</code>   plus the
+  sum from <code>i + 1</code> to the end. Loops that you write, say, for
+  bubbling up, will need to be defined similarly by recursion. 
+
+
+</body>
+</html>
