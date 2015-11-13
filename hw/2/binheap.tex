@@ -142,15 +142,15 @@ In \sourcefile, I've supplied a definition of a function ^create^ that
 returns a new, empty heap given a capacity and ordering function.
 Implementing the remaining operations is up to you:
 
-\begin{tabular}{l@{\texttt{ : }}l}
- ^insert!^     & ^[Heap X] X -> Void^ \\
- ^find-min^    & ^[Heap X] -> X^ \\
- ^remove-min!^ & ^[Heap X] -> Void^ \\
+\begin{tabular}{l@{\texttt{ : }}l@{\hspace{2em}\texttt{;~}}l}
+  ^insert!^     & ^[Heap X] X -> Void^ & $\mathcal O(\log n)$ \\
+  ^find-min^    & ^[Heap X] -> X^ &      $\mathcal O(1)$ \\
+  ^remove-min!^ & ^[Heap X] -> Void^ &   $\mathcal O(\log n)$ \\
 \end{tabular}
 
 For details, see the function headers provided in \sourcefile, which
-include purpose statements as well. Each operation must have worst-case
-time complexity $\mathcal O(\log n)$, where $n$ is the number of
+include purpose statements as well. Each operation must have the worst-case
+shown above, where $n$ is the number of
 elements in the heap. In order to help you factor your program
 effectively, I've included at the bottom of \sourcefile{} a list of
 helper functions with names, signatures (types), and purpose statements

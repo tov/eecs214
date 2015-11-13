@@ -25,15 +25,15 @@ I've supplied a definition of a function `create` that returns a new, empty
 heap given a capacity and ordering function. Implementing the remaining
 operations is up to you:
 
- - insert!     : [Heap X] X -> Void
+ - insert!     : [Heap X] X -> Void     ; O(log n)
 
- - find-min    : [Heap X] -> X
+ - find-min    : [Heap X] -> X          ; O(1)
 
- - remove-min! : [Heap X] -> Void
+ - remove-min! : [Heap X] -> Void       ; O(log n)
 
 For details, see the function headers provided below, which include
-purpose statements as well. Each operation must have worst-case time
-complexity O(log n), where n is the number of elements in the heap. In
+purpose statements as well. Each operation must have the worst-case time
+complexity listed above, where n is the number of elements in the heap. In
 order to help you factor your program effectively, I've included at the
 bottom of this file a list of helper functions with names, signatures
 (types), and purpose statements (brief functional descriptions). You are
