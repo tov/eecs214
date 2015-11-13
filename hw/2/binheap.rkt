@@ -79,9 +79,9 @@ CHANGELOG
 ;   in class.
 ;
 ; Invariant: The implicit tree satisfies the min-heap property; that is,
-; if c is the index of some node and p is the index of its parent then
-;    ((heap-lt? h) p c)
-; must be true.
+; if c is the value of some element and p is the value of its parent then
+;    (not ((heap-lt? h) c p))
+; must be true. That is, children cannot be less than parents.
 
 ; create : N [Ord X] -> [Heap X]
 ; Creates a new heap with capacity `capacity` and order `lt?`.
