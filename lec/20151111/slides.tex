@@ -1,0 +1,770 @@
+\RequirePackage[l2tabu, orthodox]{nag}
+
+\documentclass{beamer}
+
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+%??? :( \usepackage[MnSymbol]{mathspec}
+\usepackage{mathspec}
+\usepackage[final]{listings}
+\usepackage{graphicx}
+
+%\setallmainfonts{TeX Gyre Schola}
+\setallmonofonts{Menlo}
+
+%\usepackage{xunicode}
+%\usepackage{xltxtra}
+%\usepackage{graphicx}
+%\usepackage{forloop}
+%\usepackage{stmaryrd}
+%\usepackage{mathtools}
+%\usepackage{fancyvrb}
+
+\usepackage{tikz}
+% \usetikzlibrary{arrows.meta}
+% \usetikzlibrary{backgrounds}
+\usetikzlibrary{calc}
+% \usetikzlibrary{datavisualization}
+% \usetikzlibrary{datavisualization.formats.functions}
+\usetikzlibrary{math}
+% \usetikzlibrary{fit}
+% \usetikzlibrary{positioning}
+% \usetikzlibrary{scopes}
+% \usetikzlibrary{shapes.geometric}
+
+\def\bigO#1{\ensuremath{\mathcal O(#1)}}
+\def\BigO#1{\ensuremath{\mathcal O\left(#1\right)}}
+\newcommand\fun[1]{\ensuremath{\lambda #1.\,}}
+\renewcommand\T[1]{\ensuremath{T_{\mathit{#1}}}}
+
+%%%
+%%% BASIC SETTINGS
+%%%
+
+\frenchspacing
+\unitlength=0.01\textwidth
+\thicklines
+\urlstyle{sf}
+\graphicspath{{images/}}
+\setlength{\parskip}{.25em}
+
+\defaultfontfeatures{
+    Mapping=tex-text,
+    Scale=MatchLowercase,
+}
+
+%%%
+%%% LISTINGS SETUP
+%%%
+
+\lstdefinelanguage{ASL}%
+  {sensitive,%
+   alsoletter=-+*/\#?,%
+   alsodigit=-,%
+   morekeywords={%
+      and,%
+      begin,%
+      check-error,%
+      check-expect,%
+      check-within,%
+      cond,%
+      define,%
+      define-struct,%
+      else,%
+      if,%
+      lambda,%
+      local,%
+      or,%
+   },%
+   morekeywords=[2]{%
+     cons,%
+     \#true,%
+     \#false,%
+   },%
+   morekeywords=[3]{%
+     this-is-here-because-suck,%
+     cons?,%
+     empty?,%
+     -,+,*,/,%
+     first,%
+     rest,%
+   }%,
+   morecomment=[l];,%
+   morecomment=[s]{\#|}{|\#},%
+   morestring=[b]"%
+  }[keywords,comments,strings]%
+
+\lstnewenvironment{ASL}[1][]
+{%
+  \begingroup
+  \lstset{language=ASL,#1}%
+}
+{%
+  \endgroup
+}
+
+\lstnewenvironment{CXX}[1][]
+{%
+  \begingroup
+  \lstset{language=C++,#1}%
+}
+{%
+  \endgroup
+}
+
+\lstnewenvironment{Java}[1][]
+{%
+  \begingroup
+  \lstset{language=Java,#1}%
+}
+{%
+  \endgroup
+}
+
+\lstnewenvironment{Python}[1][]
+{%
+  \begingroup
+  \lstset{language=Python,#1}%
+}
+{%
+  \endgroup
+}
+
+
+\lstnewenvironment{Ruby}[1][]
+{%
+  \begingroup
+  \lstset{language=Ruby,#1}%
+}
+{%
+  \endgroup
+}
+
+\newcommand{\textcode}{%
+  \lstset{language=ASL,basicstyle=\ttfamily\small}%
+  \lstinline
+}
+
+\lstset{%
+  numberstyle=\scriptsize,
+  showspaces=false,
+  basicstyle=\ttfamily,
+  keywordstyle=\ttfamily\color{red!70!black},
+  keywordstyle=[2]\ttfamily\color{blue!70!black},
+  keywordstyle=[3]\ttfamily\color{green!40!black},
+  numberstyle=\ttfamily\color{blue!70!black},
+  commentstyle=\itshape\color{violet!80!black},
+  escapeinside={($}{$)},
+}
+
+\newcommand{\textasl}{%
+  \lstset{language=ASL,basicstyle=\ttfamily\small}%
+  \lstinline
+}
+
+\let\sup^
+
+\catcode`\^\active\relax
+\def^#1^{\textasl|#1|}
+
+%%%
+%%% BEAMER SETUP
+%%%
+
+\setbeamercolor{frametitle}{fg=black}
+\setbeamercolor{normal text}{fg=black}
+
+\usefonttheme{serif}
+
+\setbeamertemplate{frametitle}
+  {\begin{center}\medskip
+   \insertframetitle\par
+   \end{center}}
+
+\setbeamertemplate{itemize item}{$\bullet$}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[text line]{%
+    \hfill\strut{%
+        \small\color{black!75}%
+        \texttt{\insertframenumber:\insertframeslidenumber}%
+    }%
+    \hfill%
+}
+
+\makeatletter
+\newcount\frameslidetemp
+\newcommand\insertframeslidenumber{%
+  \frameslidetemp\c@page\relax
+  \advance\frameslidetemp-\beamer@startpageofframe\relax
+  \advance\frameslidetemp1\relax
+  \the\frameslidetemp
+}
+\makeatother
+
+%%%
+%%% GENERALLY USEFUL LITTLE MACROS
+%%%
+
+% For using \alt within verbatim:
+\newcommand\ALT[3]{\alt<#1>{#2}{#3}}
+
+% Or: \ALT = \S\alt
+\def\S#1#2{#2<#1>}
+
+\newcommand<>\always[1]{#1}
+
+\newcommand\widen[1][1.2]{%
+    \setlength\baselineskip{#1\baselineskip}%
+}
+
+%%%
+%%% COLORS
+%%%
+
+\newcommand\K[1]{\textcolor{orange!70!black}{#1}}
+\newcommand\REF{\textcolor{green!50!black}{ref}}
+
+%%%
+%%% TIKZ
+%%%
+
+% \place[STYLE]{LOCATION}{CONTENT} places CONTENT at LOCATION, applying
+% STYLE
+\newcommand\place[3][]{%
+  \tikz[orp] \node[#1] at (#2) {#3};%
+}
+
+% \anchor{NAME} creates an addressable TikZ coordinate at the current
+% location.
+\newcommand\anchor[1]{%
+  \tikz[orp] \coordinate (#1);%
+}
+
+% \nil{NODE} draws a slash across the node; if NODE is a square then we
+% get the standard graphic notation for null/nil.
+\newcommand\nil[1][1em]{%
+  \begin{tikzpicture}[nil]
+    \node[pointer tail, line width=0, opacity=0] {};
+    \draw[overlay]
+      node[pointer tail] (dummy) {}
+      (dummy.west |- dummy.south) -- (dummy.east |- dummy.north);
+  \end{tikzpicture}%
+}
+
+\makeatletter
+  \newcommand\cons[1][]{\cons@kont{#1}}
+  \def\cons@kont#1#2(#3)#4#5{\struct@kont{#1}{}(#3){#4&#5}}
+
+  \newcommand\struct[1][]{\struct@kont{#1}}
+  \def\struct@kont#1#2(#3)#4{
+      \node[draw, inner sep=0, #1] (#3) {%
+        \begin{tabular}{|*{100}{c|}}
+          \hline
+          #4\\
+          \hline
+        \end{tabular}
+      }
+  }
+\makeatother
+
+% \genpointer[STYLE]{BEND}{TARGET}
+\newcommand\genpointer[2][genpointer]{%
+  \tikz[remember picture, #1]
+    \draw
+      node[pointer tail] {}
+      edge[->, overlay] (#2) ;%
+}
+
+% \hpointer[BEND]{TARGET} for a highlighted pointer
+\newcommand\hpointer[2][]{%
+  \genpointer[highlit pointer,#1]{#2}%
+}
+
+% \ppointer[BEND]{TARGET} for a non-highlighted pointer
+\newcommand\ppointer[2][]{%
+  \genpointer[pointer,#1]{#2}%
+}
+
+% \pointer[BEND]{TARGET} is highlighted if used in a highlighted context
+\newcommand\pointer[2][]{%
+  \ifhighlit\let\pointertemp\hpointer\else\let\pointertemp\ppointer\fi
+  \pointertemp[#1]{#2}%
+}
+
+\newcommand\genpointerbase[2][genpointer]{%
+  \tikz[remember picture, #1]
+    \draw node[pointer tail] (#2) {};%
+}
+
+\newcommand\ppointerbase[2][genpointer]{%
+  \genpointerbase[pointer,#1]{#2}%
+}
+
+\newcommand\hpointerbase[2][genpointer]{%
+  \genpointerbase[highlit pointer,#1]{#2}%
+}
+
+\newcommand\pointerbase[2][]{%
+  \ifhighlit\let\pointertemp\hpointerbase\else\let\pointertemp\ppointerbase\fi
+  \pointertemp[#1]{#2}%
+}
+
+\newcommand\genpointerpoint[3][genpointer]{
+  \draw (#2) edge[->, remember picture, overlay, #1] (#3) ;
+}
+
+\newcommand\ppointerpoint[2][genpointer]{%
+  \genpointerpoint[pointer,#1]{#2}%
+}
+
+\newcommand\hpointerpoint[2][genpointer]{%
+  \genpointerpoint[highlit pointer,#1]{#2}%
+}
+
+\newcommand\pointerpoint[2][]{%
+  \ifhighlit\let\pointertemp\hpointerpoint\else\let\pointertemp\ppointerpoint\fi
+  \pointertemp[#1]{#2}%
+}
+
+\tikzset{
+  onslide/.code args={<#1>#2}{%
+    \only<#1>{\pgfkeysalso{#2}}
+  },
+  orp/.style={
+    overlay,
+    remember picture,
+  },
+  rem/.style={
+    remember picture,
+  },
+  every node/.style={
+    very thick,
+    inner sep=3pt,
+  },
+  treenode/.style={
+    circle,
+    draw=black,
+    inner sep=2pt,
+  },
+  subtree/.style={
+    treenode,
+    isosceles triangle,
+    isosceles triangle apex angle=30,
+    text width=1em,
+    align=center,
+    shape border rotate=90,
+    anchor=apex,
+    inner xsep=0pt,
+    inner ysep=4pt,
+    fill=orange!30!white,
+    draw=orange!50!black,
+  },
+  balance/.style={
+    draw=none,
+    color=green!70!black,
+    anchor=north,
+  },
+  bad balance/.style={
+    balance,
+    color=red,
+    },
+  every path/.style={very thick},
+  ref/.style={
+    draw=red,
+    densely dotted,
+    font=\ttfamily,
+  },
+  cons/.style={
+    draw=black,
+    font=\ttfamily,
+  },
+  genpointer/.style={
+    solid,
+    bend left=30,
+    >=Latex,
+  },
+  pointer/.style={
+    genpointer,
+    color=blue!50!black,
+    opacity=.5,
+  },
+  highlit pointer/.style={
+    genpointer,
+    color=red!70!black,
+  },
+  nil/.style={
+    color=black!50,
+  },
+  pointer tail/.style={
+    draw,
+    circle,
+    text width=0,
+    text height=1ex,
+    inner sep=0,
+  },
+  highlight base/.style={
+    outer color=#1!50,
+    inner color=#1!30,
+  },
+  highlight base/.default=yellow,
+  highlight/.style={
+    highlight base,
+    color=yellow!50!white!90!black,
+    draw opacity=0.5,
+    thick,
+    draw,
+    rounded corners=2pt,
+  },
+  bintree/.style={
+    level 1/.style={sibling distance=#1},
+    level 2/.style={sibling distance=#1/2},
+    level 3/.style={sibling distance=#1/4},
+    level 4/.style={sibling distance=#1/8},
+    level 5/.style={sibling distance=#1/16},
+  },
+  bintree/.default={8em},
+}
+
+\newif\ifhighlit
+\highlitfalse
+
+% \highlight<WHEN>[NAME]{CONTENT}
+\newcommand<>\highlight[2][\relax]{%
+  \ifx#1\relax
+    \begin{tikzpicture}
+  \else
+    \begin{tikzpicture}[remember picture]
+  \fi
+    \node[
+      inner sep=0pt,
+      outer sep=0pt,
+      text depth=0pt,
+      align=left,
+    ] (highlight temp) {%
+        \only#3{\highlittrue}%
+        #2%
+        \only#3{\highlitfalse}%
+    };
+    \begin{scope}[on background layer]
+      \coordinate (highlight temp 1) at
+        ($(highlight temp.north east) + (2pt,2pt)$);
+      \coordinate (highlight temp 2) at
+        ($(highlight temp.base west) + (-2pt,-3pt)$);
+      \node#3 [
+        overlay,
+        highlight,
+        inner sep=0pt,
+        fit=(highlight temp 1) (highlight temp 2),
+      ] {};
+    \end{scope}
+    \ifx#1\relax
+      \relax
+    \else
+      \node (#1) [
+        overlay,
+        inner sep=0pt,
+        fit=(highlight temp 1) (highlight temp 2),
+      ] {};
+    \fi
+  \end{tikzpicture}%
+}
+
+\newcommand\HI[2]{\highlight<#1>{#2}}
+
+% \huncover[NAME]{STEP}{CONTENT} uncovers from STEP onward, highlighting
+% at STEP but not thereafter.
+\newcommand\huncover[3][\relax]{%
+  \uncover<#2->{\highlight<#2>[#1]{#3}}%
+}
+
+% \huncover[NAME]{STEP}{CONTENT} onlys from STEP onward, highlighting
+% at STEP but not thereafter.
+\newcommand\honly[3][\relax]{%
+  \only<#2->{\highlight<#2>[#1]{#3}}%
+}
+
+\begin{document}
+
+%%%
+%%% TITLE PAGE
+%%%
+
+\newcommand{\takeaways}{
+  \begin{frame}{Take-aways}
+    \begin{itemize}
+      \item What is \emph{amortized time}?
+      \item How does amortized time differ from \emph{average time}?
+      \item When is amortized time useful, and when might we want to
+        avoid it?
+      \item How can we figure out the amortized time of data structure
+        operations?
+      \item How does a dynamic array achieve its amortized time complexity?
+    \end{itemize}
+  \end{frame}
+}
+
+\newcommand{\FN}[1]{\ensuremath{\mathop{\mathit{#1}}}}
+\newcommand{\PrioQ}{\ensuremath{\mathsf{PrioQ}}}
+\newcommand{\Element}{\ensuremath{\mathsf{Element}}}
+\newcommand{\Bool}{\ensuremath{\mathsf{Bool}}}
+
+\begin{frame}[fragile]\relax
+  \thispagestyle{empty}
+
+  %% Need to initialize Tikz opacity inside a frame, not outside:
+  \begin{tikzpicture}[opacity=0,overlay]\end{tikzpicture}
+
+  \begin{center}
+    {\Huge Amortized Analysis}
+
+  \bigskip
+  \Large
+  EECS 214
+
+  \medskip
+  November 11, 2015
+  \end{center}
+\end{frame}
+
+% \takeaways
+
+% \begin{frame}{Example: dynamic arrays}
+%   \centering
+%   \begin{tabular}{l|l}
+%     \textbf{Language} & \textbf{Type} \\
+%     \hline
+%     C++ & \texttt{std::vector} \\
+%     Java & \texttt{ArrayList} \\
+%     Python & \texttt{list} \\
+%     Ruby & \texttt{Array} \\ \pause
+%     C & \emph{you’re on your own} \\ \pause
+%     ASL & \emph{you’re on your own} \\
+%   \end{tabular}
+% \end{frame}
+
+% \begin{frame}[fragile]{Iteratively growing a dynamic array}
+%   \begin{CXX}
+% std::vector<int> v;
+% for (int i = 0; i < N; ++i) v.push_back(i);
+%   \end{CXX}
+%   \begin{Java}
+% ArrayList<Integer> v = new ArrayList<>();
+% for (int i = 0; i < N; ++i) v.add(i);
+%   \end{Java}
+%   \begin{Python}
+% v = list()
+% for i in range(0, 10): v.append(i)
+%   \end{Python}
+%   \begin{Ruby}
+% v = Array.new
+% for i in 0 ... N do v.push(i) end
+%   \end{Ruby}
+% \end{frame}
+
+% \newdimen\xval
+% \newdimen\yval
+
+% \begin{frame}[fragile]{Time per operation}
+%   \begin{center}
+%   \xval=0pt
+%   \begin{tikzpicture}
+%     \foreach \yval in {
+%         1,
+%         2,
+%         3,1,
+%         5,1,1,1,
+%         9,1,1,1,1,1,1,1,
+%         17,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+%         33,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+%         65,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+%           1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+%       }
+%       {
+%         \tikzmath{
+%           \yval = 2 * \yval;
+%         }
+%         \draw[line width=4pt,blue]
+%           (\xval,0) edge (\xval,\yval pt);
+%         \global\advance\xval by 2pt
+%       }
+%   \end{tikzpicture}\\
+%   \end{center}
+% \end{frame}
+
+% \begin{frame}[fragile]{Accumulated time}
+%   \begin{center}
+%   \xval=0pt
+%   \yval=0pt
+%   \begin{tikzpicture}[yscale=.5]
+%     \foreach \dyval in {
+%         1,
+%         2,
+%         3,1,
+%         5,1,1,1,
+%         9,1,1,1,1,1,1,1,
+%         17,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+%         33,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+%         65,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+%           1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+%       }
+%       {
+%         \global\advance\yval by \dyval pt
+%         \draw[line width=4pt,blue]
+%         (\xval,0) edge (\xval,\yval);
+%         \global\advance\xval by 2pt
+%       }
+%   \end{tikzpicture}\\
+%   \end{center}
+% \end{frame}
+
+% \begin{frame}{What's it doing?}
+%   \begin{itemize}
+%     \item A dynamic array is backed by a fixed-size array with excess
+%       capacity: ^(define-struct dynarray [data size])^
+%     \item When the array fills, allocate a fixed-size array that's twice
+%       as big and copy over the elements.
+%   \end{itemize}
+% \end{frame}
+
+% \begin{frame}{Time complexity of a single insertion}
+%   \begin{align*}
+%     \intertext{A single insertion:}
+%     T_{\mathrm{insert}}(n) &= \bigO{n} \\
+%   \end{align*}
+% \end{frame}
+
+% \begin{frame}{Time complexity of a sequence of insertions}
+%   \begin{align*}
+%     \intertext{Hence, for a sequence of insertions:}
+%     T_{\mathrm{insert-sequence}}(m) &= \sum_{i=1}\sup{m} \bigO{i} \\
+%                                     &\uncover<2->{=
+%   \BigO{\sum_{i=1}\sup{m} i}} \\
+%                                     &\uncover<3->{= \bigO{1 + 2 + \cdots
+% + (m - 1) + m}} \\
+%                                     &\uncover<4->{= \BigO{\frac{m(m +
+% 1)}{2}}} \\
+%                                     &\uncover<5->{= \bigO{m\sup2}}
+%   \end{align*}
+% \end{frame}
+
+% \begin{frame}{Amortized time complexity}
+%   \centering
+%   Amortized time complexity considers the cost of a sequence of
+%   operations by paying attention to the state of the data structure.
+
+%   \pause\medskip
+%   Then it apportions the time evenly among the operations.
+
+%   \pause\medskip
+%   Amortization is about the \emph{worst case}, not merely the
+%   \emph{average case}.
+% \end{frame}
+
+\begin{frame}{Banker’s method: real costs vs. accounting costs}
+  Let $c_i$ be the actual cost of the $i$th operation
+
+  Let $c'_i$ be the charged cost of the $i$th operation\pause---we choose
+  this!
+
+  \medskip
+  \pause
+  If total actual cost does not exceed the total charged cost,
+  \[
+    \sum_{i=1}\sup n c_i \le \sum_{i=1}\sup n c'_i\,,
+  \]
+  then we say that the $i$th operation has worst-case \emph{amortized}
+  time $\bigO{c'_i}$,
+\end{frame}
+
+\begin{frame}<1-10>{Banker’s method for dynamic array insertion}
+  Consider the $i$th insert operation (which results in size $i$):
+    \[
+      \begin{array}{c|rrrrrrrrrr}
+        i & \phantom{-}1 & \phantom{-}2 & \phantom{-}3 & \phantom{-}4
+        & \phantom{-}5 & \phantom{-}6 & \phantom{-}7 & \phantom{-}8
+        & \phantom{-}9 & 10
+        \uncover<2->{
+        \\\hline
+        \mathit{cap}_i & 1 & 2 & 4 & 4 & 8 & 8 & 8 & 8 & 16 & 16
+        }
+        \uncover<3->{
+        \\
+        \alt<-7>{
+          \mathit{c}_i & 1 & 2 & 3 & 1 & 5 & 1 & 1 & 1 & 9 & 1
+        }{
+          \mathit{c}_i & 2 & 4 & 7 & 1 & 13 & 1 & 1 & 1 & 25 & 1
+        }
+        }
+        \uncover<4->{
+        \\
+        \alt<-5>{
+        \mathit{c'}_i & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1
+        }{
+          \alt<-6>{
+            \mathit{c'}_i & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2
+          }{
+            \alt<-8>{
+              \mathit{c'}_i & 3 & 3 & 3 & 3 & 3 & 3 & 3 & 3 & 3 & 3
+            }{
+              \alt<-9>{
+                \mathit{c'}_i & 5 & 5 & 5 & 5 & 5 & 5 & 5 & 5 & 5 & 5
+              }{
+                \mathit{c'}_i & 7 & 7 & 7 & 7 & 7 & 7 & 7 & 7 & 7 & 7
+              }
+            }
+          }
+        }
+        }
+        \uncover<5->{
+        \\
+        \alt<-5>{
+          \mathit{bal}_i & 0 & -1 & -3 & -2 & -6 & -5 & -4 &
+          \llap{$\ldots$}
+        }{
+          \alt<-6>{
+            \mathit{bal}_i & 1 & 1 & 0 & 1 & -2 & -1 & 0 & 1 & -6 & -5
+          }{
+            \alt<-7>{
+              \mathit{bal}_i & 2 & 3 & 3 & 5 & 3 & 5 & 7 & 9 & 3 & 5
+            }{
+              \alt<-8>{
+                \mathit{bal}_i & 1 & 0 & -4 & -2 & \llap{$\ldots$}
+              }{
+                \alt<-9>{
+                  \mathit{bal}_i & 3 & 4 & 2 & 6 & -2 & \llap{$\ldots$}
+                }{
+                  \mathit{bal}_i & 5 & 8 & 8 & 14 & 8 & 14 & 20 & 26 & 8
+                  & 14
+                }
+              }
+            }
+          }
+        }
+        }
+      \end{array}
+    \]
+
+  \uncover<2->{
+    Let $\mathit{cap}_i$ be the capacity after operation $i$
+  }
+
+  \uncover<3->{
+    Let $c_i$ be the actual cost of the $i$th operation (number of
+    elements inserted or copied)
+  }
+
+  \uncover<4->{
+    Let $c'_i$ be the charged cost of the $i$th operation---we choose a
+    constant to cover the cost of large future operations
+  }
+
+  \uncover<5->{
+    Let $\mathit{bal}_i$ be the balance: $\mathit{bal}_i =
+    \mathit{bal}_{i - 1} - c_i + c'_i$.
+  }
+\end{frame}
+
+\takeaways
+
+\end{document}
