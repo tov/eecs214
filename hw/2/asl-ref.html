@@ -9,9 +9,19 @@
   <link rel="stylesheet" media="print" href="../../css/print.css" />
 
   <style>
-.lit {
-  color: #2aa198;
-}
+    code a {
+      color: inherit;
+      border-bottom: 2px dotted;
+    }
+
+    code a:hover {
+      text-decoration: none;
+      border-bottom-style: solid;
+    }
+
+    .lit {
+      color: #2aa198;
+    }
 
     .nt {
       font-style: italic;
@@ -22,7 +32,6 @@
       font-weight: bold;
     }
   </style>
-
 </head>
 
 <body>
@@ -30,12 +39,11 @@
     <h1 class="head">A brief introduction to ASL</h1>
   </header>
 
-  <p>
-  This document includes a <a href="#reference">list</a> of everything
-  in the language you need to know/use for the
-  <a href="binheap.pdf">HW2</a>, followed by two small
-  <a href="#examples">examples</a>. (You can find more examples in
-  the lecture notes.)
+  <p> This document includes a <a href="#reference">list</a> of everything in
+the language you need to know/use for the <a href="binheap.pdf">HW2</a>,
+followed by a <a href="#define-struct">primer on structs</a> and four small <a
+href="#examples">examples</a>. (You can find more examples in the lecture
+notes.)
 
   <h2 id="reference">
     Language reference
@@ -61,15 +69,15 @@
   </h3>
 
   <ul>
+    <li><code>(<a class="kw"
+                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._define%29%29">define</a> (<span class="nt">fun-name arg-names...</span>) <span class="nt">body-expr</span>)</code> for defining functions
     <li><code>(<span class="kw"><a
-                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._define%29%29">define</a></span> (<span class="nt">fun-name arg-names...</span>) <span class="nt">body-expr</span>)</code> for defining functions</li>
-    <li><code>(<span class="kw"><a
-                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._define%29%29">define</a></span> <span class="nt">var-name value-expr</span>)</code> for defining variables</li>
+                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._define%29%29">define</a></span> <span class="nt">var-name value-expr</span>)</code> for defining variables
     <li><code>(<span class="kw"><a
                    href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._define-struct%29%29">define-struct</a></span> <span class="nt">struct-name</span> [<span class="nt">field-names</span>...])</code> for
       defining structures—see the <code><span class="kw"><a
                                               href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._define-struct%29%29">define-struct</a></span></code>
-      <a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._define-struct%29%29">documentation</a> for the list of functions introduced when a struct is defined</li>
+      <a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._define-struct%29%29">documentation</a> for the list of functions introduced when a struct is defined
   </ul>
 
   <h3>
@@ -78,9 +86,9 @@
 
   <ul>
     <li><code>(<span class="kw"><a
-                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._check-expect%29%29">check-expect</a></span> <span class="nt">test-expr</span> <span class="nt">result-expr</span>)</code> for checking the result of an expression</li>
+                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._check-expect%29%29">check-expect</a></span> <span class="nt">test-expr</span> <span class="nt">result-expr</span>)</code> for checking the result of an expression
     <li><code>(<span class="kw"><a
-                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._check-error%29%29">check-error</a></span> <span class="nt">text-expr</span>)</code> for testing that an expression produces an error</li>
+                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._check-error%29%29">check-error</a></span> <span class="nt">text-expr</span>)</code> for testing that an expression produces an error
   </ul>
 
   <h3>
@@ -93,28 +101,27 @@
 
   <ul>
     <li><code>(<span class="kw"><a
-                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._if%29%29">if</a></span> <span class="nt">bool-expr then-expr else-expr</span>)</code> for conditional expressions</li>
+                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._if%29%29">if</a></span> <span class="nt">bool-expr then-expr else-expr</span>)</code> for conditional expressions
     <li><code>(<span class="kw"><a
                    href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._and%29%29">and</a></span> <span class="nt">bool-exprs...</span>)</code> for short-circuiting
       boolean and (like <code class="kw">&amp;&amp;</code>
-      in C/C++/Java/Ruby or <code class="kw">&amp;</code> in Python)</li>
+      in C/C++/Java/Ruby or <code class="kw">&amp;</code> in Python)
     <li><code>(<span class="kw"><a
                    href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._or%29%29">or</a></span> <span class="nt">bool-exprs...</span>)</code> for short-circuiting
       boolean or (like <code class="kw">||</code> in C/C++/Java/Ruby or
-      <code class="kw">|</code> in Python)</li>
+      <code class="kw">|</code> in Python)
     <li><code>(<span class="kw"><a
-                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._begin%29%29">begin</a></span> <span class="nt">exprs...</span>)</code> for combining several expressions into one expression that evaluates them in order</li>
+                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._begin%29%29">begin</a></span> <span class="nt">exprs...</span>)</code> for combining several expressions into one expression that evaluates them in order
     <li><code>(<span class="kw"><a
-                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._local%29%29">local</a></span> [<span class="nt">definitions...</span>] <span class="nt">body-expr</span>)</code> for defining local variables</li>
-    <li><code>(<a
-                     href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._void%29%29"
+                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._local%29%29">local</a></span> [<span class="nt">definitions...</span>] <span class="nt">body-expr</span>)</code> for defining local variables
+    <li><code>(<a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._void%29%29"
                      >void</a>)</code>  for when you don’t want to do/return anything
-                 (like <code class="kw">pass</code> in Python)—useful, for example,
+                 (like <code><span class="kw">pass</span></code> in Python)—useful, for example,
                  when you only want to do something in one branch of an <code
-                           class="kw"><a
+                          ><a class="kw"
                            href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._if%29%29"
-                           >if</a></code> expression</li>
-    <li><code>(<a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._error%29%29" >error</a> <span class="nt">string-exprs...</span>)</code>  for signaling errors</li>
+                           >if</a></code> expression
+    <li><code>(<a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._error%29%29" >error</a> <span class="nt">string-exprs...</span>)</code>  for signaling errors
   </ul>
 
   <h4>
@@ -122,11 +129,11 @@
   </h4>
 
   <ul>
-    <li>Booleans <code class="lit">#false</code>  and <code class="lit">#true</code></li>
+    <li>Booleans <code class="lit">#false</code>  and <code class="lit">#true</code>
     <li>Numbers such as <code class="lit">1</code>, <code class="lit">2</code>,
       <code class="lit">-3</code>, <code class="lit">4.5</code>, and <code
-                                   class="lit">3/5</code></li>
-    <li>Strings such as <code class="lit">"Cannot remove-min from empty heap"</code></li>
+                                   class="lit">3/5</code>
+    <li>Strings such as <code class="lit">"Cannot remove-min from empty heap"</code>
   </ul>
 
   <h4>
@@ -134,20 +141,20 @@
   </h4>
 
   <ul>
-    <li><code>(<a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._%2B%29%29">+</a> <span class="nt">num-exprs...</span>)</code></li>
+    <li><code>(<a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._%2B%29%29">+</a> <span class="nt">num-exprs...</span>)</code>
     <li><code>(<a
-                                                                                                                                                                              href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._-%29%29">-</a> <span class="nt">num-expr num-expr</span>)</code> </li>
+                                                                                                                                                                              href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._-%29%29">-</a> <span class="nt">num-expr num-expr</span>)</code> 
     <li><code>(<a
-                                                                                                                                                                              href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._%2A%29%29">*</a> <span class="nt">num-exprs...</span>)</code> </li>
+                                                                                                                                                                              href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._%2A%29%29">*</a> <span class="nt">num-exprs...</span>)</code> 
     <li><code>(<a
-                                                                                                                                                                              href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._%2F%29%29">/</a> <span class="nt">num-expr num-expr</span>)</code> </li>
+                                                                                                                                                                              href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._%2F%29%29">/</a> <span class="nt">num-expr num-expr</span>)</code> 
     <li><code>(<a
-                                                                                                                                                                              href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._~3d%29%29">=</a> <span class="nt">num-expr num-expr</span>)</code> for testing numeric equality</li>
-    <li><code>(<a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._~3c%29%29">&lt;</a> <span class="nt">num-exprs...</span>)</code> for testing numeric less-than</li>
+                                                                                                                                                                              href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._~3d%29%29">=</a> <span class="nt">num-expr num-expr</span>)</code> for testing numeric equality
+    <li><code>(<a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._~3c%29%29">&lt;</a> <span class="nt">num-exprs...</span>)</code> for testing numeric less-than
     <li><code>(<a
-                                                                                                                                                                              href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._floor%29%29">floor</a> <span class="nt">num-expr</span>)</code> for rounding down to the nearest integer</li>
+                                                                                                                                                                              href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._floor%29%29">floor</a> <span class="nt">num-expr</span>)</code> for rounding down to the nearest integer
     <li><code>(<a
-                                                                                                                                                                              href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._number~3f%29%29">number?</a> <span class="nt">expr</span>)</code> for testing whether a value is a number</li>
+                                                                                                                                                                              href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._number~3f%29%29">number?</a> <span class="nt">expr</span>)</code> for testing whether a value is a number
   </ul>
 
   <h4>
@@ -155,32 +162,183 @@
   </h4>
 
   <ul>
-    <li><code>(<a
-                                                                                                                                                                              href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._make-vector%29%29">make-vector</a> <span class="nt">size-expr
-                                                                                                                                                                              init-expr</span>)</code> for creating a new vector</li>
-    <li><code>(<a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._vector-length%29%29">vector-length</a> <span class="nt">vec-expr</span>)</code> for finding out the size of a vector</li>
-    <li><code>(<a
-                                                                                                                                                                              href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._vector-ref%29%29">vector-ref</a> <span class="nt">vec-expr index-expr</span>)</code> for getting an element of a vector</li>
-    <li><code>(<a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._vector-set%21%29%29">vector-set!</a> <span class="nt">vec-expr index-expr value-expr</span>)</code> for setting an element of a vector</li>
+    <li><code>(<a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._make-vector%29%29">make-vector</a> <span class="nt">size-expr init-expr</span>)</code> for creating a new vector
+    <li><code>(<a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._vector-length%29%29">vector-length</a> <span class="nt">vec-expr</span>)</code> for finding out the size of a vector
+    <li><code>(<a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._vector-ref%29%29">vector-ref</a> <span class="nt">vec-expr index-expr</span>)</code> for getting an element of a vector
+    <li><code>(<a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._vector-set%21%29%29">vector-set!</a> <span class="nt">vec-expr index-expr value-expr</span>)</code> for setting an element of a vector
   </ul>
+
+  <h2 id="define-struct">
+    Using <code><a class="kw" href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._define-struct%29%29">define-struct</a></code>
+  </h2>
+
+  <p>
+  ASL structs are similar to C/C++/Ruby structs, Java “plain old data”
+  classes, and Python named tuples. For example, to define a new type
+  for binary tree branch nodes, we might define it in C or C++ like so:
+
+  <p>
+  <code>  <span class="kw">struct</span> <span class="st">branch</span> {
+      <span class="st">int</span> element;
+      <span class="kw">struct</span> <span class="st">branch*</span> left;
+      <span class="kw">struct</span> <span class="st">branch*</span> right;
+  };</code>
+
+  <p>
+  In Java, you could write:
+
+  <p>
+  <code>  <span class="kw">class</span> <span class="st">Branch</span> {
+    <span class="kw">public</span> <span class="st">int</span> element;
+    <span class="kw">public</span> <span class="st">Branch</span> left, right;
+  }</code>
+
+  <p>In Ruby, you could define the structure like so:
+
+  <p>
+  <code>  <span class="st">Branch</span> = <span class="st">Struct</span>.new(<span class="lit">:element</span>, <span class="lit">:left</span>, <span class="lit">:right</span>)</code>
+
+  <p>And in Python, you would define a named tuple:
+
+  <p>
+  <code>  <span class="kw">import</span> collections
+  <span class="st">Branch</span> = collections.namedtuple(<span class="lit">'Branch'</span>, <span class="lit">'element left right'</span>)</code>
+
+  <p>
+  In ASL, a new struct type is defined with
+  the <code><a class="kw"
+            href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._define-struct%29%29">define-struct</a></code>,
+        which takes the name of the new struct type and a list of field
+        names. For example, to define the struct to hold binary tree
+        branch nodes, we might write:
+
+  <p>
+  <code>  (<span class="kw"><a
+        href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._define-struct%29%29">define-struct</a></span> <span class="st">branch</span> [element left right])</code>
+
+  <p>
+  This struct type definition results in defining eight functions:
+
+  <ul>
+    <li>a constructor <code class="lit">make-branch</code>, which takes
+      three arguments (the element, the left subtree, and the right
+      subtree) and returns a <code><span class="st">branch</span></code>
+      struct;
+    <li>a predicate <code>branch?</code>, which takes any value and
+      answers whether it is a <code class="st"><span class="st">branch</span></code> struct;
+    <li>three getters, <code>branch-element</code>,
+      <code>branch-left</code>, and <code>branch-right</code>, each of
+      which takes a <code class="st"><span class="st">branch</span></code> struct and returns
+      the contents of the corresponding field; and
+    <li>three setters, <code>set-branch-element!</code>,
+        <code>set-branch-left!</code>, and
+        <code>set-branch-right!</code>, each of which takes a
+        <code class="st"><span class="st">branch</span></code> struct and a new value for the
+        corresponding field, and updates that field of the struct to
+        contain the new value.
+  </ul>
+
+  <p>
+  Here’s a sample interaction using the new struct type (and using the
+  false value to represent empty subtrees). First we construct a binary tree
+  with three nodes, using the false value to represent leaves.
+  Note that structs are printed using the constructor; this is so that the
+  printed form matches the way that you’d construct the value.
+
+  <p>
+  <code>  &gt; (<span class="kw"><a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._define%29%29">define</a></span> t1 (<span class="lit">make-branch</span> <span class="lit">8</span> <span class="lit">#false</span> <span class="lit">#false</span>))
+  &gt; t1
+  (<span class="lit">make-branch</span> <span class="lit">8 #false #false</span>)
+  &gt; (<span class="kw"><a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._define%29%29">define</a></span> t2 (<span class="lit">make-branch</span> <span class="lit">15</span> <span class="lit">#false</span> <span class="lit">#false</span>))
+  &gt; (<span class="kw"><a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._define%29%29">define</a></span> t3 (<span class="lit">make-branch</span> <span class="lit">11</span> t1 t2))
+  &gt; t3
+  (<span class="lit">make-branch</span> <span class="lit">11</span> (<span class="lit">make-branch 8 #false #false</span>) (<span class="lit">make-branch 15 #false #false</span>))</code>
+
+  <p>Now we can use the predicate to check whether some value is a <code><span class="st">branch</span></code> struct or not, and we can use the getters to inspect the fields of the struct:
+
+<p>
+<code>  &gt; (branch? t3)
+  <span class="lit">#true</span>
+  &gt; (branch? 3)
+  <span class="lit">#false</span>
+  &gt; (branch-element t3)
+  <span class="lit">11</span>
+  &gt; (branch-left t3)
+  (<span class="lit">make-branch 8 #false #false</span>)
+  &gt; (branch-element (branch-left t3))
+  <span class="lit">8</span></code>
+
+  <p>
+  We can use the setters to modify fields in the structs. Note the sharing—when we modify <code>t2</code>, the change is reflected in <code>t3</code> as well:
+
+<p>
+<code>  &gt; (set-branch-element! t3 <span class="lit">12</span>)
+  &gt; t3
+  (<span class="lit">make-branch</span> <span class="lit">12</span> (<span class="lit">make-branch 8 #false #false</span>) (<span class="lit">make-branch 15 #false #false</span>))
+  &gt; (set-branch-element! t2 <span class="lit">16</span>)
+  &gt; t3
+  (<span class="lit">make-branch</span> <span class="lit">12</span> (<span class="lit">make-branch 8 #false #false</span>) (<span class="lit">make-branch 16 #false #false</span>))</code>
+
+  <p> Finally, we can also create sharing by, for example, setting the right
+  subtree of <code>t3</code> to be the same as its left subtree. Note that
+  <code>t3</code> is now printed to indicate the sharing by first naming the shared component (<code>-0-</code>) and then using that name in both places that the shared struct appears in <code>t3</code>:
+
+<p>
+<code>  &gt; (set-branch-right! t3 (branch-left t3))
+  &gt; t3
+  (<span class="kw"><a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._shared%29%29">shared</a></span> ((-0- (<span class="lit">make-branch 8 #false #false</span>))) (<span class="lit">make-branch 12</span> -0- -0-))
+  &gt; (set-branch-element! (branch-left t3) <span class="lit">13</span>)
+  &gt; t3
+  (<span class="kw"><a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._shared%29%29">shared</a></span> ((-0- (<span class="lit">make-branch 13 #false #false</span>))) (<span class="lit">make-branch 12</span> -0- -0-))</code>
 
   <h2 id="examples">
     Examples
   </h2>
 
+  <h3>Structs</h3>
+
+  <p>Function <code>tree-map</code> takes a function <code>f</code> and a tree
+<code>tree</code>, and builds a new tree with the same structure but with each
+element <code>e</code> replaced by <code>(f e)</code>, the result of applying
+<code>f</code> to it. For example, if <code>t</code> is a tree of numbers then
+<code>(tree-map <a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._add1%29%29">add1</a> t)</code> returns a tree that is like <code>t</code> but
+with each number incremented by 1.
+
+  <p><code>  (<a class="kw" href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._define%29%29">define</a> (tree-map f tree)
+    (<a class="kw" href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._if%29%29">if</a> (branch? tree)
+      (<span class="lit">make-branch</span> (f (branch-element tree))
+                   (tree-map f (branch-left tree))
+                   (tree-map f (branch-right tree)))
+      #false))</code>
+
+  <p>Function <code>swap-left-right!</code> walks a tree, modifying it in place
+by swapping all the left and right branches:
+
+  <p><code>  (<a class="kw" href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._define%29%29">define</a> (swap-left-right! tree)
+    (<a class="kw" href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._if%29%29">if</a> (branch? tree)
+      (<a class="kw" href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._local%29%29">local</a>
+        [(<a class="kw" href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._define%29%29">define</a> left  (branch-left tree))
+         (<a class="kw" href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._define%29%29">define</a> right (branch-right tree))]
+        (<a class="kw" href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._begin%29%29">begin</a>
+          (set-branch-left! tree right)
+          (set-branch-right! tree left)
+          (swap-left-right! left)
+          (swap-left-right! right)))
+      (<a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._void%29%29">void</a>)))</code>
+
   <h3>
-    Example for <code class="kw"><a
+    Local variable definitions and <code><a class="kw"
                     href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._begin%29%29">begin</a></code>
-    and a local variable definition
   </h3>
 
   <p>
   As an example, here is a function that rotates three elements of a
   vector so that element <code>k</code>  goes to <code>j</code>, <code>j</code>  goes
   to <code>i</code>, and <code>i</code> goes to <code>k</code>:
-  </p>
 
-  <code>  (<span class="kw"><a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._define%29%29">define</a></span> (rot3-vector vec i j k)
+  <p>
+  <code>  (<span class="kw"><a
+        href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._define%29%29">define</a></span> (vector-rot3! vec i j k)
     (<span class="kw"><a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._local%29%29">local</a></span> [(<span class="kw"><a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._define%29%29">define</a></span> old-i (<a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._vector-ref%29%29">vector-ref</a> vec i))]
       (<span class="kw"><a
                    href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._begin%29%29">begin</a></span>
@@ -191,27 +349,26 @@
                    href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._vector-set%21%29%29">vector-set!</a> vec j (<a
                    href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._vector-ref%29%29">vector-ref</a> vec k))
         (<a
-                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._vector-set%21%29%29">vector-set!</a> vec k (<a
-                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._vector-ref%29%29">vector-ref</a> vec old-i)))))</code>
+                   href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28def._htdp-advanced._%28%28lib._lang%2Fhtdp-advanced..rkt%29._vector-set%21%29%29">vector-set!</a> vec k old-i))))</code>
 
   <p>
-  The function uses <code class="kw"><a
+  The function uses <code><a class="kw"
                    href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._local%29%29">local</a></code> in order to define a temporary variable
   <code>old-i</code> to
-  hold the old value of <code>i</code>. The form <code class="kw"><a
+  hold the old value stored at <code>i</code>. The form <code><a class="kw"
                    href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._begin%29%29">begin</a></code> is used in order to group the
   three vector update expressions into one expression that performs them
   in sequence.  
 
   <h3>
-    Example for vectors and a local function definition
+    Vectors and a local function definition
   </h3>
 
   <p>
   Here is an example of a function that adds up the elements of a vector
   of numbers:
-  </p>
    
+  <p>
   <code>  (<span class="kw"><a href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._define%29%29">define</a></span> (sum-vector vec) 
     (<span class="kw"><a
                    href="http://docs.racket-lang.org/htdp-langs/advanced.html#%28form._%28%28lib._lang%2Fhtdp-advanced..rkt%29._local%29%29">local</a></span>
