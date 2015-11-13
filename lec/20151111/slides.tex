@@ -9,7 +9,7 @@
 \usepackage[final]{listings}
 \usepackage{graphicx}
 
-%\setallmainfonts{TeX Gyre Schola}
+\setallmainfonts{TeX Gyre Schola}
 \setallmonofonts{Menlo}
 
 %\usepackage{xunicode}
@@ -523,143 +523,143 @@
   EECS 214
 
   \medskip
-  November 11, 2015
+  November 11--13, 2015
   \end{center}
 \end{frame}
 
-% \takeaways
+\takeaways
 
-% \begin{frame}{Example: dynamic arrays}
-%   \centering
-%   \begin{tabular}{l|l}
-%     \textbf{Language} & \textbf{Type} \\
-%     \hline
-%     C++ & \texttt{std::vector} \\
-%     Java & \texttt{ArrayList} \\
-%     Python & \texttt{list} \\
-%     Ruby & \texttt{Array} \\ \pause
-%     C & \emph{you’re on your own} \\ \pause
-%     ASL & \emph{you’re on your own} \\
-%   \end{tabular}
-% \end{frame}
+\begin{frame}{Example: dynamic arrays}
+  \centering
+  \begin{tabular}{l|l}
+    \textbf{Language} & \textbf{Type} \\
+    \hline
+    C++ & \texttt{std::vector} \\
+    Java & \texttt{ArrayList} \\
+    Python & \texttt{list} \\
+    Ruby & \texttt{Array} \\ \pause
+    C & \emph{you’re on your own} \\ \pause
+    ASL & \emph{you’re on your own} \\
+  \end{tabular}
+\end{frame}
 
-% \begin{frame}[fragile]{Iteratively growing a dynamic array}
-%   \begin{CXX}
-% std::vector<int> v;
-% for (int i = 0; i < N; ++i) v.push_back(i);
-%   \end{CXX}
-%   \begin{Java}
-% ArrayList<Integer> v = new ArrayList<>();
-% for (int i = 0; i < N; ++i) v.add(i);
-%   \end{Java}
-%   \begin{Python}
-% v = list()
-% for i in range(0, 10): v.append(i)
-%   \end{Python}
-%   \begin{Ruby}
-% v = Array.new
-% for i in 0 ... N do v.push(i) end
-%   \end{Ruby}
-% \end{frame}
+\begin{frame}[fragile]{Iteratively growing a dynamic array}
+  \begin{CXX}
+std::vector<int> v;
+for (int i = 0; i < N; ++i) v.push_back(i);
+  \end{CXX}
+  \begin{Java}
+ArrayList<Integer> v = new ArrayList<>();
+for (int i = 0; i < N; ++i) v.add(i);
+  \end{Java}
+  \begin{Python}
+v = list()
+for i in range(0, 10): v.append(i)
+  \end{Python}
+  \begin{Ruby}
+v = Array.new
+for i in 0 ... N do v.push(i) end
+  \end{Ruby}
+\end{frame}
 
-% \newdimen\xval
-% \newdimen\yval
+\newdimen\xval
+\newdimen\yval
 
-% \begin{frame}[fragile]{Time per operation}
-%   \begin{center}
-%   \xval=0pt
-%   \begin{tikzpicture}
-%     \foreach \yval in {
-%         1,
-%         2,
-%         3,1,
-%         5,1,1,1,
-%         9,1,1,1,1,1,1,1,
-%         17,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-%         33,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-%         65,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-%           1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-%       }
-%       {
-%         \tikzmath{
-%           \yval = 2 * \yval;
-%         }
-%         \draw[line width=4pt,blue]
-%           (\xval,0) edge (\xval,\yval pt);
-%         \global\advance\xval by 2pt
-%       }
-%   \end{tikzpicture}\\
-%   \end{center}
-% \end{frame}
+\begin{frame}[fragile]{Time per operation}
+  \begin{center}
+  \xval=0pt
+  \begin{tikzpicture}
+    \foreach \yval in {
+        1,
+        2,
+        3,1,
+        5,1,1,1,
+        9,1,1,1,1,1,1,1,
+        17,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+        33,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+        65,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+          1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+      }
+      {
+        \tikzmath{
+          \yval = 2 * \yval;
+        }
+        \draw[line width=4pt,blue]
+          (\xval,0) edge (\xval,\yval pt);
+        \global\advance\xval by 2pt
+      }
+  \end{tikzpicture}\\
+  \end{center}
+\end{frame}
 
-% \begin{frame}[fragile]{Accumulated time}
-%   \begin{center}
-%   \xval=0pt
-%   \yval=0pt
-%   \begin{tikzpicture}[yscale=.5]
-%     \foreach \dyval in {
-%         1,
-%         2,
-%         3,1,
-%         5,1,1,1,
-%         9,1,1,1,1,1,1,1,
-%         17,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-%         33,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-%         65,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-%           1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-%       }
-%       {
-%         \global\advance\yval by \dyval pt
-%         \draw[line width=4pt,blue]
-%         (\xval,0) edge (\xval,\yval);
-%         \global\advance\xval by 2pt
-%       }
-%   \end{tikzpicture}\\
-%   \end{center}
-% \end{frame}
+\begin{frame}[fragile]{Accumulated time}
+  \begin{center}
+  \xval=0pt
+  \yval=0pt
+  \begin{tikzpicture}[yscale=.5]
+    \foreach \dyval in {
+        1,
+        2,
+        3,1,
+        5,1,1,1,
+        9,1,1,1,1,1,1,1,
+        17,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+        33,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+        65,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+          1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+      }
+      {
+        \global\advance\yval by \dyval pt
+        \draw[line width=4pt,blue]
+        (\xval,0) edge (\xval,\yval);
+        \global\advance\xval by 2pt
+      }
+  \end{tikzpicture}\\
+  \end{center}
+\end{frame}
 
-% \begin{frame}{What's it doing?}
-%   \begin{itemize}
-%     \item A dynamic array is backed by a fixed-size array with excess
-%       capacity: ^(define-struct dynarray [data size])^
-%     \item When the array fills, allocate a fixed-size array that's twice
-%       as big and copy over the elements.
-%   \end{itemize}
-% \end{frame}
+\begin{frame}{What's it doing?}
+  \begin{itemize}
+    \item A dynamic array is backed by a fixed-size array with excess
+      capacity: ^(define-struct dynarray [data size])^
+    \item When the array fills, allocate a fixed-size array that's twice
+      as big and copy over the elements.
+  \end{itemize}
+\end{frame}
 
-% \begin{frame}{Time complexity of a single insertion}
-%   \begin{align*}
-%     \intertext{A single insertion:}
-%     T_{\mathrm{insert}}(n) &= \bigO{n} \\
-%   \end{align*}
-% \end{frame}
+\begin{frame}{Time complexity of a single insertion}
+  \begin{align*}
+    \intertext{A single insertion:}
+    T_{\mathrm{insert}}(n) &= \bigO{n} \\
+  \end{align*}
+\end{frame}
 
-% \begin{frame}{Time complexity of a sequence of insertions}
-%   \begin{align*}
-%     \intertext{Hence, for a sequence of insertions:}
-%     T_{\mathrm{insert-sequence}}(m) &= \sum_{i=1}\sup{m} \bigO{i} \\
-%                                     &\uncover<2->{=
-%   \BigO{\sum_{i=1}\sup{m} i}} \\
-%                                     &\uncover<3->{= \bigO{1 + 2 + \cdots
-% + (m - 1) + m}} \\
-%                                     &\uncover<4->{= \BigO{\frac{m(m +
-% 1)}{2}}} \\
-%                                     &\uncover<5->{= \bigO{m\sup2}}
-%   \end{align*}
-% \end{frame}
+\begin{frame}{Time complexity of a sequence of insertions}
+  \begin{align*}
+    \intertext{Hence, for a sequence of insertions:}
+    T_{\mathrm{insert-sequence}}(m) &= \sum_{i=1}\sup{m} \bigO{i} \\
+                                    &\uncover<2->{=
+  \BigO{\sum_{i=1}\sup{m} i}} \\
+                                    &\uncover<3->{= \bigO{1 + 2 + \cdots
++ (m - 1) + m}} \\
+                                    &\uncover<4->{= \BigO{\frac{m(m +
+1)}{2}}} \\
+                                    &\uncover<5->{= \bigO{m\sup2}}
+  \end{align*}
+\end{frame}
 
-% \begin{frame}{Amortized time complexity}
-%   \centering
-%   Amortized time complexity considers the cost of a sequence of
-%   operations by paying attention to the state of the data structure.
+\begin{frame}{Amortized time complexity}
+  \centering
+  Amortized time complexity considers the cost of a sequence of
+  operations by paying attention to the state of the data structure.
 
-%   \pause\medskip
-%   Then it apportions the time evenly among the operations.
+  \pause\medskip
+  Then it apportions the time evenly among the operations.
 
-%   \pause\medskip
-%   Amortization is about the \emph{worst case}, not merely the
-%   \emph{average case}.
-% \end{frame}
+  \pause\medskip
+  Amortization is about the \emph{worst case}, not merely the
+  \emph{average case}.
+\end{frame}
 
 \begin{frame}{Banker’s method: real costs vs. accounting costs}
   Let $c_i$ be the actual cost of the $i$th operation
@@ -677,7 +677,7 @@
   time $\bigO{c'_i}$,
 \end{frame}
 
-\begin{frame}<1-10>{Banker’s method for dynamic array insertion}
+\begin{frame}<1-10>{Amortized time for dynamic array insertion (banker style)}
   Consider the $i$th insert operation (which results in size $i$):
     \[
       \begin{array}{c|rrrrrrrrrr}
@@ -719,20 +719,22 @@
         \uncover<5->{
         \\
         \alt<-5>{
-          \mathit{bal}_i & 0 & -1 & -3 & -2 & -6 & -5 & -4 &
+          \mathit{bal}_i & 0 & \alert{-1} & \alert{-1} & \alert{-1} &
+          \alert{-1} & \alert{-1} & \alert{-1} &
           \llap{$\ldots$}
         }{
           \alt<-6>{
-            \mathit{bal}_i & 1 & 1 & 0 & 1 & -2 & -1 & 0 & 1 & -6 & -5
+            \mathit{bal}_i & 1 & 1 & 0 & 1 & \alert{-1} & \alert{-1} & 0
+            & 1 & \alert{-1} & \alert{-1}
           }{
             \alt<-7>{
               \mathit{bal}_i & 2 & 3 & 3 & 5 & 3 & 5 & 7 & 9 & 3 & 5
             }{
               \alt<-8>{
-                \mathit{bal}_i & 1 & 0 & -4 & -2 & \llap{$\ldots$}
+                \mathit{bal}_i & 1 & 0 & \alert{-1} & \alert{-1} & \llap{$\ldots$}
               }{
                 \alt<-9>{
-                  \mathit{bal}_i & 3 & 4 & 2 & 6 & -2 & \llap{$\ldots$}
+                  \mathit{bal}_i & 3 & 4 & 2 & 6 & \alert{-2} & \llap{$\ldots$}
                 }{
                   \mathit{bal}_i & 5 & 8 & 8 & 14 & 8 & 14 & 20 & 26 & 8
                   & 14
@@ -763,6 +765,77 @@
     Let $\mathit{bal}_i$ be the balance: $\mathit{bal}_i =
     \mathit{bal}_{i - 1} - c_i + c'_i$.
   }
+\end{frame}
+
+\begin{frame}{Physicist's method: potential ``energy''}
+  We define a potential function $\Phi$ on data structure states, where:
+  \begin{align*}
+    \Phi(v_0) &= 0  & \text{starts at 0} \\
+    \Phi(v_t) &\ge 0 & \text{never goes negative}
+  \end{align*}
+  \pause
+  $\Phi$ is akin to the balance in the banker's method, but history-less
+
+  \pause\bigskip
+  We then define the amortized time of an operation:
+  \begin{align*}
+    c'_i &= c_i + \Phi(v_i) - \Phi(v_{i - 1}) \\\pause
+         &= c_i + \Delta\Phi(v_i)
+  \end{align*}
+\end{frame}
+
+\begin{frame}{Potential function for dynamic arrays}
+  We choose a potential function
+  \[
+    \Phi(v) = 2n - m\,,
+  \]
+  where $n$ is the size and $m$ the capacity of $v$.
+
+  \pause\medskip
+  Let's check $\Phi$'s properties:
+  \begin{itemize}
+      \pause
+    \item[$\checkmark$] The initial vector has no size and no capacity, so
+      $\Phi(v_0) = 0$
+      \pause
+    \item[\uncover<6>{$\checkmark$}] The capacity is never more than twice the
+      size, because we double when it's full\pause; hence $2n \ge
+      m$\pause; hence
+      $\Phi(v) = 2n - m \ge 0$.
+  \end{itemize}
+  %// We want to show 
+\end{frame}
+
+\begin{frame}{Amortized time for dynamic array insertion (physicist style)}
+  Let's compute $c'_i$ for insertion. Remember that
+  $c'_i = c_i + \Phi(v_i) - \Phi(v_{i - 1})$.
+  There are two possibilities:
+  \begin{itemize}
+    \item<2->[\uncover<4->{$\checkmark$}]
+      If $n < m$ then $c_i = 1$. \uncover<3->{So} \begin{align*}
+        \uncover<3->{c'_i &= 1 + (2(n + 1) - m) - (2n - m)} \\
+        \uncover<4->{&= 1 + 2 = 3}
+      \end{align*}
+    \item<5->[\uncover<8->{$\checkmark$}]
+      If $n = m$ then $c_i = n + 1$ (copy plus simple insert).
+      \uncover<6->{So} \begin{align*}
+        \uncover<6->{c'_i &= n + 1 + (2(n + 1) - 2m) - (2n - m) \\}
+        \uncover<7->{&= n + 1 + (2(n + 1) - 2n) - (2n - n)
+            & \text{because $n = m$}\\}
+        \uncover<8->{
+               &= 1 + 2 + n + 2n - 2n + 2n - n = 3
+        }
+      \end{align*}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Another example: (na\"ive) persistent banker's queue}
+  A data structure is \emph{persistent} when modifications do not destroy
+  the previous state of the structure.\pause (The opposite is
+  \emph{ephemeral}.)
+
+  \medskip \pause
+  What if we want a persistent FIFO queue with sub-linear operations?
 \end{frame}
 
 \takeaways
