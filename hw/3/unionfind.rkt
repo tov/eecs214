@@ -8,26 +8,24 @@ Due: Monday, Nov. 23 at 11:59 PM, via Canvas
 
 ** You may work on your own or with one (1) partner. **
 
-In this assignment, you will implement the union-find data structure with path
-compression and weighted union as we saw in class. Unlike in HW2, the
-representation itself is not defined for you, so you will have to define it.
+For this assignment you will implement the union-find data structure
+with path compression and weighted union as we saw in class. Unlike in
+HW2, the representation itself is not defined for you, so you’ll have
+to define it.
 
-See below for two suggested helper functions as well as a function that may aid
-you in testing.
+See below for two suggested helpers and some code to help with testing.
 
 YOUR TASK
 
-First you will need to define your representation, the UnionFind data type.
-Each UnionFind value will represent a “universe” with some fixed number of
-objects. Initially each object, identified by natural numbers starting at 0,
-is in a singleton set containing only itself.
+First you will need to define your representation, the UnionFind data
+type. Each UnionFind represents a “universe” with a fixed number of
+objects identified by consecutive natural numbers from 0.
 
-In addition to defining the UnionFind data type, you will have to
-implement five functions:
+Then you will have to implement five functions:
 
   create    : N -> UnionFind            ; O(n)
   size      : UnionFind -> N            ; O(1)
-  union!    : UnionFind N N -> Void     ; amortized O(α(n)) 
+  union!    : UnionFind N N -> Void     ; amortized O(α(n))
   find      : UnionFind N -> N          ; amortized O(α(n))
   same-set? : UnionFind N N -> Boolean  ; amortized O(α(n))
 
@@ -49,9 +47,10 @@ in the same set according to UnionFind universe `uf`.
 
 DELIVERABLE
 
-The provided file unionfind.rkt, containing complete, working
-definitions of the five functions specified above. As usual, thorough
-testing is strongly recommended but will not be graded.
+This file (unionfind.rkt), containing 1) a definition of your UnionFind
+data type, and 2) complete, working definitions of the five functions
+specified above. Thorough testing is strongly recommended but will not
+be graded.
 
 |#
 
@@ -62,7 +61,7 @@ testing is strongly recommended but will not be graded.
 ; sets numbered 0 through `(- size 1)`.
 (define (create size)
   ...)
-;;;; My function is 5 lines using ASL's `build-vector` ;;;;
+;;;; My function is 5 lines using ASL’s `build-vector` ;;;;
 
 ; size : UnionFind -> N
 ; Returns the number of objects in `uf`.
@@ -95,7 +94,7 @@ testing is strongly recommended but will not be graded.
 ;;;; object.
 
 ; uf:reparent! : UnionFindEntry UnionFindEntry -> Void
-; Sets the parent of `child` to be `parent` and adjusts `parent`'s
+; Sets the parent of `child` to be `parent` and adjusts `parent`’s
 ; weight accordingly.
 ; (define (uf:reparent! child parent)
 ;   ...)
