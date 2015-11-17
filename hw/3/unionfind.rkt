@@ -22,8 +22,8 @@ Each UnionFind value will represent a “universe” with some fixed number of
 objects. Initially each object, identified by natural numbers starting at 0,
 is in a singleton set containing only itself.
 
-In addition to defining the UnionFind data type, there are five functions you
-will have to implement:
+In addition to defining the UnionFind data type, you will have to
+implement five functions:
 
   create    : N -> UnionFind            ; O(n)
   size      : UnionFind -> N            ; O(1)
@@ -47,11 +47,11 @@ the smaller set to be the root of the larger set.
  - For convenience, (same-set? uf n m) returns whether objects `n` and `m` are
 in the same set according to UnionFind universe `uf`.
 
-DELIVERABLES
+DELIVERABLE
 
-The provided file unionfind.rkt containing complete, working definitions of the
-five functions specified above. As usual, thorough testing is strongly
-recommended but will not be graded.
+The provided file unionfind.rkt, containing complete, working
+definitions of the five functions specified above. As usual, thorough
+testing is strongly recommended but will not be graded.
 
 |#
 
@@ -97,14 +97,14 @@ recommended but will not be graded.
 ; uf:reparent! : UnionFindEntry UnionFindEntry -> Void
 ; Sets the parent of `child` to be `parent` and adjusts `parent`'s
 ; weight accordingly.
-(define (uf:reparent! child parent)
-  ...)
+; (define (uf:reparent! child parent)
+;   ...)
 ;;;; My function is 5 lines ;;;;
 
 ; uf:get-entry : UnionFind N -> UnionFindEntry
 ; Gets the entry for object `ix`.
-(define (uf:get-entry uf ix)
-  ...)
+; (define (uf:get-entry uf ix)
+;   ...)
 ;;;; My function is 2 lines ;;;;
 
 ;;;; TESTING ;;;;
