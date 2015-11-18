@@ -30,7 +30,7 @@
 % \usetikzlibrary{fit}
 % \usetikzlibrary{positioning}
 % \usetikzlibrary{scopes}
-% \usetikzlibrary{shapes.geometric}
+\usetikzlibrary{shapes.geometric}
 
 \def\bigO#1{\ensuremath{\mathcal O(#1)}}
 \def\BigO#1{\ensuremath{\mathcal O\left(#1\right)}}
@@ -493,13 +493,13 @@
 \newcommand{\takeaways}{
   \begin{frame}{Take-aways}
     \begin{itemize}
-      \item What does it mean for a data structure to be
-        \emph{probabilistic}?
       \item What’s a hash function? What makes a hash function good?
-      \item What’s the purpose of a Bloom filter? How does it work, and
-        how can it “go wrong”?
       \item What’s the purpose of a hash table? How does it work, and
         how can it “go wrong”?
+      \item What’s the purpose of a Bloom filter? How does it work, and
+        how can it “go wrong”?
+      \item What does it mean for a data structure to be
+        \emph{probabilistic}?
     \end{itemize}
   \end{frame}
 }
@@ -529,31 +529,147 @@
 
 \takeaways
 
-\begin{frame}{Definition: probabilistic data structure}
-  \centering
-  A \emph{probabilistic data structure} is a data structure whose
-  efficiency depends on the law of large numbers.
+\begin{frame}[fragile]{Mappings}
+  Remember counting byte frequencies in HW1?
+  \par \pause \medskip
+  You need(ed) a mapping from byte values to their counts:
+  \[ \mathrm{byteFrequencies} : \{0, 1, \dotsc, 255\} \to \mathbb N \]
+  How did you represent this?
+  \par \pause \medskip
+  Easy:
+  \begin{CXX}
+    size_t byte_freqs[256];
+  \end{CXX}
+  \pause
+  \medskip
+  Arrays are \emph{perfect} for mappings whose domain is $\{0, 1,
+  \dotsc, k\}$ for some $k$
+  \par\pause\medskip
+  \emph{%
+  Notation note: We will write $\mathbb N_k$ for the set $\{0, 1,
+  \dotsc, k\}$
+}
 \end{frame}
 
-\begin{frame}{Definition: hash function}
-  \centering
-  A function that attempts to turn a biased distribution into a uniform
-  distribution.
-
-  \bigskip
-  Requirements: If $x = y$ then $\mathit{hash}(x) = \mathit{hash}(y)$.
-
-  \medskip
-  Non-requirements: If $x ≠ y$ then it may still be that
-  $\mathit{hash}(x) = \mathit{hash}(y)$. This is called a hash
-  collision.
-
-  \medskip
-  A good hash function \textbf{destroys locality} by taking similar
-  inputs to dissimilar outputs.
+\begin{frame}[fragile]{A different domain}
+  What if we wanted to count word frequences instead?
+  \par \pause \medskip
+  We need a mapping from words (strings) to their counts:
+  \[ \mathrm{wordFrequences} : \{ \text{ the set of all strings } \}
+    \to \mathbb N \]
+  How can we represent this?
+  \par\pause\medskip
+  We can't use strings to index into an array---we need a \emph{hash
+  function}
 \end{frame}
 
-\begin{frame}{A good hash function?}
+\begin{frame}{Definition: \emph{hash function}}
+  A \emph{hash function} for some type maps values of
+  that type to $\mathbb N_k$
+  \par\pause\bigskip
+  Here is a \textbf{really bad} hash function for strings:
+  \[ \mathit{hash}_k(c_1\ldots c_n) = \sum_{i=1}\sup n \mathit{ord}(c_i)
+  \quad \mathop{\mathrm{mod}} k \]
+  \pause
+  It adds up the character values
+\end{frame}
+
+\begin{frame}{How do we use a hash function?}
+  A \emph{hash function} for some type maps values of that type to
+  \alt<2>{indices into an array of size $k$}{$\mathbb N_k$}
+
+  \uncover<3->{
+    We then store our value $v$ at the index given by
+    $\mathit{hash}(v)$.
+  }
+\end{frame}
+
+\begin{frame}[fragile]{Example (using shitty string hash function)}
+  Store word frequencies at the index given by the hash of the word:
+
+  \begin{center}
+    \begin{tikzpicture}[rem]
+    \node[
+      shape=ellipse,fill=yellow!80!white,minimum height=1.6in
+    ] (hash) {$\mathit{hash}_7$};
+    \node[anchor=west] at (1in,0) (output) {
+      \begin{tabular}{|c|}
+        \hline 0 \\
+        \hline 0 \\
+        \hline \alt<8->10 \\
+        \hline \alt<7->10 \\
+        \hline \alt<4->10 \\
+        \hline 0 \\
+        \hline 0 \\
+        \hline
+      \end{tabular}
+    };
+    \node[anchor=east] (input) at (-1in, 0) {
+      \begin{minipage}{1.1in}
+      \begin{overprint}
+        \onslide<2-4>
+        \hfill “^store^”
+        \onslide<5-7>
+        \hfill “^word^”
+        \onslide<8>
+        \hfill “^frequencies^”
+        \onslide<9->
+        \hfill “^at^”
+      \end{overprint}
+      \end{minipage}
+    };
+    \draw<3-4,6-7,8,9-> (input) edge[->] (hash);
+    \draw<4> (hash) edge[->] node[above] {4} (output.230);
+    \draw<7> (hash) edge[->] node[above] {3} (output.180);
+    \draw<8> (hash) edge[->] node[above] {2} (output.130);
+    \draw<9> (hash) edge[->] node[above] {\alert{3}} (output.180);
+  \end{tikzpicture}
+  \par\uncover<10>{\alert{Hash collision!}}
+  \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Take two: separate chaining}
+  Each bucket stores a linked list of associations:
+
+  \begin{center}
+    \begin{tikzpicture}[rem]
+    \node[anchor=west] (output) {
+      \begin{tabular}{|l|}
+        \hline (hash, 1) \\
+        \hline \\
+        \hline (frequencies, 1) $\to$ (by, 1) \\
+        \hline (word, 2) $\to$ (at, 1) $\to$ (of, 1) \\
+        \hline (store, 1) $\to$ (index, 1) \\
+        \hline (given, 1) \\
+        \hline (the, 3) \\
+        \hline
+      \end{tabular}
+    };
+  \end{tikzpicture}
+  \end{center}
+  \par\pause
+\end{frame}
+
+\begin{frame}{Time complexity of hash table operations}
+  What's the time complexity of insert? Lookup?
+  \par\medskip\pause
+  \emph{Depends on how many collisions we have!}
+  \par\medskip\pause
+  If we avoid collisions: \bigO{1} \emph{on average}
+  \par\medskip\pause
+  But too many collisions and the lists get too long: \bigO{n}
+\end{frame}
+
+\begin{frame}{Probabilities of collisions}
+  \centering
+  \includegraphics[width=3.5in]{probs.png}
+\end{frame}
+
+\begin{frame}{What makes a good hash function?}
+  Inputs get scattered all over the range of the output
+  \par\bigskip\pause
+  Stronger: changing any one bit of the input changes each bit of the
+  output with probability $\frac12$
 \end{frame}
 
 \takeaways
