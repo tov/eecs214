@@ -1,0 +1,740 @@
+\RequirePackage[l2tabu, orthodox]{nag}
+
+\documentclass{beamer}
+
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+%??? :( \usepackage[MnSymbol]{mathspec}
+\usepackage{mathspec}
+\usepackage[final]{listings}
+\usepackage{graphicx}
+
+\setallmainfonts{TeX Gyre Schola}
+\setallmonofonts{Menlo}
+
+%\usepackage{xunicode}
+%\usepackage{xltxtra}
+%\usepackage{graphicx}
+%\usepackage{forloop}
+%\usepackage{stmaryrd}
+%\usepackage{mathtools}
+%\usepackage{fancyvrb}
+
+\usepackage{tikz}
+% \usetikzlibrary{arrows.meta}
+% \usetikzlibrary{backgrounds}
+\usetikzlibrary{calc}
+% \usetikzlibrary{datavisualization}
+% \usetikzlibrary{datavisualization.formats.functions}
+\usetikzlibrary{math}
+% \usetikzlibrary{fit}
+% \usetikzlibrary{positioning}
+% \usetikzlibrary{scopes}
+\usetikzlibrary{shapes.geometric}
+
+\def\bigO#1{\ensuremath{\mathcal O(#1)}}
+\def\BigO#1{\ensuremath{\mathcal O\left(#1\right)}}
+\newcommand\fun[1]{\ensuremath{\lambda #1.\,}}
+\renewcommand\T[1]{\ensuremath{T_{\mathit{#1}}}}
+
+%%%
+%%% BASIC SETTINGS
+%%%
+
+\frenchspacing
+\unitlength=0.01\textwidth
+\thicklines
+\urlstyle{sf}
+\graphicspath{{images/}}
+\setlength{\parskip}{.25em}
+
+\defaultfontfeatures{
+    Mapping=tex-text,
+    Scale=MatchLowercase,
+}
+
+%%%
+%%% LISTINGS SETUP
+%%%
+
+\lstdefinelanguage{ASL}%
+  {sensitive,%
+   alsoletter=-+*/\#?,%
+   alsodigit=-,%
+   morekeywords={%
+      and,%
+      begin,%
+      check-error,%
+      check-expect,%
+      check-within,%
+      cond,%
+      define,%
+      define-struct,%
+      else,%
+      if,%
+      lambda,%
+      local,%
+      or,%
+   },%
+   morekeywords=[2]{%
+     cons,%
+     \#true,%
+     \#false,%
+   },%
+   morekeywords=[3]{%
+     this-is-here-because-suck,%
+     cons?,%
+     empty?,%
+     -,+,*,/,%
+     first,%
+     rest,%
+   }%,
+   morecomment=[l];,%
+   morecomment=[s]{\#|}{|\#},%
+   morestring=[b]"%
+  }[keywords,comments,strings]%
+
+\lstnewenvironment{ASL}[1][]
+{%
+  \begingroup
+  \lstset{language=ASL,#1}%
+}
+{%
+  \endgroup
+}
+
+\lstnewenvironment{CXX}[1][]
+{%
+  \begingroup
+  \lstset{language=C++,#1}%
+}
+{%
+  \endgroup
+}
+
+\lstnewenvironment{Java}[1][]
+{%
+  \begingroup
+  \lstset{language=Java,#1}%
+}
+{%
+  \endgroup
+}
+
+\lstnewenvironment{Python}[1][]
+{%
+  \begingroup
+  \lstset{language=Python,#1}%
+}
+{%
+  \endgroup
+}
+
+
+\lstnewenvironment{Ruby}[1][]
+{%
+  \begingroup
+  \lstset{language=Ruby,#1}%
+}
+{%
+  \endgroup
+}
+
+\newcommand{\textcode}{%
+  \lstset{language=ASL,basicstyle=\ttfamily\small}%
+  \lstinline
+}
+
+\lstset{%
+  numberstyle=\scriptsize,
+  showspaces=false,
+  basicstyle=\ttfamily,
+  keywordstyle=\ttfamily\color{red!70!black},
+  keywordstyle=[2]\ttfamily\color{blue!70!black},
+  keywordstyle=[3]\ttfamily\color{green!40!black},
+  numberstyle=\ttfamily\color{blue!70!black},
+  commentstyle=\itshape\color{violet!80!black},
+  escapeinside={($}{$)},
+}
+
+\newcommand{\textasl}{%
+  \lstset{language=ASL,basicstyle=\ttfamily\small}%
+  \lstinline
+}
+
+\let\sup^
+
+\catcode`\^\active\relax
+\def^#1^{\textasl|#1|}
+
+%%%
+%%% BEAMER SETUP
+%%%
+
+\setbeamercolor{frametitle}{fg=black}
+\setbeamercolor{normal text}{fg=black}
+
+\usefonttheme{serif}
+
+\setbeamertemplate{frametitle}
+  {\begin{center}\medskip
+   \insertframetitle\par
+   \end{center}}
+
+\setbeamertemplate{itemize item}{$\bullet$}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[text line]{%
+    \hfill\strut{%
+        \small\color{black!75}%
+        \texttt{\insertframenumber:\insertframeslidenumber}%
+    }%
+    \hfill%
+}
+
+\makeatletter
+\newcount\frameslidetemp
+\newcommand\insertframeslidenumber{%
+  \frameslidetemp\c@page\relax
+  \advance\frameslidetemp-\beamer@startpageofframe\relax
+  \advance\frameslidetemp1\relax
+  \the\frameslidetemp
+}
+\makeatother
+
+%%%
+%%% GENERALLY USEFUL LITTLE MACROS
+%%%
+
+% For using \alt within verbatim:
+\newcommand\ALT[3]{\alt<#1>{#2}{#3}}
+
+% Or: \ALT = \S\alt
+\def\S#1#2{#2<#1>}
+
+\newcommand<>\always[1]{#1}
+
+\newcommand\widen[1][1.2]{%
+    \setlength\baselineskip{#1\baselineskip}%
+}
+
+%%%
+%%% COLORS
+%%%
+
+\newcommand\K[1]{\textcolor{orange!70!black}{#1}}
+\newcommand\REF{\textcolor{green!50!black}{ref}}
+
+%%%
+%%% TIKZ
+%%%
+
+% \place[STYLE]{LOCATION}{CONTENT} places CONTENT at LOCATION, applying
+% STYLE
+\newcommand\place[3][]{%
+  \tikz[orp] \node[#1] at (#2) {#3};%
+}
+
+% \anchor{NAME} creates an addressable TikZ coordinate at the current
+% location.
+\newcommand\anchor[1]{%
+  \tikz[orp] \coordinate (#1);%
+}
+
+% \nil{NODE} draws a slash across the node; if NODE is a square then we
+% get the standard graphic notation for null/nil.
+\newcommand\nil[1][1em]{%
+  \begin{tikzpicture}[nil]
+    \node[pointer tail, line width=0, opacity=0] {};
+    \draw[overlay]
+      node[pointer tail] (dummy) {}
+      (dummy.west |- dummy.south) -- (dummy.east |- dummy.north);
+  \end{tikzpicture}%
+}
+
+\makeatletter
+  \newcommand\cons[1][]{\cons@kont{#1}}
+  \def\cons@kont#1#2(#3)#4#5{\struct@kont{#1}{}(#3){#4&#5}}
+
+  \newcommand\struct[1][]{\struct@kont{#1}}
+  \def\struct@kont#1#2(#3)#4{
+      \node[draw, inner sep=0, #1] (#3) {%
+        \begin{tabular}{|*{100}{c|}}
+          \hline
+          #4\\
+          \hline
+        \end{tabular}
+      }
+  }
+\makeatother
+
+% \genpointer[STYLE]{BEND}{TARGET}
+\newcommand\genpointer[2][genpointer]{%
+  \tikz[remember picture, #1]
+    \draw
+      node[pointer tail] {}
+      edge[->, overlay] (#2) ;%
+}
+
+% \hpointer[BEND]{TARGET} for a highlighted pointer
+\newcommand\hpointer[2][]{%
+  \genpointer[highlit pointer,#1]{#2}%
+}
+
+% \ppointer[BEND]{TARGET} for a non-highlighted pointer
+\newcommand\ppointer[2][]{%
+  \genpointer[pointer,#1]{#2}%
+}
+
+% \pointer[BEND]{TARGET} is highlighted if used in a highlighted context
+\newcommand\pointer[2][]{%
+  \ifhighlit\let\pointertemp\hpointer\else\let\pointertemp\ppointer\fi
+  \pointertemp[#1]{#2}%
+}
+
+\newcommand\genpointerbase[2][genpointer]{%
+  \tikz[remember picture, #1]
+    \draw node[pointer tail] (#2) {};%
+}
+
+\newcommand\ppointerbase[2][genpointer]{%
+  \genpointerbase[pointer,#1]{#2}%
+}
+
+\newcommand\hpointerbase[2][genpointer]{%
+  \genpointerbase[highlit pointer,#1]{#2}%
+}
+
+\newcommand\pointerbase[2][]{%
+  \ifhighlit\let\pointertemp\hpointerbase\else\let\pointertemp\ppointerbase\fi
+  \pointertemp[#1]{#2}%
+}
+
+\newcommand\genpointerpoint[3][genpointer]{
+  \draw (#2) edge[->, remember picture, overlay, #1] (#3) ;
+}
+
+\newcommand\ppointerpoint[2][genpointer]{%
+  \genpointerpoint[pointer,#1]{#2}%
+}
+
+\newcommand\hpointerpoint[2][genpointer]{%
+  \genpointerpoint[highlit pointer,#1]{#2}%
+}
+
+\newcommand\pointerpoint[2][]{%
+  \ifhighlit\let\pointertemp\hpointerpoint\else\let\pointertemp\ppointerpoint\fi
+  \pointertemp[#1]{#2}%
+}
+
+\tikzset{
+  onslide/.code args={<#1>#2}{%
+    \only<#1>{\pgfkeysalso{#2}}
+  },
+  orp/.style={
+    overlay,
+    remember picture,
+  },
+  rem/.style={
+    remember picture,
+  },
+  every node/.style={
+    very thick,
+    inner sep=3pt,
+  },
+  treenode/.style={
+    circle,
+    draw=black,
+    inner sep=2pt,
+  },
+  subtree/.style={
+    treenode,
+    isosceles triangle,
+    isosceles triangle apex angle=30,
+    text width=1em,
+    align=center,
+    shape border rotate=90,
+    anchor=apex,
+    inner xsep=0pt,
+    inner ysep=4pt,
+    fill=orange!30!white,
+    draw=orange!50!black,
+  },
+  balance/.style={
+    draw=none,
+    color=green!70!black,
+    anchor=north,
+  },
+  bad balance/.style={
+    balance,
+    color=red,
+    },
+  every path/.style={very thick},
+  ref/.style={
+    draw=red,
+    densely dotted,
+    font=\ttfamily,
+  },
+  cons/.style={
+    draw=black,
+    font=\ttfamily,
+  },
+  genpointer/.style={
+    solid,
+    bend left=30,
+    >=Latex,
+  },
+  pointer/.style={
+    genpointer,
+    color=blue!50!black,
+    opacity=.5,
+  },
+  highlit pointer/.style={
+    genpointer,
+    color=red!70!black,
+  },
+  nil/.style={
+    color=black!50,
+  },
+  pointer tail/.style={
+    draw,
+    circle,
+    text width=0,
+    text height=1ex,
+    inner sep=0,
+  },
+  highlight base/.style={
+    outer color=#1!50,
+    inner color=#1!30,
+  },
+  highlight base/.default=yellow,
+  highlight/.style={
+    highlight base,
+    color=yellow!50!white!90!black,
+    draw opacity=0.5,
+    thick,
+    draw,
+    rounded corners=2pt,
+  },
+  bintree/.style={
+    level 1/.style={sibling distance=#1},
+    level 2/.style={sibling distance=#1/2},
+    level 3/.style={sibling distance=#1/4},
+    level 4/.style={sibling distance=#1/8},
+    level 5/.style={sibling distance=#1/16},
+  },
+  bintree/.default={8em},
+}
+
+\newif\ifhighlit
+\highlitfalse
+
+% \highlight<WHEN>[NAME]{CONTENT}
+\newcommand<>\highlight[2][\relax]{%
+  \ifx#1\relax
+    \begin{tikzpicture}
+  \else
+    \begin{tikzpicture}[remember picture]
+  \fi
+    \node[
+      inner sep=0pt,
+      outer sep=0pt,
+      text depth=0pt,
+      align=left,
+    ] (highlight temp) {%
+        \only#3{\highlittrue}%
+        #2%
+        \only#3{\highlitfalse}%
+    };
+    \begin{scope}[on background layer]
+      \coordinate (highlight temp 1) at
+        ($(highlight temp.north east) + (2pt,2pt)$);
+      \coordinate (highlight temp 2) at
+        ($(highlight temp.base west) + (-2pt,-3pt)$);
+      \node#3 [
+        overlay,
+        highlight,
+        inner sep=0pt,
+        fit=(highlight temp 1) (highlight temp 2),
+      ] {};
+    \end{scope}
+    \ifx#1\relax
+      \relax
+    \else
+      \node (#1) [
+        overlay,
+        inner sep=0pt,
+        fit=(highlight temp 1) (highlight temp 2),
+      ] {};
+    \fi
+  \end{tikzpicture}%
+}
+
+\newcommand\HI[2]{\highlight<#1>{#2}}
+
+% \huncover[NAME]{STEP}{CONTENT} uncovers from STEP onward, highlighting
+% at STEP but not thereafter.
+\newcommand\huncover[3][\relax]{%
+  \uncover<#2->{\highlight<#2>[#1]{#3}}%
+}
+
+% \huncover[NAME]{STEP}{CONTENT} onlys from STEP onward, highlighting
+% at STEP but not thereafter.
+\newcommand\honly[3][\relax]{%
+  \only<#2->{\highlight<#2>[#1]{#3}}%
+}
+
+\begin{document}
+
+%%%
+%%% TITLE PAGE
+%%%
+
+\newcommand{\takeaways}{
+  \begin{frame}{Take-aways}
+    \begin{itemize}
+      \item How are graphs commonly represented?
+      \item How can we find shortest paths?
+    \end{itemize}
+  \end{frame}
+}
+
+\begin{frame}[fragile]\relax
+  \thispagestyle{empty}
+
+  %% Need to initialize Tikz opacity inside a frame, not outside:
+  \begin{tikzpicture}[opacity=0,overlay]\end{tikzpicture}
+
+  \begin{center}
+    {\huge Graph representations and algorithms}
+
+  \bigskip
+  \large
+  EECS 214
+
+  \medskip
+  November 23, 2015
+  \end{center}
+\end{frame}
+
+\takeaways
+
+\begin{frame}{Definitions}
+  A \emph{graph} is a pair $(V, E)$, where $V$ is the set of
+  \emph{vertices} and symmetric relation $E \subseteq V\sup2$ is
+  the set of \emph{edges}.
+  \par\pause\bigskip
+  A \emph{directed graph} is a pair $(V, E)$ where $V$ is the set of
+  \emph{vertices} and relation $E \subseteq V\sup2$ is the set of edges.
+\end{frame}
+
+\begin{frame}{Weighted graph definitions}
+  Let $W$ be a set of \emph{weights}. (Often $W = \mathbb R$.) Then:
+  %
+  \par\bigskip
+  A \emph{weighted directed graph} is a pair $(V, E)$, where $V$ is the
+  set of \emph{vertices} and $E : V\sup2 \rightharpoonup W$ is a
+  partial map from edges to their weights.
+  %
+  \par\medskip\pause
+  Alternatively, we can make $E$ total: let $\infty \in W$ and $E :
+  V\sup2 \to W$. Then $E(v, u) = \infty$ means there is no edge from $v$
+  to $u$.
+  \par\bigskip\pause
+  A \emph{weighted (undirected) graph} is a weighted directed graph where
+  $E(v, u) = E(u, v)$ for all $v, u \in V$.
+\end{frame}
+
+\begin{frame}[fragile]{Two major graph representations}
+  \begin{center}
+  \begin{tikzpicture}
+    [
+      every node/.style={
+        draw,
+        circle,
+      },
+    ]
+    \node (A) at (0:1.4) {A};
+    \node (B) at (60:1.4) {B};
+    \node (C) at (120:1.4) {C};
+    \node (D) at (180:1.4) {D};
+    \node (E) at (240:1.4) {E};
+    \node (F) at (300:1.4) {F};
+    \draw[->] (A) edge (B) edge (C)
+              (B) edge (F)
+              (C) edge (D) edge (F)
+              (D) edge (E) edge (A)
+              (E) edge (F) edge (C)
+              ;
+  \end{tikzpicture}
+  \end{center}
+  \uncover<3->{
+  \begin{minipage}{2in}
+    \centering
+    \textbf{Adjacency matrix}\\[4pt]
+  \begin{tabular}{c||c|c|c|c|c|c}
+    & A & B & C & D & E & F \\
+    \hline
+    \hline
+    A & & \textbullet & \textbullet & & & \\
+    \hline
+    B & & & & & & \textbullet \\
+    \hline
+    C & & & & \textbullet & & \textbullet \\
+    \hline
+    D &\textbullet & & & &\textbullet &  \\
+    \hline
+    E & & &\textbullet & & &\textbullet  \\
+    \hline
+    F & & & & & &  \\[4pt]
+   \end{tabular}
+  \end{minipage}~%
+  }%
+  \uncover<2->{%
+  \begin{minipage}{2in}
+    \centering
+    \textbf{Adjacency list}\\
+  \begin{tabular}{c|l}
+    V & Successors \\
+    \hline
+    A & B, C \\
+    B & F    \\
+    C & D, F \\
+    D & A, E \\
+    E & F, C \\
+    F &      \\
+   \end{tabular}
+  \end{minipage}
+}
+\end{frame}
+
+\begin{frame}[fragile]{Two major weighted graph representations}
+  \begin{center}
+  \begin{tikzpicture}
+    [
+      vertex/.style={
+        draw,
+        circle,
+      },
+    ]
+    \node[vertex] (A) at (0:1.4) {A};
+    \node[vertex] (B) at (60:1.4) {B};
+    \node[vertex] (C) at (120:1.4) {C};
+    \node[vertex] (D) at (180:1.4) {D};
+    \node[vertex] (E) at (240:1.4) {E};
+    \node[vertex] (F) at (300:1.4) {F};
+    \draw[->] (A) edge node[right]{2} (B) edge node[above]{3} (C)
+              (B) edge (F)
+              (C) edge node[left]{1} (D) edge (F)
+              (D) edge node[left]{1} (E) edge (A)
+              (E) edge node[left]{1} (F) edge (C)
+              ;
+  \end{tikzpicture}
+  \end{center}
+  \uncover<3->{
+  \begin{minipage}{2in}
+    \centering
+    \textbf{Adjacency matrix}\\[4pt]
+  \begin{tabular}{c||c|c|c|c|c|c}
+    & A & B & C & D & E & F \\
+    \hline
+    \hline
+    A & & \textbullet & \textbullet & & & \\
+    \hline
+    B & & & & & & \textbullet \\
+    \hline
+    C & & & & \textbullet & & \textbullet \\
+    \hline
+    D &\textbullet & & & &\textbullet &  \\
+    \hline
+    E & & &\textbullet & & &\textbullet  \\
+    \hline
+    F & & & & & &  \\[4pt]
+   \end{tabular}
+  \end{minipage}~%
+  }%
+  \uncover<2->{%
+  \begin{minipage}{2in}
+    \centering
+    \textbf{Adjacency list}\\
+  \begin{tabular}{c|l}
+    V & Successors \\
+    \hline
+    A & B, C \\
+    B & F    \\
+    C & D, F \\
+    D & A, E \\
+    E & F, C \\
+    F &      \\
+   \end{tabular}
+  \end{minipage}
+}
+\end{frame}
+
+\begin{frame}
+  \begin{center}
+    \emph{Dijkstra's algorithm}
+  \end{center}
+\end{frame}
+\takeaways
+
+\end{document}
+% \begin{frame}[fragile]{Graph search (basic algorithm)}
+% \begin{tabbing}
+% \textbf{def} GraphSearch(\emph{start}): \\
+% \quad\=\+
+% \emph{visited} \=$\gets$ $\varnothing$ \\
+% \emph{todo}    \>$\gets$ $\{$ \emph{start} $\}$ \\
+% \\
+% \textbf{while} \emph{todo} $\ne$ $\varnothing$: \\
+% \quad\=\+
+% $v \gets$ remove an element from \emph{todo} \\
+% \textbf{if} \emph{v} $\not\in$ \emph{visited}: \\
+% \quad\=\+
+% Visit$(v)$ \\
+% \emph{visited} \=$\gets$ $\{v\}$ $\cup$ \emph{visited} \\
+% \emph{todo}    \>$\gets$ Successors$(v)$ $\cup$ \emph{todo} \\
+% \end{tabbing}
+% \end{frame}
+
+% \begin{frame}[fragile]{Breadth-first search}
+% If we make \emph{todo} a queue (FIFO), we get BFS:
+% \begin{tabbing}
+% \textbf{def} BFS(\emph{start}): \\
+% \quad\=\+
+% \emph{visited} \=$\gets$ $\varnothing$ \\
+% \emph{todo}    \>$\gets$ empty queue \\
+% enqueue \emph{start} in \emph{todo} \\
+% \\
+% \textbf{while} \emph{todo} $\ne$ $\varnothing$: \\
+% \quad\=\+
+% $v \gets$ dequeue an element from \emph{todo} \\
+% \textbf{if} \emph{v} $\not\in$ \emph{visited}: \\
+% \quad\=\+
+% Visit$(v)$ \\
+% \emph{visited} \=$\gets$ $\{v\}$ $\cup$ \emph{visited} \\
+% enqueue \only<2>{(}Successors$(v)$\only<2>{ $\setminus$ \emph{visited})} in \emph{todo} \\
+% \end{tabbing}
+% \uncover<2>{\emph{(an optimization)}}
+% \end{frame}
+
+% \begin{frame}[fragile]{Depth-first search}
+% If we make \emph{todo} a stack (LIFO), we get DFS:
+% \begin{tabbing}
+% \textbf{def} BFS(\emph{start}): \\
+% \quad\=\+
+% \emph{visited} \=$\gets$ $\varnothing$ \\
+% \emph{todo}    \>$\gets$ empty stack \\
+% push \emph{start} onto \emph{todo} \\
+% \\
+% \textbf{while} \emph{todo} $\ne$ $\varnothing$: \\
+% \quad\=\+
+% $v \gets$ pop an element from \emph{todo} \\
+% \textbf{if} \emph{v} $\not\in$ \emph{visited}: \\
+% \quad\=\+
+% Visit$(v)$ \\
+% \emph{visited} \=$\gets$ $\{v\}$ $\cup$ \emph{visited} \\
+% push Successors$(v)$ onto \emph{todo} \\
+% \end{tabbing}
+% \end{frame}
+
