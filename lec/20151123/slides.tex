@@ -624,51 +624,47 @@
     \node[vertex] (E) at (240:1.4) {E};
     \node[vertex] (F) at (300:1.4) {F};
     \draw[->] (A) edge node[right]{2} (B) edge node[above]{3} (C)
-              (B) edge (F)
-              (C) edge node[left]{1} (D) edge (F)
-              (D) edge node[left]{1} (E) edge (A)
-              (E) edge node[left]{1} (F) edge (C)
+    (B) edge[bend left=100] node[right] {12} (F)
+    (C) edge node[above]{1} (D) edge node[right]{10} (F)
+    (D) edge node[left]{1} (E) edge node[below] {7} (A)
+              (E) edge node[below]{1} (F) edge[bend left=100] node[left]{5} (C)
               ;
   \end{tikzpicture}
   \end{center}
-  \uncover<3->{
   \begin{minipage}{2in}
     \centering
     \textbf{Adjacency matrix}\\[4pt]
   \begin{tabular}{c||c|c|c|c|c|c}
-    & A & B & C & D & E & F \\
+    &A &B &C &D &E &F \\
     \hline
     \hline
-    A & & \textbullet & \textbullet & & & \\
+    A &&2 &3 &&&\\
     \hline
-    B & & & & & & \textbullet \\
+    B &&&&&&12 \\
     \hline
-    C & & & & \textbullet & & \textbullet \\
+    C &&&&1 &&7 \\
     \hline
-    D &\textbullet & & & &\textbullet &  \\
+    D &10 &&&&1&\\
     \hline
-    E & & &\textbullet & & &\textbullet  \\
+    E &&&1 &&&5  \\
     \hline
-    F & & & & & &  \\[4pt]
+    F &&&&&& \\[4pt]
    \end{tabular}
   \end{minipage}~%
-  }%
-  \uncover<2->{%
   \begin{minipage}{2in}
     \centering
     \textbf{Adjacency list}\\
   \begin{tabular}{c|l}
     V & Successors \\
     \hline
-    A & B, C \\
-    B & F    \\
-    C & D, F \\
-    D & A, E \\
-    E & F, C \\
+    A & (B,2), (C,3) \\
+    B & (F,12)    \\
+    C & (D,1), (F,7) \\
+    D & (A,10), (E,1) \\
+    E & (F,1), (C,5) \\
     F &      \\
    \end{tabular}
   \end{minipage}
-}
 \end{frame}
 
 \begin{frame}
@@ -679,62 +675,3 @@
 \takeaways
 
 \end{document}
-% \begin{frame}[fragile]{Graph search (basic algorithm)}
-% \begin{tabbing}
-% \textbf{def} GraphSearch(\emph{start}): \\
-% \quad\=\+
-% \emph{visited} \=$\gets$ $\varnothing$ \\
-% \emph{todo}    \>$\gets$ $\{$ \emph{start} $\}$ \\
-% \\
-% \textbf{while} \emph{todo} $\ne$ $\varnothing$: \\
-% \quad\=\+
-% $v \gets$ remove an element from \emph{todo} \\
-% \textbf{if} \emph{v} $\not\in$ \emph{visited}: \\
-% \quad\=\+
-% Visit$(v)$ \\
-% \emph{visited} \=$\gets$ $\{v\}$ $\cup$ \emph{visited} \\
-% \emph{todo}    \>$\gets$ Successors$(v)$ $\cup$ \emph{todo} \\
-% \end{tabbing}
-% \end{frame}
-
-% \begin{frame}[fragile]{Breadth-first search}
-% If we make \emph{todo} a queue (FIFO), we get BFS:
-% \begin{tabbing}
-% \textbf{def} BFS(\emph{start}): \\
-% \quad\=\+
-% \emph{visited} \=$\gets$ $\varnothing$ \\
-% \emph{todo}    \>$\gets$ empty queue \\
-% enqueue \emph{start} in \emph{todo} \\
-% \\
-% \textbf{while} \emph{todo} $\ne$ $\varnothing$: \\
-% \quad\=\+
-% $v \gets$ dequeue an element from \emph{todo} \\
-% \textbf{if} \emph{v} $\not\in$ \emph{visited}: \\
-% \quad\=\+
-% Visit$(v)$ \\
-% \emph{visited} \=$\gets$ $\{v\}$ $\cup$ \emph{visited} \\
-% enqueue \only<2>{(}Successors$(v)$\only<2>{ $\setminus$ \emph{visited})} in \emph{todo} \\
-% \end{tabbing}
-% \uncover<2>{\emph{(an optimization)}}
-% \end{frame}
-
-% \begin{frame}[fragile]{Depth-first search}
-% If we make \emph{todo} a stack (LIFO), we get DFS:
-% \begin{tabbing}
-% \textbf{def} BFS(\emph{start}): \\
-% \quad\=\+
-% \emph{visited} \=$\gets$ $\varnothing$ \\
-% \emph{todo}    \>$\gets$ empty stack \\
-% push \emph{start} onto \emph{todo} \\
-% \\
-% \textbf{while} \emph{todo} $\ne$ $\varnothing$: \\
-% \quad\=\+
-% $v \gets$ pop an element from \emph{todo} \\
-% \textbf{if} \emph{v} $\not\in$ \emph{visited}: \\
-% \quad\=\+
-% Visit$(v)$ \\
-% \emph{visited} \=$\gets$ $\{v\}$ $\cup$ \emph{visited} \\
-% push Successors$(v)$ onto \emph{todo} \\
-% \end{tabbing}
-% \end{frame}
-
