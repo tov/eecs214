@@ -142,8 +142,8 @@ class BitWriter(object):
         """
         Closes a `BitWriter`, flushing any remaining bits to the file
         and returning its resources to the system. Because files store
-        bits in octets (8-bit bytes), the last byte may need to be
-        padded with 0s.
+        bits in octets (8-bit bytes), the last byte will be
+        automatically padded with 0s if necessary.
 
         **Example:**
 
