@@ -1,6 +1,6 @@
 # CS 214 Homework 1: Huffman Coding
 
-  - Due: Saturday, October 24 at 5:00 PM<sup>[‡](#fine-print)</sup>
+  - Due: Monday, November 30 at 11:59 PM, via Canvas
 
   - May optionally be completed with one partner of your choosing
 
@@ -16,13 +16,13 @@ For this homework, you will write two programs:
 The filenames to read from and write to are passed to each program as
 command-line arguments. For example, suppose you have a text file
 `hamlet.txt` that you'd like to compress. You can compress it to a file
-`hamlet.txt.huff` using your `encode` program:
+`hamlet.txt.huff` using your `huff` program:
 
 ```sh
     % ./huff hamlet.txt hamlet.txt.huff
 ```
 
-You can decompress it using your `decode` program:
+You can decompress it using your `puff` program:
 
 ```sh
     % ./puff hamlet.txt.huff hamlet.txt.out
@@ -64,12 +64,14 @@ includes all five languages in directory
 Or you can simply download the whole course repository as a [ZIP
 file](https://github.com/tov/eecs214/archive/master.zip)
 
-The starter code for each language includes a version of `encode`
-that---rather than Huffman coding---compresses an ASCII text file to 7/8
-of its original size using a simple block code. The next section
-discusses details of how that works, but first we will consider how to
-build, if necessary, and run the code in each language. Try it out and
-make sure you can get it to work.
+The starter code for each language includes a pair of programs `encode`
+and `decode` that---rather than Huffman coding---compress an ASCII text
+file to 7/8 of its original size using a simple block code. (Note that
+your `huff` and `puff` programs are not limited to ASCII files, but must
+work on binary files containing any sequence of bytes.) The next section
+discusses details of how that works, but first we will see how to build,
+if necessary, and run the code in each language. Try it out and make
+sure you can get it to work.
 
 ### C
 
