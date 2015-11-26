@@ -6,6 +6,9 @@
 
 ## Summary
 
+**For more detailed instructions, see the [HW1
+Guide](http://www.eecs.northwestern.edu/~jesse/course/eecs214/hw/1/guide.pdf).**
+
 For this homework, you will write two programs:
 
   - `huff` compresses text files using Huffman coding.
@@ -229,6 +232,10 @@ it may sound:
     of 8, in which case the remaining bits in the file must be padded
     somehow. How can the decoder tell padding bits from data bits?
 
+    **[The HW1
+    Guide](http://www.eecs.northwestern.edu/~jesse/course/eecs214/hw/1/guide.pdf) discusses how to solve this problem by writing the original file size to the encoded file.**
+
+
 2.  The decoder needs some way to recover the same Huffman tree that
     `huff` used to encode it. Since different files have different
     letter frequencies, `huff` needs to somehow transmit the tree to
@@ -249,6 +256,10 @@ it may sound:
         build the tree. Provided your Huffman-tree algorithm is
         deterministic, you should be able to reconstruct the same tree
         in `puff` as was used in `huff`.
+
+    **[The HW1
+    Guide](http://www.eecs.northwestern.edu/~jesse/course/eecs214/hw/1/guide.pdf) gives pseudocode for the former strategy.**
+
 
 Feel free to discuss these questions on Piazza. Note that because you
 are designing your own file format, your file format will not
@@ -358,10 +369,7 @@ Your deliverables are:
     formatting if you like) in which you describe the design of your
     program. In particular please discuss, briefly:
 
-      - how your file format solves the file length and tree
-        transmission problems described above;
-
-      - how you tested your programs to ensure correctness; and
+      - how you tested your programs to ensure correctness and
 
       - anything that surprised you while doing this assignment.
 
