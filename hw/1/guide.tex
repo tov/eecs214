@@ -1,0 +1,580 @@
+\newif\ifslow\slowtrue
+\documentclass[12pt]{article}
+
+\usepackage{fancyhdr}
+\usepackage{fullpage}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+% \usepackage[MnSymbol]{mathspec}
+\usepackage[final]{listings}
+
+\ifslow
+\usepackage{tikz}
+\usetikzlibrary{shapes.multipart}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{calc}
+\fi
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{0.5em}
+
+\pagestyle{fancy}
+\lhead{EECS 214}
+\rhead{Fall 2015}
+\cfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\setlength{\headheight}{.25in}
+\setlength{\headsep}{.25in}
+\addtolength{\topmargin}{-.5in}
+
+%%%
+%%% LISTINGS SETUP
+%%%
+
+\lstdefinelanguage{ASL}%
+  {sensitive,%
+   alsoletter=-+*/\#?,%
+   alsodigit=-,%
+   morekeywords={%
+      and,%
+      begin,%
+      check-error,%
+      check-expect,%
+      check-within,%
+      cond,%
+      define,%
+      define-struct,%
+      else,%
+      if,%
+      lambda,%
+      local,%
+      or,%
+   },%
+   morekeywords=[2]{%
+     cons,%
+     \#true,%
+     \#false,%
+   },%
+   morekeywords=[3]{%
+     this-is-here-because-suck,%
+     cons?,%
+     empty?,%
+     -,+,*,/,%
+     first,%
+     rest,%
+   }%,
+   morecomment=[l];,%
+   morecomment=[s]{\#|}{|\#},%
+   morestring=[b]"%
+  }[keywords,comments,strings]%
+
+\lstnewenvironment{asl}[1][]
+{%
+  \begingroup
+  \lstset{language=ASL,#1}%
+}
+{%
+  \endgroup
+}
+
+\lstnewenvironment{cpp}[1][]
+{%
+  \begingroup
+  \lstset{language=C++,#1}%
+}
+{%
+  \endgroup
+}
+
+
+\newcommand{\textcode}{%
+  \lstset{language=ASL,basicstyle=\ttfamily\small}%
+  \lstinline
+}
+
+\lstset{%
+  numberstyle=\scriptsize,
+  showspaces=false,
+  basicstyle=\ttfamily,
+  keywordstyle=\ttfamily\bfseries,
+  %keywordstyle=[2]\ttfamily\color{blue!70!black},
+  %keywordstyle=[3]\ttfamily\color{green!40!black},
+  numberstyle=\ttfamily,%\color{blue!70!black},
+  commentstyle=\itshape,%\color{violet!80!black},
+  escapeinside={($}{$)},
+}
+
+\newcommand{\textasl}{%
+  \lstset{language=ASL,basicstyle=\ttfamily\small}%
+  \lstinline
+}
+
+\let\sup^
+
+\catcode`\^\active\relax
+\def^#1^{\textasl|#1|}
+
+\begin{document}
+\begin{center}
+  {\LARGE\textbf{HW1 Guide}}
+\end{center}
+
+\tableofcontents
+
+\section{High-level factoring}
+
+\subsection{\texttt{huff}}
+
+Compression proceeds in several high-level phases:
+\begin{enumerate}
+  \item  Count the number of occurrences of each byte in the input file,
+    as well as the total length in bytes.
+
+  \item  Make a forest of Huffman tree leaves, one for each byte value,
+    and then construct a Huffman tree (see \S\ref{forestation}).
+
+  \item  Walk the Huffman tree to build a table mapping bytes to their
+    codewords (\S\ref{codeword}).
+
+  \item  Write metadata to the output file: first the total length of
+    the file, and then a serialization of the Huffman tree
+    (\S\ref{serialization}).
+
+  \item  Encode the input file to the output file using the codeword table
+    (\S\ref{encode}).
+\end{enumerate}
+I suggest writing a function or method to encapsulate each phase.
+
+The phases communicate with other phases via (potentially) well-defined
+data structures:
+
+\begin{itemize}
+  \item Phase 1 produces the frequency table, a mapping from each byte
+    value to a count. Since byte values range from 0 to 255, they work
+    perfectly as array indices, so the frequency table is most easily
+    represented as a 256-element array. (C/C++: ^int[256]^; Java:
+    ^int[]^; Python: ^list^; Ruby: ^Array^.)
+
+  \item Phase 2 makes a Huffman forest, which is also probably best
+    represented as an array of, in this case, Huffman trees. Then it
+    builds the Huffman tree, whose representation I will discuss in more
+    detail below (\S\ref{hufftree}).
+
+  \item Phase 3 produces the codeword table, a mapping from bytes to
+    codewords. As with the frequency table, a 256-element array is both
+    the easiest and most efficient representation for the codeword
+    table, but how to represent the codewords is a more difficult
+    question (see \S\ref{codeword}).
+\end{itemize}
+
+(Phases 4 and 5 do not produce data structures.)
+
+As an aid in debugging, it's often useful to have a way to view the
+intermediate data structures. I suggest writing simple routines for
+printing out each of them, which will allow you to inspect and see what
+might be wrong. For the two tables this is straightforward, but
+producing a readable textual representation of the Huffman tree is a bit
+harder (see \S\ref{printhuff}).
+
+\subsection{\texttt{puff}}
+
+Decompression is significantly simpler than compression. The phases are:
+
+\begin{enumerate}
+  \item Read the file length and the serialized Huffman tree from the
+    compressed file (\S\ref{serialization}).
+  \item Decode the file using the Huffman tree, using the file length
+    from the previous step to know when to stop (\S\ref{decode}).
+\end{enumerate}
+
+You can (and probably should) reuse your Huffman tree data structure for
+decompression. Note, however, that this tree will not have weights
+if you serialize it in the way I suggest (\S\ref{serialization})---but
+that's okay, because weights are unnecessary for decoding.
+
+\section{Data structures}
+
+\subsection{The Huffman tree}
+\label{hufftree}
+
+There are two kinds of tree nodes:
+
+\begin{itemize}
+  \item A leaf, which has a weight and a byte value.
+  \item A branch, which has a weight and references to two nodes, its
+    left and right subtrees.
+\end{itemize}
+
+How you represent this will depend on what language you are using and
+what programming style you prefer. Either style will work in any of the
+languages that we're using, but some choices may be easier or smoother
+than others.
+
+\subsubsection[Procedural: C, C++, and maybe Python]{Procedural: C,
+  C++\footnote{While C++ has some object-oriented features, it isn't
+    primarily an object-oriented language, and unless you're very
+    familiar with virtual dispatch, you are probably better off using a
+procedural style for this program.}, and maybe Python}
+
+A straightforward non-OO representation is to unify leaves and branches
+into a single structure (or class) having the fields of both: a weight,
+a byte value, and references (C/C++: pointers) to left and right child
+nodes. For leaves, the left and right children are empty (C: ^NULL^;
+C++: ^nullptr^; Python: ^None^), and only the weight and byte value have
+meaning. For internal nodes, the byte value isn't used, so it can be
+zero, but both the left and right subchild will always be valid
+references/pointers. That is, because branch nodes always have both
+children---there are no nodes with a child on one side and a nothing on
+the other---we can tell a leaf from a branch by checking whether, say,
+the left child is present\footnote{I've seen code that tries to deal
+with the case that one child is null and the other isn't, which can't
+happen but makes the code a lot more complicated.}.
+
+It is probably wise to define predicate functions to check whether a
+node is a leaf or a branch, rather than open-coding the check each time.
+
+\paragraph{Memory allocation (C and C++).}
+
+Linked data structures such as trees (almost always) need to be
+allocated in the heap rather than on the stack. In Python all values are
+allocated on the heap (more or less), but in C and C++ you must
+explicitly allocate each node using ^malloc^ (C) or ^new^ (C++), and
+then refer to the via pointers.  That is, if you define a ^struct^ (C++:
+or ^class^) ^treenode^, then \emph{every place} you mention that type in
+your code---every variable, every field, and every parameter---must have
+a pointer type (C: ^struct treenode*^; C++: ^treenode*^). In particular,
+you cannot correctly allocate a tree node by taking the address (^&^
+operator) of a local variable or function argument, since the memory
+used for locals and arguments is deallocated upon function return.
+
+You may have learned that every memory allocation must be paired with a
+deallocation (C: ^free^; C++: ^delete^). While this is good advice in
+general, you can avoid a whole host of bugs by breaking the rule in
+thise case. For long-running programs that allocate a lot, returning
+memory to the heap when you're done with it is important to avoid
+running out of memory. But when your program does at most 511
+allocations (256 leaves and 255 branches) once, up front, running out of
+memory isn't an issue. Freeing memory introduces the risk of dangling
+pointer bugs, which cannot happen if you never free. One particular note
+of caution: C++ destructors that call ^delete^ are error-prone and
+difficult to debug, which is why they are seriously frowned upon in
+current C++ style. \emph{Don't free---just let it be.}
+
+\subsubsection{OO: Java, Ruby, and maybe Python}
+\label{oo}
+
+\begin{figure}[t]
+\begin{center}
+\ifslow
+\begin{tikzpicture}[
+  remember picture,
+  thick,
+  every node/.style={
+    rectangle split,
+    rectangle split parts=3,
+    draw,
+    anchor=north,
+  },
+  every text node part/.style={
+    align=center,
+  },
+  is a/.style={
+    -{Triangle[open,length=10pt,width=10pt]},
+  },
+  has a/.style={
+    {Diamond[length=12pt,width=8pt]}-,
+  },
+]
+\node (Node) [
+  text width=2in,
+]
+  {\textbf{\emph{Node}}
+     \nodepart{two}
+     weight~:~int
+     \nodepart{three}
+     \emph{serialize}(output) \\
+     \emph{decode}(input)~:~byte \\
+     \emph{fillCwt}(codeword, cwt)
+   };
+\node (Leaf) [
+  text width=2in,
+]
+at (-1.5in, -2in)
+{ \textbf{Leaf}
+  \nodepart{two}
+  byteValue~:~byte
+  \nodepart{three}
+  {serialize}(output) \\
+  {decode}(input)~:~byte \\
+  {fillCwt}(codeword, cwt)
+};
+\node (Branch) [
+  text width=2in,
+]
+at (1.5in, -2in)
+{ \textbf{Branch}
+  \nodepart{two}
+  left~:~Node\tikz[remember picture]\coordinate (Left); \\
+  right~:~Node\tikz[remember picture]\coordinate (Right);
+  \nodepart{three}
+  {serialize}(output) \\
+  {decode}(input)~:~byte \\
+  {fillCwt}(codeword, cwt)
+};
+\draw[is a]
+  (Branch.north) -- +(0,30pt) -| (Node.300)
+  ;
+\draw[is a]
+  (Leaf.north) -- +(0,30pt) -| (Node.240)
+  ;
+\draw[has a,overlay]
+(Left -| Branch.east) -- +(15pt, 0) |-
+  ($ (Node.north east) + (0,-25pt) $)
+  ;
+\draw[has a,overlay]
+  (Right -| Branch.east) -- +(30pt, 0) |-
+  ($ (Node.north east) + (0,-10pt) $)
+  ;
+\end{tikzpicture}
+\fi
+\end{center}
+\caption{Class diagram for Huffman tree representation}
+\label{uml}
+\end{figure}
+
+The procedural approach from the previous section will work fine in Java
+and Ruby as well. But the Huffman tree also admits an elegant object
+oriented representation, if you'd prefer to go that way.
+
+You would, of course, define a superclass ^Node^ that includes the
+commonalities, and two subclasses ^Leaf^ and ^Branch^ that include the
+differences. Furthermore, ^Node^ should define a common interface (Java:
+abstract methods; Ruby and Python: in your head/comments) for the
+operations that need to be performed on nodes. My design in a
+UML-like notation\footnote{%
+  In each box the second section lists the fields and the third lists
+  the methods. Methods with names in italic are \emph{virtual}---in Java
+  this means they are declared ^abstract^ and left undefined, whereas
+  in Ruby and Python these means they aren't declared in that class at
+  all but will be declared in its subclasses.  Hollow arrows indicate
+  inheritance: Leaf and Branch both subclass Node. Solid diamonds
+  indicate ownership: a Branch owns two Nodes (its children).
+} appears in figure~\ref{uml}.
+
+Writing the operations as methods means that you avoid ever testing
+whether a node is a leaf or a branch---instead you just call the method
+and it does the right thing. For example, the suggested serialization
+strategy is to perform a pre-order traversal of the tree, handling
+leaves by outputting a 0 followed by the eight-bit byte value, and
+handling branches by outputting a 1 followed by recursivingly
+serializing the children. This can be done by having each
+class, Leaf and Branch, know how to perform its part of the job. In
+pseudocode:
+
+\begin{tabbing}
+\qquad\=\+
+  \textbf{Method} Leaf::serialize(\textit{out}) \\
+  \quad\=\+Write a 0 bit to \textit{out} \\
+           Write the 8 bits of \textit{byteValue} to
+           \textit{out}\footnote{Note that you need to write the
+             \emph{unencoded} 8 bits of the byte, not its codeword
+             value. The decoder won't be able to understand codewords
+             until after it has successfully deserialized the Huffman
+           tree.} \-\\
+\\
+\textbf{Method} Branch::serialize(\textit{out}) \\
+  \>\+Write a 1 bit to \textit{out} \\
+  \textit{left}.serialize(\textit{out}) \\
+  \textit{right}.serialize(\textit{out})
+\end{tabbing}
+
+Yes, it really is that simple. You can write \emph{decode} in similar
+fashion: when a leaf is asked to decode, it simply returns (or writes)
+its byte value; when a branch is asked to decode, it reads one bit and
+then recursively asks one of its child nodes to decode.
+
+Similarly, \emph{fillCwt} fills in the codeword table for all the leaf
+nodes below the current node, given a codeword that encodes the path to
+the current node in the tree, and the codeword table to fill in. See
+\S\ref{codeword} for details on the algorithm and codeword data type.
+
+\subsubsection{Printing out the tree}
+\label{printhuff}
+
+If you want to bring out the Huffman tree for debugging, the easiest way
+is probably with a pre-order traversal. Here is pseudocode for the
+procedural version:
+\begin{tabbing}
+\qquad\=\+
+\textbf{Function} printHuff(\textit{node}) \\\quad\=\+
+  \textbf{If} \textit{node} is a leaf\\\quad\=\+
+  print(\texttt{"Leaf["}, \textit{node.weight}, \texttt{", "},
+  \textit{node.byteValue}, \texttt{"]"}) \-\\
+  \textbf{Else}\\\quad\+
+  print(\texttt{"Branch["}, \textit{node.weight}, \texttt{", "}) \\
+    printHuff(\textit{node.left}) \\
+    print(\texttt{", "}) \\
+    printHuff(\textit{node.right}) \\
+    print(\texttt{"]"})
+\end{tabbing}
+
+Of course, the object-oriented version would split the cases between the
+Leaf and Branch classes.
+
+\subsection{Codewords}
+\label{codeword}
+
+If we think of codewords as an abstract data type, they require three
+operations:
+
+\begin{itemize}
+  \item Create a new, zero-length codeword.
+  \item Append a bit (0 or 1) to the end of a codeword. (This can modify
+    the codeword in place or return a new codeword---the latter will
+    probably be less trouble.)
+  \item Output a codeword to a bit IO stream.
+\end{itemize}
+
+Given an implementation of this ADT, building the codeword table is a
+straightforward tree walk. Here is pseudocode for a function that, given
+the root node of the Huffman tree, a zero-length codeword, and an empty
+codeword table, fills in the codeword values:
+
+\begin{tabbing}
+\quad\=\+
+\textbf{Function} buildCwt(\textit{node}, \textit{currentCodeword}, \textit{table})\\\quad\=\+
+\textbf{If} \textit{node} is a leaf\\\quad\=\+
+Store \textit{currentCodeword} as the codeword for \textit{node.byte} in
+\textit{table}\-\\
+\textbf{Else}\+\\
+buildCwt(\textit{node.left}, \textit{currentCodeword} with ^0^ appended, \textit{table}) \\
+buildCwt(\textit{node.right}, \textit{currentCodeword} with ^1^ appended, \textit{table})
+\end{tabbing}
+
+The simplest representation of codewords is probably as a sequence
+(array, list, or vector) of boolean values\footnote{Or a string
+containing ASCII \texttt{'0'} and \texttt{'1'} characters, but please
+don't abuse strings that way.}. Outputting this representation is
+easy---simply iterate over each bit and output it on the stream. One
+apparent downside is that this technique involves a lot of vector
+copying, but it isn't as bad as it looks, since 1) all the vectors are
+small and 2) you will allocate at most 511 of them if you traverse the
+Huffman tree just once to build the codeword table.
+
+A perhaps more elegant solution is to represent a codeword as a pair
+$(v, \ell)$ of its value (if interpreted as a binary integer) and its
+length (in bits). For example, the codeword ^01101^ would be represented
+as the pair $(13, 5)$. Outputting this representation is easy because
+the bit IO library offers a \emph{writeBits} operation that takes an
+integer and its length in bits. Given a codeword $(v, \ell)$, appending
+a 0 yields $(2v, \ell + 1)$, and appending a 0 yields
+$(2v + 1, \ell + 1)$.
+
+\section{Phases in detail}
+
+\subsection{Constructing the Huffman tree}
+\label{forestation}
+
+The Huffman tree construction algorithm is described in detail in the
+lecture notes. However, some lower-level suggestions may be helpful.
+
+Once you have the frequency table, you should make a forest containing a
+leaf node for each byte having non-zero count. The easiest way to do
+this is probably to represent the forest as an array (I'll call it
+^forest^) with space 256 node references/pointers and an integer
+(^forestSize^) to keep track of how many actual nodes there are. (It may
+be worth writing a class to encapsulate these two things together.)
+Initially ^forestSize^ will be 0; then iterate over the frequency table,
+and for each non-zero byte, add a leaf node and increment ^forestSize^.
+
+The Huffman tree construction algorithm requires finding two
+minimal-weight nodes and combining them one tree as children of a new
+branch node. Code that attempts to find the two minimal-weight nodes
+directly is pretty complicated, but if you break the task down into
+these helper functions/methods then you can keep things simpler:
+
+\begin{itemize}
+  \item Find the index of a minimal-weight node (by scanning the nodes).
+  \item Remove a node given its index ^i^ (by assigning
+    ^forest[forestSize - 1]^ to ^forest[i]^ and then decrementing
+    ^forestSize^.
+  \item Add a node (by storing it at ^forest[forestSize]^ and then
+    incrementing ^forestSize^.
+\end{itemize}
+
+Using the first two operations to remove a minimal node, and then doing
+the same thing again, is much simpler than doing it in one pass. And
+then having removed them, the third operation can be used to add the new
+branch node back into the forest.
+
+\subsection{Serializing and deserializing the Huffman tree}
+\label{serialization}
+
+Before serializing the tree, it's necessary to write the original file size
+to the encoded file, and before deserialization the tree it's necessary
+to read the original file size from the encoded file. But how should you
+store an integer in a file? There are several possibilities, but I
+suggest using the bit IO library's \emph{writeBits} operation with the
+file size as the value and 32 as the length. (I promise not to test your
+code on anything large enough to overflow this.) Then it can be read
+using \emph{readBits} and a length of 32.
+
+Pseudocode for an object-oriented version of serialization appears in
+the section on OO representations of the Huffman tree (\S\ref{oo}).
+Converting it to the procedural version is a matter of using a
+conditional statement to distinguish between leaf and branch cases.
+
+Deserialization is serialization in reverse, and consequently the code
+has the same shape. In pseudocode:
+
+\begin{tabbing}
+  \qquad\=\+
+  \textbf{Function} deserialize(\textit{in})\\\quad\=\+
+  Read a bit from \textit{in} \\
+  \textbf{If} the bit is 0 \\\quad\=\+
+    Read 8 bits from \textit{in} \\
+    Return a new leaf with the 8 bits as the byte value \-\\
+  \textbf{Else} \+\\
+    \textit{right} \=:=\kill
+    \textit{left} \>:= deserialize(\textit{in}) \\
+    \textit{right}\>:= deserialize(\textit{in}) \\
+    Return a new branch with children \textit{left} and \textit{right}
+\end{tabbing}
+
+In OO-land, unlike the other operations we've discussed, deserialization
+cannot be implemented as a method of Leaf and Branch, because no Leaf or
+Branch exists when we start deserializing. So even if you are using the
+OO approach, deserialization will probably look like the procedural code
+above (Java: static method; Python/Ruby: function).
+
+\subsection{Encoding}
+\label{encode}
+
+Once we're done counting, tree-building, and codeword-table-filling,
+encoding itself is anticlimactic: repeatedly read a byte from the input
+file, look it up in the codeword table, and output the corresponding
+codeward to the output file, until there are no more bytes to read.
+
+But there's one catch: \emph{eof} may not mean what you think it means.
+In particular, it typically does \emph{not} return true right after the
+last byte has been read, even though no more bytes remain to be read.
+Instead, \emph{eof} becomes true only after an attempt to read fails
+because it's reached the end of the file. Thus, in your encoding loop,
+the right time to check for end-of-file is not before reading a byte,
+but after. Once \emph{eof} is indicated, break out of the loop without
+outputing the invalid byte that was just read.
+
+\subsection{Decoding}
+\label{decode}
+
+In order to avoid trouble with any padding bits added by the bit IO
+library, decoding should use a for-loop (or equivalent) that iterates
+exactly the correct number of times given the original file size read
+from the beginning of the encoded file. Then each iteration does one
+traversal from the root of the Huffman tree to some leaf, where the path
+is determined by reading bits from the decoder's input files, and then
+outputs the byte value of the leaf to the output file.
+
+\end{document}
