@@ -1,6 +1,6 @@
 # CS 214 Homework 1: Huffman Coding
 
-  - Due: Monday, November 30 at 11:59 PM, via Canvas
+  - **Hard deadline: Monday, December 7 at 11:59 PM, via Canvas**
 
   - May optionally be completed with one partner of your choosing
 
