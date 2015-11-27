@@ -469,7 +469,7 @@ length (in bits). For example, the codeword ^01101^ would be represented
 as the pair $(13, 5)$. Outputting this representation is easy because
 the bit IO library offers a \emph{writeBits} operation that takes an
 integer and its length in bits. Given a codeword $(v, \ell)$, appending
-a 0 yields $(2v, \ell + 1)$, and appending a 0 yields
+a 0 yields $(2v, \ell + 1)$, and appending a 1 yields
 $(2v + 1, \ell + 1)$.
 
 \section{Phases in detail}
