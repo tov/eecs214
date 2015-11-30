@@ -11,6 +11,11 @@ Everything from Exam 1, plus:
       - understanding what it means for implementation/representation to
         implement/represent the abstract operations/values
 
+  - representation invariants
+      - what an invariant *is* (a proposition, not a quantity)
+      - how invariants support local reasoning
+      - figuring out and stating simple invariants of data structures
+
   - asymptotic complexity
       - working with big-O notation (simplification rules)
       - deriving big-O informally from implementation or pseudocode
