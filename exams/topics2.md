@@ -1,6 +1,7 @@
 # Exam 2 Topics
 
-Everything from Exam 1, plus:
+Potentially everything from [Exam
+1](https://github.com/tov/eecs214/blob/master/exams/topics1.md), plus:
 
 ## Data structure concepts and skills
 
